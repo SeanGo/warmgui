@@ -1,0 +1,137 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<config>
+  <!-- configure for materials Tranquil-21.jpg -->
+  <application_bitmap_materials>e:/projects/bin/qks/media/aks-pics.png</application_bitmap_materials>
+  <mainwindow-bkgimg-rect>0, 0, 1920, 1080</mainwindow-bkgimg-rect>
+
+  <!-- configure for ssl -->
+  <Client-Key>e:/projects/bin/ca/client.key</Client-Key>
+  <Client-CRT>e:/projects/bin/ca/client.crt</Client-CRT>
+  <CA-CRT>e:/projects/bin/ca/ca.crt</CA-CRT>
+
+  <!-- network connection -->
+  <ctpmmd-server-address>qiankunpu.com:34567</ctpmmd-server-address>
+  <rtcalc-server-address>qiankunpu.com:34568</rtcalc-server-address>
+
+  <username>guoyaoqiang</username>
+  <password>123456</password>
+
+
+  <!-- CTP market data interface -->
+  <sng-config-file>d:/projects/bin/sng1.conf</sng-config-file>
+  <ctpmdif-config-file>d:/projects/bin/snowtf.conf</ctpmdif-config-file>
+  <using-ctpmdif-simulator>false</using-ctpmdif-simulator>
+
+
+  <!-- View-config -->
+  <!-- Data Length on graph -->
+
+  <!-- #short-data-length    = 1024 -->
+  <!-- #short-predict-length = 120 -->
+  <!-- #long-data-length     = 2048 -->
+  <!-- #long-predict-length  = 240 -->
+
+  <!-- #realtime-zen-data-length = 1024 -->
+  <!-- #zen-and-predict          = yes -->
+
+  <!-- Canvas setting -->
+  <canvas-main-pvi>
+    <rtchart-price>
+      <stroke-width>.5</stroke-width>
+      <spacelen>0</spacelen>
+      <prdtlen>0</prdtlen>
+      <down-sampler-interval>0</down-sampler-interval>
+
+      <rulersize>50, 20, 50,  5</rulersize>
+      <world>0, 32400, 2985, 3015, 0, 3000</world>
+      <increase>.005, .005, 0</increase>
+    </rtchart-price>
+
+    <rtchart-volume>
+      <stroke-width>1</stroke-width>
+      <spacelen>0</spacelen>
+      <prdtlen>0</prdtlen>
+      <down-sampler-interval>0</down-sampler-interval>
+
+      <rulersize>50,  5, 50,  5</rulersize>
+      <world>0, 32400, 0, 100, 0, 0</world>
+      <increase>0.0, 150.0, 1</increase>
+    </rtchart-volume>
+
+    <rtchart-intr>
+      <stroke-width>12</stroke-width>
+      <spacelen>0</spacelen>
+      <prdtlen>0</prdtlen>
+      <down-sampler-interval>0</down-sampler-interval>
+
+      <rulersize>50,  5, 50, 20</rulersize>
+      <world>0, 32400, 2985, 3015, 0, 3000</world>
+      <increase>2000.0, 2000.0, 1</increase>
+    </rtchart-intr>
+  </canvas-main-pvi>
+
+
+  <canvas-rt-twinig>
+    <rtchart-price>
+      <stroke-width>.1</stroke-width>
+      <spacelen>128</spacelen>
+      <prdtlen>360</prdtlen>
+      <down-sampler-interval>0</down-sampler-interval>
+
+      <rulersize>50, 20, 50,  5</rulersize>
+      <world>0, 512, 2985, 3015, 0, 3000</world>
+      <increase>.005, .005, 0</increase>
+    </rtchart-price>
+  </canvas-rt-twinig>
+
+  <canvas-twining-1m>
+    <rtchart-price>
+      <stroke-width>.3</stroke-width>
+      <spacelen>32</spacelen>
+      <prdtlen>30</prdtlen>
+      <down-sampler-interval>120</down-sampler-interval>
+
+      <rulersize>50, 20, 50,  5</rulersize>
+      <world>0, 270, 2985, 3015, 0, 3000</world>
+      <increase>.005, .005, 0</increase>
+    </rtchart-price>
+  </canvas-twining-1m>
+
+  <canvas-twining-5m>
+    <rtchart-price>
+      <stroke-width>.1</stroke-width>
+      <spacelen>16</spacelen>
+      <prdtlen>20</prdtlen>
+      <down-sampler-interval>600</down-sampler-interval>
+
+      <rulersize>50, 20, 50,  5</rulersize>
+      <world>0, 54, 2985, 3015, 0, 3000</world>
+      <increase>.005, .005, 0</increase>
+    </rtchart-price>
+  </canvas-twining-5m>
+
+  <canvas-twining-15m>
+    <rtchart-price>
+      <stroke-width>.1</stroke-width>
+      <spacelen>8</spacelen>
+      <prdtlen>18</prdtlen>
+      <down-sampler-interval>1800</down-sampler-interval>
+
+      <rulersize>50, 20, 50,  5</rulersize>
+      <world>0, 18, 2985, 3015, 0, 3000</world>
+      <increase>.005, .005, 0</increase>
+    </rtchart-price>
+  </canvas-twining-15m>
+
+  <toolbar>
+    <!-- top, left, right, bottom -->
+    <position>top</position>
+    <button-size>64, 64</button-size>
+	<!-- must be zero now (forever ? heihei) -->
+	<interval>0</interval>
+    <toolbar-materials-rect>0, 1080, 128, 1144</toolbar-materials-rect>
+  </toolbar>
+
+</config>
+
+
