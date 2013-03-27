@@ -65,7 +65,6 @@ GLYPH_CHANGED_TYPE CRtDataCanvas::NewData(DataObjectPtr data)
 
 void CRtDataCanvas::SetChatToDataContanier()
 {
-    _data_container->RegisterChart(_chart);
 }
 
 } //namespace WARMGUI

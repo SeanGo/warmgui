@@ -28,31 +28,10 @@ void IDataContainer::AddData(DataObjectPtr dop)
 {
     if (_count < _size) {
         memcpy((char*)_pdata + _sizeofdata * _count++, dop->GetData(), _sizeofdata);
-        dispatch(dop);
     }
 }
 
 
-void IDataContainer::dispatch(DataObjectPtr dop)
-{
-    for (ConstChartIter iter = _chart_array.begin(); iter != _chart_array.end(); iter++) {
-        int interval = (*iter)->GetRtcSet()->_down_intval;
-        if (!interval || !(_count % interval) || _count == 1)
-            (*iter)->NewData(dop);
-    }
-}
-
-void IDataContainer::RegisterChart(CSeriesDataChart* chart)
-{
-    _chart_array.push_back(chart);
-}
-
-void IDataContainer::SetGeometryData()
-{
-    for (ConstChartIter iter = _chart_array.begin(); iter != _chart_array.end(); iter++) {
-        (*iter)->SetGeometryData(_pdata, _count, _sizeofdata);
-    }
-}
 
 inline dataptr IDataContainer::GetData(size_t nSpos)
 {

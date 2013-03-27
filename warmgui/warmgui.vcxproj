@@ -49,7 +49,7 @@
       <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;WARMGUI_EXPORTS;_USE_32BIT_TIME_T;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>E:\projects\America\utility</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>E:\projects\America\utility;E:\projects\America\clicomm\</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -90,6 +90,9 @@
     <ClInclude Include="Atelier.h" />
     <ClInclude Include="Canvas.h" />
     <ClInclude Include="cartesian.h" />
+    <ClInclude Include="DataDispatcher.h" />
+    <ClInclude Include="ICalculator.h" />
+    <ClInclude Include="pocoinc.h" />
     <ClInclude Include="SeriesDataChart.h" />
     <ClInclude Include="CoordFrame.h" />
     <ClInclude Include="Data.h" />
@@ -121,6 +124,8 @@
     <ClCompile Include="Atelier.cpp" />
     <ClCompile Include="Canvas.cpp" />
     <ClCompile Include="cartesian.cpp" />
+    <ClCompile Include="DataDispatcher.cpp" />
+    <ClCompile Include="ICalculator.cpp" />
     <ClCompile Include="SeriesDataChart.cpp" />
     <ClCompile Include="CoordFrame.cpp" />
     <ClCompile Include="Data.cpp" />

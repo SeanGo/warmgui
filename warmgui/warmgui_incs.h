@@ -22,6 +22,7 @@
 
 #include "Data.h"
 
+
 #include "cartesian.h"
 #include "Artist.h"
 #include "Glyph.h"
@@ -37,11 +38,13 @@
 #include "SeriesDataGraph.h"
 #include "SeriesDataChart.h"
 #include "RtDataCanvas.h"
-
-#include "DataContainer.h"
-
 #include "WarmGridCtrl.h"
 #include "GridCanvas.h"
+
+
+#include "ICalculator.h"
+#include "DataContainer.h"
+#include "DataDispatcher.h"
 
 /*
 #include "CartesianCanvas.h"

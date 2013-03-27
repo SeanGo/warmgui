@@ -3,13 +3,6 @@
 
 
 namespace WARMGUI {
-class ICanvas;
-
-EXPORT_STL_VECTOR(WARMGUI_API, ICanvas*)
-
-typedef vector <ICanvas*> WARMGUI_API CCanvasArray;
-typedef CCanvasArray::iterator CanvasIter;
-typedef CCanvasArray::const_iterator ConstCanvasIter;
 
 
 
@@ -94,6 +87,15 @@ protected:
 protected:
 	void set_background();
 };
+
+
+
+EXPORT_STL_VECTOR(WARMGUI_API, ICanvas*)
+
+typedef vector <ICanvas*> WARMGUI_API CCanvasArray;
+typedef CCanvasArray::iterator CanvasIter;
+typedef CCanvasArray::const_iterator ConstCanvasIter;
+
 
 
 class WARMGUI_API CBkgCanvas : public ICanvas
