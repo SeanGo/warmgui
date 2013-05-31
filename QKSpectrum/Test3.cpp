@@ -17,24 +17,24 @@
 CTest3::CTest3(void)
 	: _atelier(0)
 	, _config(0)
+    , _netcli(AMERICA::ClientServiceHandler::RECEIVER_TYPE_THREAD)
 {
     _rectClient.left =  _rectClient.top = _rectClient.right = _rectClient.bottom = 0;
-    _data_container = new IDataContainer();
 }
 
 
 CTest3::~CTest3(void)
 {
-    if (_atelier) delete _atelier;
-    if (_data_container) delete _data_container;
 }
 
 
 int CTest3::OnCreate(LPCREATESTRUCT /*cs*/)
 {
-	if (InitAtelier())
-		return (-1);
+    bool result = _zit_factory.CreateGui(_hwnd, _config, "realtime-ctpdata");
+    if (!result)
+        return (-1);
 
+    _atelier = (CZenInTwiningAtelier*)_zit_factory.GetAtelier();
 	//SetWindowLong(_hwnd, GWL_STYLE, WS_VISIBLE | WS_CLIPCHILDREN);
 
 	//int cx = GetSystemMetrics(SM_CXSCREEN);
@@ -43,10 +43,9 @@ int CTest3::OnCreate(LPCREATESTRUCT /*cs*/)
 	//MoveWindow(_hwnd, 0, 0, cx, cy, true);
 	//SetFocus(_hwnd);
 
-    _data_container->SetConfig(_config);
-    _data_container->SetContainerSize(sizeof(CTPMMD), 32400);
+    //_dispatcher = _zit_factory.GetDataDispathcer();
+    //_th_data_receiver.start(*_dispatcher);
 
-    _atelier->SetChatToDataContanier();
 	return 0;
 }
 
@@ -66,17 +65,18 @@ BOOL CTest3::PreCreateWindow(LPCREATESTRUCT cs)
 
 void CTest3::OnSize(UINT /*nType*/, int cx, int cy)
 {
+    /*
 	if (_atelier && cx > 0 && cy > 0) {
-        _data_container->SetGeometryData();
 		::GetClientRect(_hwnd, &_rectClient);
 		_atelier->SetRect(_rectClient);
 	}
+    */
 }
 
 void CTest3::OnDraw()
 {
-	if (_atelier)
-		_atelier->Draw();
+	//if (_atelier)
+	//	_atelier->Draw();
 }
 
 int  CTest3::OnEraseBkgnd(HDC)
@@ -90,18 +90,6 @@ void CTest3::OnDestroy()
     Logout();
     Sleep(1000);
     ::PostQuitMessage(0);
-}
-
-int CTest3::InitAtelier()
-{
-	_atelier = new CZenInTwiningAtelier(L"zen-in-twining");
-	_atelier->SetConfigFile(_config);
-    _atelier->SetDataContainer(_data_container);
-	if (FAILED(_atelier->CreateRenderTarget(_hwnd)))
-		return (-2);
-
-	_atelier->InitAtelier(_hwnd, _config);
-	return (0);
 }
 
 void CTest3::OnLButtonUp(UINT uFlag, int x, int y)
@@ -134,6 +122,7 @@ int CTest3::OnCommand(WORD nCmdId, WORD /*nSource*/, HWND /*hwnd*/)
 	        CLoginDlg* dlg = new CLoginDlg();
 	        dlg->ShowDialog(L"Test Dialog", 0, 0, 0, 320, 240);
 	        if (dlg->GetDialogValue() == 1) {
+                //_atelier->Draw();
                 Login(dlg->_username, dlg->_password);
 	        }
 	        delete dlg;
@@ -173,11 +162,11 @@ int CTest3::OnMessage(UINT message, WPARAM wParam, LPARAM lParam)
 int CTest3::Login(const char* username, const char* password)
 {
     if (!(_netcli.Connect(
-        _config->getString("Client-Key").c_str(),
-		_config->getString("Client-CRT").c_str(),
-		_config->getString("CA-CRT").c_str(),
-        _config->getString("rtcalc-server-address").c_str(),
-        (uint32_t)_hwnd)))
+        _config->getString("network.Client-Key").c_str(),
+		_config->getString("network.Client-CRT").c_str(),
+		_config->getString("network.CA-CRT").c_str(),
+        _config->getString("network.rtcalc-server-address").c_str(),
+        _dispatcher->GetThreadId())))
     {
         if (_netcli.Login(username, password))
             return (-1);

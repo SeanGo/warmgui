@@ -23,9 +23,12 @@ public:
 						FLOAT           dashOffset = 0.0f);
 	inline HRESULT SetStrokeStyle(int argc, TCHAR * argv[]);
 
-	inline HRESULT SetSolidColorBrush(const D2D1_COLOR_F &color, GLYPH_STATE_TYPE scbt = GLYPH_STATE_NORMAL);
+	inline HRESULT SetSolidColorBrush(const COLORALPHA   &color, GLYPH_STATE_TYPE scbt = GLYPH_STATE_NORMAL);
 	inline HRESULT SetSolidColorBrush(int argc, TCHAR * argv[]);
+    inline void    SetTextFormat(IDWriteTextFormat* pTextFormat);
+    inline void    SetTextLayout(IDWriteTextLayout* pTextLayout);
 
+    /*
 	inline HRESULT SetTextFormat(const TCHAR * fontFamilyName,
 								 FLOAT  fontSize,
 								 DWRITE_FONT_WEIGHT  fontWeight  = DWRITE_FONT_WEIGHT_NORMAL,
@@ -35,8 +38,10 @@ public:
 								 DWRITE_PARAGRAPH_ALIGNMENT  paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER,
 								 const WCHAR * localeName = L"en-us");
 	inline HRESULT SetTextFormat(int argc, TCHAR * argv[]);
+    */
 
 	inline void DrawText(const TCHAR * text, D2D1_RECT_F& rect);
+	inline void DrawText(const TCHAR * text, RECT& rect);
 	inline void DrawLine(POINT_f p1, POINT_f p2, float fStrokeWidth = 1.0f);
 	inline void DrawLine(float x1, float y1, float x2, float y2, float fStrokeWidth = 1.0f);
 	inline void DrawBitmap(WGBitmap* pImage,
@@ -64,7 +69,9 @@ public:
 
 	inline void DrawRectangle(RECT_f& rect_f, float fStrokeWidth = 1.0f);
 	inline void DrawRectangle(float x1, float y1, float x2, float y2, float fStrokeWidth = 1.0f);
+	inline void DrawRectangle(RECT& rect, float fStrokeWidth = 1.0f);
 	inline void FillRectangle(RECT_f& rect_f, float fStrokeWidth = 1.0f);
+    inline void FillRectangle(RECT& rect, float fStrokeWidth = 1.0f);
 	inline void FillRectangle(float x1, float y1, float x2, float y2, float fStrokeWidth = 1.0f);
 	inline void DrawEllipse(ELLIPSE_f& ellipse, float fStrokeWidth = 1.0f);
 	inline void FillEllipse(ELLIPSE_f& ellipse, float fStrokeWidth = 1.0f);
@@ -97,6 +104,11 @@ public:
 	inline HRESULT CopyFromRenderTarget(WGBitmap* pBitmap, POINT pointDest, RECT rectSrc);
 
 	inline ID2D1Bitmap* GetDefaultBmp() { return _pDefaultBmp; }
+
+
+	inline HRESULT PushLayer(RECT& rect);
+	inline HRESULT PushLayer(float left, float top, float right, float bottom);
+	inline void PopLayer();
 
 private:
 	ID2D1HwndRenderTarget*         _pHwndRT;

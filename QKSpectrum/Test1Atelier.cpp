@@ -12,7 +12,7 @@ CTest1Atelier::CTest1Atelier()
     , _pvicanvas(0)
     , _layoutOne(0)
 {
-    _tcscpy_s(_name, MAX_WARMGUI_NAME_LEN, L"test-1");
+    strcpy_s(_name, MAX_WARMGUI_NAME_LEN, "test-1");
 }
 
 void CTest1Atelier::SetLayout()
@@ -23,15 +23,15 @@ void CTest1Atelier::SetLayout()
 
 HRESULT CTest1Atelier::InitAtelier(HWND hwnd, WARMGUI::CWarmguiConfig* config)
 {
-	HRESULT hr = CAtelier::InitAtelier(hwnd, config);
+	HRESULT hr = IAtelier::InitAtelier(hwnd, config);
 
 	if (SUCCEEDED(hr) && GetBitmapMaterial()) {
-		_canvasImgbkg = new WARMGUI::CBkgCanvas(L"bkgcanvas");
+		_canvasImgbkg = new WARMGUI::CBkgCanvas("bkgcanvas");
 		_canvasImgbkg->SetBitmap(&_appbmp);
 		Insert(_canvasImgbkg);
 	}
 
-    _pvicanvas = new CPVICanvas(L"canvas-main-pvi");
+    _pvicanvas = new CPVICanvas("canvas-main-pvi");
     Insert(_pvicanvas);
 
     SetLayout();
@@ -53,7 +53,7 @@ CTest1Layout::~CTest1Layout()
 {
 }
 
-void CTest1Layout::Disposal(WARMGUI::CAtelier* atelier, RECT& rect)
+void CTest1Layout::Disposal(WARMGUI::IAtelier* atelier, RECT& rect)
 {
 	CTest1Atelier* oneAtelier = (CTest1Atelier*)atelier;
 	WARMGUI::ConstCanvasIter iter = oneAtelier->_canvasses.begin();

@@ -26,10 +26,11 @@ ICanvas::ICanvas(void)
 	, _bUsingBkg(false)
 {
 	_iterSelected = _gt.end();
+    setClass();
 }
 
 
-ICanvas::ICanvas(const TCHAR * name, bool bHasBkgBlind/* = true*/)
+ICanvas::ICanvas(const char* name, bool bHasBkgBlind/* = true*/)
 	: IGlyphNode(name)
 	, _margin(NULL_RECT)
 	, _offset(NULL_POINT_f)
@@ -39,6 +40,7 @@ ICanvas::ICanvas(const TCHAR * name, bool bHasBkgBlind/* = true*/)
 	, _bUsingBkg(false)
 {
 	_iterSelected = _gt.end();
+    setClass();
 }
 
 ICanvas::~ICanvas(void)
@@ -49,8 +51,8 @@ ICanvas::~ICanvas(void)
 void ICanvas::set_background()
 {
 	if (_bHasBackground) {
-		TCHAR name[MAX_PATH];
-		_sntprintf_s(name, MAX_PATH, _TRUNCATE, L"blind-%s", _name);
+		char name[MAX_PATH];
+		_snprintf_s(name, MAX_PATH, _TRUNCATE, "blind-%s", _name);
 		CBlind* blind = new CBlind(name, BGR(0, 0, 0), 0.5);
 		AppendChild(_gt.begin(), blind);
 	}
@@ -65,12 +67,27 @@ HRESULT ICanvas::Draw(bool redraw/* = false*/)
 
     MATRIX_2D m = D2D1::Matrix3x2F::Identity(), backup;
     //MYTRACE(L"Canvas %s rect %d %d %d %d\n", _name, _rect.left, _rect.top, _rect.right, _rect.bottom);
+#ifdef _DEBUG
+    //TCHAR name[MAX_PATH];
+    //CChineseCodeLib::Gb2312ToUnicode(name, MAX_PATH, _name);
+    //MYTRACE(L"canvas %s draw\n", name);
+#endif //_DEBUG
+
     m._31 = (float)(_rect.left + _margin.left), m._32 = (float)(_rect.top + _margin.top);
     _common_artist->GetTransform(&backup);
     _common_artist->SetTransform(&m);
 	for (GlyphTreeIter iter = _gt.begin(); iter != _gt.end(); iter++) {
         if (GlyphIter->GetGlyphType() != IGlyph::GLYPH_TYPE_BKG) {
-            //MYTRACE(L"%s draw graph\n", (*iter)->_name);
+#           ifdef _DEBUG
+            //TCHAR myname[MAX_PATH];
+            //CChineseCodeLib::Gb2312ToUnicode(myname, MAX_PATH, (*iter)->_name);
+            //MYTRACE(L"%s draw graph\n", myname);
+            //if ((*iter)->isClass("CCoordFrame"))
+            //{
+            //    int kkk = 0;
+            //    kkk = 1;
+            //}
+#           endif //_DEBUG
 		    (*iter)->Draw(redraw);
         }
 	}
@@ -88,7 +105,7 @@ HRESULT ICanvas::_DrawBkg(bool drawbuf/* = false*/)
     if (!drawbuf) {
         //draw materias first
 		RECT_f bmprect;
-		_atelier->GetMyBackgroundRect(_rect, &bmprect);
+		_atelier->GetWinrectInMaterial(_rect, &bmprect);
 
         RECT_f myrect;
 		myrect.left = myrect.top = 0.0f, myrect.right = fRectWidth(_rect), myrect.bottom = fRectHeight(_rect);
@@ -97,7 +114,16 @@ HRESULT ICanvas::_DrawBkg(bool drawbuf/* = false*/)
 
     for (GlyphTreeIter iter = _gt.begin(); iter != _gt.end(); iter++) {
         if (GlyphIter->GetGlyphType() == IGlyph::GLYPH_TYPE_BKG) {
-            //MYTRACE(L"%s draw back\n", (*iter)->_name);
+#           ifdef _DEBUG
+            //TCHAR myname[MAX_PATH];
+            //CChineseCodeLib::Gb2312ToUnicode(myname, MAX_PATH, (*iter)->_name);
+            //MYTRACE(L"%s draw graph\n", myname);
+            //if ((*iter)->isClass("CCoordFrame"))
+            //{
+            //    int kkk = 0;
+            //    kkk = 1;
+            //}
+#           endif //_DEBUG
             (*iter)->Draw(drawbuf);
         }
     }
@@ -110,7 +136,11 @@ HRESULT ICanvas::DrawBkg(bool drawbuf/* = false*/)
 {
  	if (!_visible) return S_OK;
 
-    //MYTRACE(L"%s draw bkg\n", _name);
+#ifdef _DEBUG
+    //TCHAR name[MAX_PATH];
+    //CChineseCodeLib::Gb2312ToUnicode(name, MAX_PATH, _name);
+    //MYTRACE(L"canvas %s draw bkg\n", name);
+#endif //_DEBUG
 
     HRESULT r = S_OK;
     MATRIX_2D m = D2D1::Matrix3x2F::Identity(), backup;
@@ -165,7 +195,7 @@ inline GlyphTreeIter ICanvas::Find(UINT gid) const
 	return _gt.end();
 }
 
-inline IGlyph* ICanvas::Find(const TCHAR * name) const
+inline IGlyph* ICanvas::Find(const char* name) const
 {
 	GlyphTreeIter it = _gt.begin();
 	for(;it != _gt.end(); it++) {
@@ -200,7 +230,7 @@ int ICanvas::getChildNumber(const GlyphTreeIter iter)
     return _gt.number_of_children(iter);
 }
 
-
+//index start from 0
 inline IGlyph* ICanvas::getChild(const GlyphTreeIter iter, int index)
 {
     GlyphTreeIter it = _gt.child(iter, index);
@@ -224,7 +254,13 @@ inline IGlyph* ICanvas::InsertAfter(IGlyph* const g)
 		p = _gt.append_child(iter, (IGlyph*)g);
 	}
 
-	ReturnGlyphIterFromIter(p, _gt);
+	if (p == _gt.end())
+		return (0);
+	else {
+        g->SetGlyphTreeIter(p);
+		return (IGlyph*)(*(p));
+    }
+
 }
 
 
@@ -251,7 +287,12 @@ inline IGlyph * ICanvas::AppendChild(const GlyphTreeIter iter, IGlyph* const g)
 	else 
 		p = _gt.append_child(iter, (IGlyph*)g);
 
-	ReturnGlyphIterFromIter(p, _gt);
+	if (p == _gt.end())
+		return (0);
+	else {
+        g->SetGlyphTreeIter(p);
+		return (IGlyph*)(*(p));
+    }
 }
 
 inline IGlyph * ICanvas::PrependChild(const GlyphTreeIter iter, IGlyph* const g)
@@ -265,7 +306,12 @@ inline IGlyph * ICanvas::PrependChild(const GlyphTreeIter iter, IGlyph* const g)
 	else 
 		p = _gt.prepend_child(iter, (IGlyph*)g);
 
-	ReturnGlyphIterFromIter(p, _gt);
+	if (p == _gt.end())
+		return (0);
+	else {
+        g->SetGlyphTreeIter(p);
+		return (IGlyph*)(*(p));
+    }
 }
 
 
@@ -276,7 +322,13 @@ inline IGlyph* ICanvas::InsertNext(const GlyphTreeIter iter, IGlyph* const g)
 
 	if (iter == _gt.end()) return (0);
 	GlyphTreeIter p = _gt.insert_after(iter,(IGlyph*)g);
-	ReturnGlyphIterFromIter(p, _gt);
+
+	if (p == _gt.end())
+		return (0);
+	else {
+        g->SetGlyphTreeIter(p);
+		return (IGlyph*)(*(p));
+    }
 }
 
 inline IGlyph* ICanvas::InsertPrev(const GlyphTreeIter iter, IGlyph* const g)
@@ -286,7 +338,13 @@ inline IGlyph* ICanvas::InsertPrev(const GlyphTreeIter iter, IGlyph* const g)
 
 	if (iter == _gt.end()) return (0);
 	GlyphTreeIter p = _gt.insert(iter,(IGlyph*)g);
-	ReturnGlyphIterFromIter(p, _gt);
+
+	if (p == _gt.end())
+		return (0);
+	else {
+        g->SetGlyphTreeIter(p);
+		return (IGlyph*)(*(p));
+    }
 }
 
 void ICanvas::SetRect(RECT& rect)
@@ -309,24 +367,26 @@ IGlyph* ICanvas::GetSelectedGlyph()
 
 inline void ICanvas::GiveGlyphSomething(IGlyph* const g)
 {
-    g->SetParam(_conter++, _common_artist, this, _atelier, _config, _data_container);
+    g->SetParam(_conter++, _common_artist, this, _atelier);
+    g->Init();
 }
 
 
-inline void ICanvas::SetAtelier(CAtelier *atelier)
+inline void ICanvas::SetAtelier(IAtelier *atelier)
 {
 	_atelier = atelier;
 }
 
 
 
-
+/*
 HRESULT ICanvas::Init()
 {
 	set_background();
 
     return S_OK;
 }
+*/
 
 
 
@@ -339,13 +399,15 @@ CBkgCanvas::CBkgCanvas(void)
 	: _imgBkg(0)
 {
 	_bHasBackground = false;
+    setClass();
 }
 
-CBkgCanvas::CBkgCanvas(const TCHAR * name)
+CBkgCanvas::CBkgCanvas(const char* name)
 	: ICanvas(name, false)
 	, _imgBkg(0)
 {
 	_bHasBackground = false;
+    setClass();
 }
 
 CBkgCanvas::~CBkgCanvas(void)
@@ -359,20 +421,20 @@ void CBkgCanvas::SetGlyphRect()
 		_imgBkg->SetRect(_rect);
 }
 
-HRESULT CBkgCanvas::Init()
+const HRESULT CBkgCanvas::Init(const char* name/* = 0*/)
 {
-	ICanvas::Init();
-
 	if (!_config)
 		return (-1);
 
 	bool r = true;
 	try {
 		RECT rect;
-		r = _config->getRect(rect, "mainwindow-bkgimg-rect");
+        char temp[MAX_PATH];
+        _snprintf_s(temp, MAX_PATH, _TRUNCATE, "%s.rect", _strconf);
+		r = _config->getRect(rect, temp);
 		if (r) {
 			_imgBkg = new CSharedImage(IGlyph::GLYPH_TYPE_BKG, _appbmp->_material);
-            _imgBkg->SetName(L"backgound-image");
+            _imgBkg->SetName("backgound-image");
 			//the opacity must be 1.0f for backgound canvas
 			_imgBkg->SetSharedImage(rect);
 			InsertAfter(_imgBkg);

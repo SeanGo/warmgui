@@ -10,7 +10,7 @@ COneLayout::~COneLayout()
 {
 }
 
-void COneLayout::Disposal(CAtelier* atelier, RECT& rect)
+void COneLayout::Disposal(IAtelier* atelier, RECT& rect)
 {
 	COneAtelier* oneAtelier = (COneAtelier*)atelier;
 	ConstCanvasIter iter = oneAtelier->_canvasses.begin();

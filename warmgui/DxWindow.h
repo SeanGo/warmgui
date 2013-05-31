@@ -21,7 +21,7 @@ public:
 
 	void SetConfig(CWarmguiConfig*  config) {_config = config;}
 protected:
-	CAtelier* _atelier;
+	IAtelier* _atelier;
 	RECT         _rectClient;
 	CWarmguiConfig*      _config;
 };

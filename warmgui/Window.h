@@ -38,6 +38,8 @@ namespace WARMGUI {
 		HWND SafeHwnd() { return _hwnd; }
 		bool LoadAccelerators(UINT acceid);
 
+        void Close() {SendMessage(_hwnd, WM_CLOSE, 0, 0);}
+
 	protected:
 		HWND         _hwnd;
 		HINSTANCE   _hInst;

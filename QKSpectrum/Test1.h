@@ -35,7 +35,6 @@ private:
     CTPMMD*      _ctpmmd;
     int      _nDataCount;
     CTest1Atelier* _atelier;
-    IDataContainer* _data_container;
 
 public:
     HANDLE hSimulator;

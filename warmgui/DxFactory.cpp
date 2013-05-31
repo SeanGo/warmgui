@@ -138,6 +138,38 @@ HRESULT CDxFactorys::CreateRenderTarget(HWND hwnd,
 	return hr;
 }
 
+bool CDxFactorys::CreateTextFormat(FONT& font, IDWriteTextFormat** pTextFormat)
+{
+    HRESULT hr = S_OK;
+	IDWriteFontCollection* pFontCollection = NULL;
+
+    // Get the system font collection.
+    if (SUCCEEDED(hr))
+        hr = m_pDWriteFactory->GetSystemFontCollection(&pFontCollection);
+
+    if (SUCCEEDED(hr)) {
+		SafeRelease(pTextFormat);
+		hr = m_pDWriteFactory->CreateTextFormat(
+            font.fontName,
+			pFontCollection,
+            font.fontWeight,
+			font.fontStyle,
+			font.fontStretch,
+			font.fontSize,
+			font.localeName,
+				pTextFormat);
+	}
+	SafeRelease(&pFontCollection);
+
+	if (SUCCEEDED(hr))
+		hr = (*pTextFormat)->SetTextAlignment(font.textAlignment);
+
+	if (SUCCEEDED(hr))
+		hr = (*pTextFormat)->SetParagraphAlignment(font.paragraphAlignment);
+
+    return (SUCCEEDED(hr));
+}
+
 
 //ID2D1HwndRenderTarget * CDxFactorys::GetHwndRenderTarget() { return m_pHwndRenderTarget; }
 ID2D1Factory          * CDxFactorys::GetD2DFactory() { return m_pD2DFactory;}

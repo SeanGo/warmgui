@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="utf-8"?>
+<config>
+	<!-- configure for materials Tranquil-21.jpg -->
+	<network>
+		<!-- configure for ssl -->
+		<Client-Key>e:/projects/bin/ca/client.key</Client-Key>
+		<Client-CRT>e:/projects/bin/ca/client.crt</Client-CRT>
+		<CA-CRT>e:/projects/bin/ca/ca.crt</CA-CRT>
+
+		<!-- network connection -->
+		<ctpmmd-server-address>qiankunpu.com:34567</ctpmmd-server-address>
+		<rtcalc-server-address>qiankunpu.com:34568</rtcalc-server-address>
+		<!--rtcalc-server-address>192.168.0.102:34568</rtcalc-server-address-->
+
+		<username>guoyaoqiang</username>
+		<password>123456</password>
+	</network>
+
+
+	<!-- CTP market data interface -->
+	<ctp-market>
+		<sng-config-file>e:/projects/bin/sng1.conf</sng-config-file>
+		<ctpmdif-config-file>e:/projects/bin/snowtf.conf</ctpmdif-config-file>
+		<using-ctpmdif-simulator>false</using-ctpmdif-simulator>
+	</ctp-market>
+	
+	<data-dispatcher>
+		<num>2</num>
+		<dispatcher-1>
+			<type>america-network</type>
+			<name>america-qks</name>
+		</dispatcher-1>
+		<dispatcher-2>
+			<type>ctp-futures</type>
+			<name>ctpmmd</name>
+			<ctpmdif-config-file>e:/projects/bin/snowtf.conf</ctpmdif-config-file>
+		</dispatcher-2>
+
+		<data-container-num>1</data-container-num>
+		<data-container-1>
+			<data-length>32400</data-length>
+			<type>ctpmmd-zit</type>
+			<name>ctpmmd</name>
+			<dispatchers>ctpmmd</dispatchers>
+			<down-sampler>0</down-sampler>
+		</data-container-1>
+		<data-container-2>
+			<data-length>512</data-length>
+			<type>ctpmmd-zit-filter</type>
+			<down-sampler>0</down-sampler>
+		</data-container-2>
+		<data-container-3>
+			<data-length>4096</data-length>
+			<type>ctpmmd-zit-filter</type>
+			<down-sampler>120</down-sampler>
+		</data-container-3>
+		<data-container-4>
+			<data-length>2048</data-length>
+			<type>ctpmmd-zit-filter</type>
+			<down-sampler>600</down-sampler>
+		</data-container-4>
+		<data-container-5>
+			<data-length>2048</data-length>
+			<type>ctpmmd-zit-filter</type>
+			<down-sampler>1800</down-sampler>
+		</data-container-5>
+	</data-dispatcher>
+
+	
+	<calculators>
+		<num>1</num>
+		<calculator-1>
+			<type>euclid-calculator</type>
+			<name>euclid</name>
+			<containers>ctpmmd</containers>
+		</calculator-1>
+	</calculators>
+
+
+	<!-- First Atelier Config -->
+	<atelier-realtime-ctpdata>
+		<bitmap_materials>e:/projects/bin/qks/media/qks-pics.png</bitmap_materials>
+		<mainwindow-bkgimg-rect>0, 0, 1920, 1080</mainwindow-bkgimg-rect>
+
+		<!-- atelier type -->
+		<atelier-type>ZITAtelier</atelier-type>
+
+		<!-- here is the configure of layout -->
+		<layout>
+			<type>ZITLayout</type>
+		</layout>
+
+		<!-- Canvas setting -->
+		<canvases>
+			<canvas-num>5</canvas-num>
+			<!-- background canvas -->
+			<canvas-0>
+				<canvas-type>background-canvas</canvas-type>
+				<canvas-name>mainwindow-bkgimg</canvas-name>
+				<blind>false</blind>
+				<rect>0, 0, 1920, 1080</rect>
+			</canvas-0>
+			<canvas-1>
+				<canvas-type>PVICanvas</canvas-type>
+				<canvas-name>pvi-tick-data</canvas-name>
+				<containers>ctpmmd</containers>
+				<blind>true</blind>
+				<!-- rect percentage of each graph and coord-frame -->
+				<rect-percentage>0.618, 0.191, 0.191</rect-percentage>
+				<!-- margin of all chart -->
+				<margin>0, 0, 0, 0</margin>
+				<!-- interval of each chart -->
+				<chart-interval>5</chart-interval>
+				<!-- worlds setting -->
+				<price-chart>
+					<name>pvi-p-chart</name>
+					<stroke-width>0.3</stroke-width>
+					<coord-grid>
+						<name>price-coord-grid</name>
+						<!-- RULER_LEFT, RULER_RIGHT, RULER_TOP,RULER_BOTTOM -->
+						<ruler-size>50, 20, 50,  5</ruler-size>
+						<!-- B, G, R, alpah -->
+						<ruler-color-alpha>255, 0, 0, 1.0</ruler-color-alpha>
+						<font>Verdana, 10</font>
+						<world>
+							<name>price</name>
+							<!-- x0,y0, xn, yn, minpos, miny, maxpos, maxy -->
+							<!-- max ctpdata is 32400, but plus 180 * 2 predict data -->
+							<world>0, 3000, 32759, 3000, 0, 2985,32759, 3015</world>
+							<increase>10, 10, DATA_BREADTH_TYPE_VALUE, 32759</increase>
+						</world>
+					</coord-grid>
+				</price-chart>
+				<volume-chart>
+					<name>pvi-v-chart</name>
+					<stroke-width>3</stroke-width>
+					<coord-grid>
+						<name>volume-coord-grid</name>
+						<!-- RULER_LEFT, RULER_RIGHT, RULER_TOP,RULER_BOTTOM -->
+						<ruler-size>50, 20, 50,  5</ruler-size>
+						<!-- B, G, R, alpah -->
+						<ruler-color-alpha>255, 0, 0, 1.0</ruler-color-alpha>
+						<font>Verdana, 10</font>
+						<world>
+							<name>volume</name>
+							<!-- x0,y0, xn, yn, minpos, miny, maxpos, maxy -->
+							<!-- max ctpdata is 32400, but plus 180 * 2 predict data -->
+							<world>0, 0, 32759, 0, 0, 0,32759, 100</world>
+							<increase>0.0, 10.0, DATA_BREADTH_TYPE_VALUE, 32759</increase>
+						</world>>
+					</coord-grid>
+				</volume-chart>
+				<interest-chart>
+					<name>pvi-i-chart</name>
+					<stroke-width>5</stroke-width>
+					<!-- x0,y0, xn, yn, minpos, miny, maxpos, maxy -->
+					<!-- max ctpdata is 32400, but plus 180 * 2 predict data -->
+					<coord-grid>
+						<name>interest-coord-grid</name>
+						<!-- RULER_LEFT, RULER_RIGHT, RULER_TOP,RULER_BOTTOM -->
+						<ruler-size>50, 20, 50,  5</ruler-size>
+						<!-- B, G, R, alpah -->
+						<ruler-color-alpha>255, 0, 0, 1.0</ruler-color-alpha>
+						<font>Verdana, 10</font>
+						<world>
+							<name>interest</name>
+							<world>0, 0, 32759, 0, 0, 0,32759, 100</world>
+							<increase>100.0, 100.0, DATA_BREADTH_TYPE_VALUE, 32759</increase>
+						</world>>
+					</coord-grid>
+				</interest-chart>
+		    </canvas-1>
+			<canvas-2>
+				<canvas-type>gridctrl</canvas-type>
+				<canvas-name>txt-tickdata</canvas-name>
+				<containers>ctpmmd</containers>
+				<grid>
+					<name>tickdata</name>
+					<row>10</row>
+					<col>10</col>
+					<margin>5, 5, 5, 5</margin>
+					<border-color-alpha>28, 0, 0, 1.0</border-color-alpha>
+					<grid-bkg-color-alpha>28, 0, 0, 1.0</grid-bkg-color-alpha>
+					<face3d-color-alpha>28, 0, 0, 1.0</face3d-color-alpha>
+					<shadow3d-color-alpha>28, 0, 0, 1.0</shadow3d-color-alpha>
+					<ttip-bak-color-alpha>28, 0, 0, 1.0</ttip-bak-color-alpha>
+					<ttip-txt-color-alpha>28, 0, 0, 1.0</ttip-txt-color-alpha>
+					<highlight-color-alpha>28, 0, 0, 1.0</highlight-color-alpha>
+					<highlight-txt-color-alpha>28, 0, 0, 1.0</highlight-txt-color-alpha>
+					<!-- text color -->
+					<txt-color-alpha>28, 0, 0, 1.0</txt-color-alpha>
+					<txtbkg-color-alpha>28, 0, 0, 1.0</txtbkg-color-alpha>
+					<fixcol-color-alpha>28, 0, 0, 1.0</fixcol-color-alpha>
+					<fixcol-bkg-color-alpha>28, 0, 0, 1.0</fixcol-bkg-color-alpha>
+					<fixrow-color-alpha>128, 128, 127, 1.0</fixrow-color-alpha>
+					<fixrow-bkg-color-alpha>0, 0, 0, 1.0</fixrow-bkg-color-alpha>
+					<fixrowcol-color-alpha>28, 0, 0, 1.0</fixrowcol-color-alpha>
+					<fixrowcol-bkg-color-alpha></fixrowcol-bkg-color-alpha>
+					<!-- text font -->
+					<txt-font>Arial, 10</txt-font>
+					<fixcol-font>Arial, 10</fixcol-font>
+					<fixrow-font>Arial, 14</fixrow-font>
+					<fixrowcol-font>Arial, 10</fixrowcol-font>
+					<head>time, price, vol, iter, open, close, ask1, avol1, bid1, bvol1</head>
+				</grid>
+			</canvas-2>
+			<canvas-3>
+				<canvas-type>zen-in-twining</canvas-type>
+				<canvas-name>zit</canvas-name>
+				<blind>true</blind>
+				<containers>ctpmmd, euclid</containers>
+				<price-chart>
+					<name>zit-prc-chart</name>
+					<stroke-width>0.05</stroke-width>
+					<coord-grid>
+						<name>price-coord-grid</name>
+						<!-- RULER_LEFT, RULER_RIGHT, RULER_TOP,RULER_BOTTOM -->
+						<ruler-size>50, 20, 50,  5</ruler-size>
+						<!-- B, G, R, alpah -->
+						<ruler-color-alpha>255, 0, 0, 1.0</ruler-color-alpha>
+						<font>Verdana, 10</font>
+						<world>
+							<name>price</name>
+							<!-- x0,y0, xn, yn, minpos, miny, maxpos, maxy -->
+							<!-- 872 = max ctpdata is 512, but plus 180 * 2 predict data -->
+							<world>0, 3000, 871, 3000, 0, 2985, 871, 3015</world>
+							<increase>1, 1, DATA_BREADTH_TYPE_VALUE, 511</increase>
+						</world>
+					</coord-grid>
+				</price-chart>
+			</canvas-3>
+			<canvas-4>
+				<canvas-type>toolbar</canvas-type>
+				<canvas-name>toolbar</canvas-name>
+				<!-- top, left, right, bottom -->
+				<first-command>32772</first-command>
+				<position>top</position>
+				<button-size>64, 64</button-size>
+				<!-- must be zero now (forever ? heihei) -->
+				<interval>0</interval>
+				<toolbar-materials-rect>0, 1080, 256, 1144</toolbar-materials-rect>
+			</canvas-4>
+		</canvases>
+	</atelier-realtime-ctpdata>
+
+</config>
+
+

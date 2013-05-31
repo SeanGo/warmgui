@@ -39,6 +39,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
+    <IncludePath>C:\Program Files (x86)\20121018_stock_ctpapi;C:\Program Files (x86)\20120530_future_ctpapi;e:\poco-1.4.5\include;E:\boost_1_50_0;C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include;C:\openssl\include;$(VCInstallDir)include;$(VCInstallDir)atlmfc\include;$(WindowsSdkDir)include;$(FrameworkSDKDir)\include;C:\Program Files\R\R-2.15.2\include;C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Samples\C++\DXUT11\Core;C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Samples\C++\DXUT11\Optional;C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Samples\C++\Effects11\Inc</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -49,13 +50,13 @@
       <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USE_32BIT_TIME_T;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>../warmgui;E:\projects\America\clicomm\;E:\projects\America\ctpmdif;E:\projects\America\filter;E:\projects\America\utility</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../warmgui; E:\projects\America\nrlib; E:\projects\America\nrlib\include; E:\projects\America\clicomm\;E:\projects\America\ctpmdif;E:\projects\America\filter;E:\projects\America\utility;;E:\projects\America\nrlib;E:\projects\America\euclid</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>../lib;C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Samples\C++\DXUT11\Core\Debug;C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Samples\C++\DXUT11\Optional\Debug;E:\projects\America\Lib\Debug</AdditionalLibraryDirectories>
-      <AdditionalDependencies>utility.lib;filter.lib;clicomm.lib;dxut.lib;dxutopt.lib;ctpmdif.lib;dxerr.lib;d3dcompiler.lib;d3dx11.lib;d3dx9.lib;imm32.lib;dxut.lib;dxutopt.lib;utility.lib;warmgui.lib;user32.lib;gdi32.lib;comdlg32.lib;ole32.lib;comctl32.lib;shell32.lib;version.lib;advapi32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>nrlib.lib;euclid.lib;utility.lib;filter.lib;clicomm.lib;dxut.lib;dxutopt.lib;ctpmdif.lib;dxerr.lib;d3dcompiler.lib;d3dx11.lib;d3dx9.lib;imm32.lib;dxut.lib;dxutopt.lib;utility.lib;warmgui.lib;user32.lib;gdi32.lib;comdlg32.lib;ole32.lib;comctl32.lib;shell32.lib;version.lib;advapi32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ProgramDatabaseFile>$(IntDir)$(TargetName).pdb</ProgramDatabaseFile>
     </Link>
   </ItemDefinitionGroup>
@@ -67,7 +68,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USE_32BIT_TIME_T;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>../warmgui;E:\projects\America\clicomm\;E:\projects\America\ctpmdif;E:\projects\America\filter;E:\projects\America\utility</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../warmgui;E:\projects\America\euclid;E:\projects\America\nrlib; E:\projects\America\nrlib\include; E:\projects\America\clicomm\;E:\projects\America\ctpmdif;E:\projects\America\filter;E:\projects\America\utility</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -75,11 +76,12 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalLibraryDirectories>E:\projects\America\Lib\Release\;../lib;C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Samples\C++\DXUT11\Core\Release;C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Samples\C++\DXUT11\Optional\Release;E:\projects\America\Lib\Release;</AdditionalLibraryDirectories>
-      <AdditionalDependencies>filter.lib;utility.lib;clicomm.lib;dxerr.lib;d3dcompiler.lib;d3dx11.lib;d3dx9.lib;imm32.lib;dxut.lib;dxutopt.lib;utility.lib;warmgui.lib;user32.lib;gdi32.lib;comdlg32.lib;ole32.lib;comctl32.lib;shell32.lib;version.lib;advapi32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>nrlib.lib;euclid.lib;filter.lib;utility.lib;clicomm.lib;dxerr.lib;d3dcompiler.lib;d3dx11.lib;d3dx9.lib;imm32.lib;dxut.lib;dxutopt.lib;utility.lib;warmgui.lib;user32.lib;gdi32.lib;comdlg32.lib;ole32.lib;comctl32.lib;shell32.lib;version.lib;advapi32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ProgramDatabaseFile>$(IntDir)$(TargetName).pdb</ProgramDatabaseFile>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <None Include="QKSpectrum-zit.xml" />
     <None Include="QKSpectrum.ico" />
     <None Include="QKSpectrum.xml">
       <SubType>Designer</SubType>
@@ -88,49 +90,71 @@
     <None Include="small.ico" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CtpDispatcher.h" />
     <ClInclude Include="Dxut9Dialog.h" />
+    <ClInclude Include="EuclidAtelier.h" />
+    <ClInclude Include="EuclidCalculator.h" />
+    <ClInclude Include="EuclidCanvas.h" />
+    <ClInclude Include="EuclidFactories.h" />
+    <ClInclude Include="EuclidLayout.h" />
+    <ClInclude Include="EuclidView.h" />
     <ClInclude Include="LoginDlg.h" />
     <ClInclude Include="network_inc.h" />
-    <ClInclude Include="PVICanvas.h" />
+    <ClInclude Include="PVI_Canvas.h" />
+    <ClInclude Include="TickDataView.h" />
+    <ClInclude Include="TickdataCanvas.h" />
+    <ClInclude Include="TickDataChart.h" />
     <ClInclude Include="qksapp.h" />
+    <ClInclude Include="QksDataDispatcher.h" />
+    <ClInclude Include="CtpmmdContainer.h" />
     <ClInclude Include="QKSpectrum.h" />
     <ClInclude Include="qks_incs.h" />
     <ClInclude Include="Resource.h" />
-    <ClInclude Include="RtAnalyseWnd.h" />
     <ClInclude Include="CtpRtFilters.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
-    <ClInclude Include="Test1.h" />
-    <ClInclude Include="Test1Atelier.h" />
-    <ClInclude Include="Test2.h" />
-    <ClInclude Include="Test3.h" />
+    <ClInclude Include="Test4.h" />
     <ClInclude Include="TestDialog.h" />
-    <ClInclude Include="ZenInTwiningAtelier.h" />
-    <ClInclude Include="ZenInTwiningCanvas.h" />
-    <ClInclude Include="ZenInTwiningLayout.h" />
-    <ClInclude Include="ZenInTwinningGraph.h" />
+    <ClInclude Include="QksFactories.h" />
+    <ClInclude Include="TickDataGridCtrl.h" />
+    <ClInclude Include="ZITAtelier.h" />
+    <ClInclude Include="ZitCanvas.h" />
+    <ClInclude Include="ZitContainer.h" />
+    <ClInclude Include="ZITGraph.h" />
+    <ClInclude Include="ZITLayout.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="CtpDispatcher.cpp" />
     <ClCompile Include="Dxut9Dialog.cpp" />
+    <ClCompile Include="EuclidAtelier.cpp" />
+    <ClCompile Include="EuclidCalculator.cpp" />
+    <ClCompile Include="EuclidCanvas.cpp" />
+    <ClCompile Include="EuclidFactories.cpp" />
+    <ClCompile Include="EuclidLayout.cpp" />
+    <ClCompile Include="EuclidView.cpp" />
     <ClCompile Include="LoginDlg.cpp" />
-    <ClCompile Include="PVICanvas.cpp" />
+    <ClCompile Include="PVI_Canvas.cpp" />
+    <ClCompile Include="TickDataView.cpp" />
+    <ClCompile Include="TickdataCanvas.cpp" />
+    <ClCompile Include="TickDataChart.cpp" />
     <ClCompile Include="qksapp.cpp" />
+    <ClCompile Include="QksDataDispatcher.cpp" />
+    <ClCompile Include="CtpmmdContainer.cpp" />
     <ClCompile Include="QKSpectrum.cpp" />
-    <ClCompile Include="RtAnalyseWnd.cpp" />
     <ClCompile Include="CtpRtFilters.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="Test1.cpp" />
-    <ClCompile Include="Test1Atelier.cpp" />
-    <ClCompile Include="Test2.cpp" />
-    <ClCompile Include="Test3.cpp" />
+    <ClCompile Include="Test4.cpp" />
     <ClCompile Include="TestDialog.cpp" />
-    <ClCompile Include="ZenInTwiningAtelier.cpp" />
-    <ClCompile Include="ZenInTwiningCanvas.cpp" />
-    <ClCompile Include="ZenInTwiningLayout.cpp" />
-    <ClCompile Include="ZenInTwinningGraph.cpp" />
+    <ClCompile Include="QksFactories.cpp" />
+    <ClCompile Include="TickDataGridCtrl.cpp" />
+    <ClCompile Include="ZITAtelier.cpp" />
+    <ClCompile Include="ZitCanvas.cpp" />
+    <ClCompile Include="ZitContainer.cpp" />
+    <ClCompile Include="ZITGraph.cpp" />
+    <ClCompile Include="ZITLayout.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="QKSpectrum.rc" />

@@ -5,9 +5,9 @@
 #include "qks_incs.h"
 #include "network_inc.h"
 
-#include "Test1.h"
-#include "Test2.h"
-#include "Test3.h"
+#include "TickDataView.h"
+#include "EuclidView.h"
+
 #include "resource.h"
 
 #define MAX_LOADSTRING 100
@@ -15,6 +15,9 @@
 #define _HAVE_NETWORK_ 1
 #define _realtime_calculate_ 0
 #define __recive_data_from_america_server__ 0
+
+CEuclidView* wnd_euclid = 0;
+qksapp the_app;
 
 int APIENTRY _tWinMain(HINSTANCE hInstance,
                      HINSTANCE hPrevInstance,
@@ -27,23 +30,29 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
 	CheckMemoryLeak;
 #endif //_DEBUG
 
-    qksapp app;
-    app.InitialApp(hInstance, nCmdShow);
+    the_app.InitialApp(hInstance, nCmdShow);
 
-	TCHAR szTitle[MAX_LOADSTRING] = L"MyFirstWindow";
+    TCHAR szTitle[MAX_LOADSTRING] = L"MyFirstWindow";
 	TCHAR szClassName[MAX_LOADSTRING] = L"WARMGUIWNDCLASS";
 
-	CTest3 mainwnd;
-	mainwnd.SetConfig(app.GetConfig());
+	CTickDataView mainwnd;
+	mainwnd.SetConfig(the_app.GetConfig());
+
+    wnd_euclid = new CEuclidView();
+    wnd_euclid->SetConfig(the_app.GetConfig());
+
 	BOOL r = mainwnd.InitInstance(hInstance, hPrevInstance, lpCmdLine, nCmdShow, szClassName, szTitle);
 	if (r) {
     	mainwnd.LoadAccelerators(IDC_QKSPECTRUM);
 		mainwnd.RunMessageLoop();
     }
 
-	app.CleanupApp();
+    wnd_euclid->Close();
+    SafeDelete(wnd_euclid);
+	the_app.CleanupApp();
 
-    return (r) ? 0 : -1;
+    //return (r) ? 0 : -1;
+    return (0);
 }
 
 
@@ -69,3 +78,21 @@ INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 	}
 	return (INT_PTR)FALSE;
 }
+
+
+int ShowEuclidView(CWindow* parent_window)
+{
+    RECT rect;
+    rect.left = rect.top = 200, rect.right = rect.bottom = 600;
+
+    if (!wnd_euclid->GetSafeHwnd()) {
+        wnd_euclid->Create(
+            L"EuclidWindowClass",
+            L"EuclidView",
+            WS_VISIBLE | WS_CLIPCHILDREN,
+            rect,
+            parent_window);
+    }
+    return (0);
+}
+

@@ -11,14 +11,14 @@ static COLORREF _default_color[] = {
 };
 static const int __default_color_number__ = 3;
 	
-
+/*
 ISeriesDataGraph::ISeriesDataGraph(void)
     : _manipulator(DATA_MANIPULATOR_TYPE_GRAPH)
 {
 }
 
 
-ISeriesDataGraph::ISeriesDataGraph(const TCHAR* name)
+ISeriesDataGraph::ISeriesDataGraph(const char* name)
     : IGlyph(name)
     , _manipulator(DATA_MANIPULATOR_TYPE_GRAPH)
 {
@@ -28,7 +28,7 @@ ISeriesDataGraph::ISeriesDataGraph(const TCHAR* name)
 ISeriesDataGraph::~ISeriesDataGraph(void)
 {
 }
-
+*/
 
 
 
@@ -38,8 +38,8 @@ CDataLineGraph::~CDataLineGraph(void)
     SafeRelease(&_pSink);
 }
 
-CDataLineGraph::CDataLineGraph(const TCHAR* name, bool own_artist, CSeriesDataChart *parent)
-	: IGlyph(name, own_artist)
+CDataLineGraph::CDataLineGraph(const char* name, bool own_artist, CSeriesDataChart *parent)
+	: IDataGraph(name, own_artist)
 	, _color(0)
 	, _draw_type(SDATA_GRAPH_LINE_TYPE_PATH_GEOMETRY)
 	, _data_x_offset(0)
@@ -55,6 +55,7 @@ CDataLineGraph::CDataLineGraph(const TCHAR* name, bool own_artist, CSeriesDataCh
     InitDataPtr();
 
     memset(&psForNew, 0, sizeof(psForNew));
+    setClass();
 }
 
 
@@ -96,7 +97,7 @@ HRESULT CDataLineGraph::Renew()
 GLYPH_CHANGED_TYPE CDataLineGraph::AppendData(DataObjectPtr dopNewData)
 {
     _changed_type = GLYPH_CHANGED_TYPE_CHANGED;
-    LIMIT_2D limit = _referframe->GetWorldRect();
+    WORLD_RECT limit = _referframe->GetWorldRect();
 
     if (!psForNew._count) {
         psForNew._O = psForNew._pntOld = psForNew._pntO0 = psForNew._pntNew = FPOINT(
@@ -108,17 +109,17 @@ GLYPH_CHANGED_TYPE CDataLineGraph::AppendData(DataObjectPtr dopNewData)
 		if (_draw_type == WARMGUI::CDataLineGraph::SDATA_GRAPH_LINE_TYPE_DIFF_LINEBAR) {
 			psForNew._pntOld.y = psForNew._pntNew.y = 0;
 
-            _referframe->ChangeYlimit(0, _rtcset->_vi._init_y0_L_mag, 0);
+            _referframe->ChangeYlimit(0, _rtcset->_vi._max_incres_mag, 0);
 		} else {
 			if (_rtcset->_vi._breadth_type == DATA_BREADTH_TYPE_PERCENT)
 				_referframe->ChangeYlimit(
-					psForNew._pntO0.y * (1.0f - _rtcset->_vi._init_y0_S_mag),
-					psForNew._pntO0.y * (1.0f + _rtcset->_vi._init_y0_L_mag),
+					psForNew._pntO0.y * (1.0f - _rtcset->_vi._min_decres_mag),
+					psForNew._pntO0.y * (1.0f + _rtcset->_vi._max_incres_mag),
                     psForNew._pntO0.y);
 			else 
 				_referframe->ChangeYlimit(
-                    psForNew._pntO0.y - _rtcset->_vi._init_y0_S_mag,
-					psForNew._pntO0.y + _rtcset->_vi._init_y0_L_mag,
+                    psForNew._pntO0.y - _rtcset->_vi._min_decres_mag,
+					psForNew._pntO0.y + _rtcset->_vi._max_incres_mag,
                     psForNew._pntO0.y);
 		}
 		_changed_type = (GLYPH_CHANGED_TYPE)((int)_changed_type | (int) GLYPH_CHANGED_TYPE_COORDFRAME);
@@ -145,7 +146,7 @@ GLYPH_CHANGED_TYPE CDataLineGraph::AppendData(DataObjectPtr dopNewData)
             _stroke_width *= ( (limit.maxy - psForNew._pntNew.y) / (limit.maxy - limit.miny));
 
             _referframe->ChangeYlimit(
-				psForNew._pntNew.y - _rtcset->_vi._init_y0_S_mag,
+				psForNew._pntNew.y - _rtcset->_vi._min_decres_mag,
 				limit.maxy,
                 limit.y0);
 
@@ -157,7 +158,7 @@ GLYPH_CHANGED_TYPE CDataLineGraph::AppendData(DataObjectPtr dopNewData)
 
             _referframe->ChangeYlimit(
 				limit.miny,
-				psForNew._pntNew.y + _rtcset->_vi._init_y0_L_mag,
+				psForNew._pntNew.y + _rtcset->_vi._max_incres_mag,
                 limit.y0);
 			
     		_changed_type = (GLYPH_CHANGED_TYPE)((int)_changed_type | (int) GLYPH_CHANGED_TYPE_COORDFRAME);
@@ -165,11 +166,11 @@ GLYPH_CHANGED_TYPE CDataLineGraph::AppendData(DataObjectPtr dopNewData)
 	}
 
     //change the x axis
-    if (psForNew._pntNew.x >= limit.maxx - _rtcset->_predict_len) {
+    if (psForNew._pntNew.x >= limit.xn - _rtcset->_predict_len) {
         MoveBitmapToLeft();
 
-        _referframe->ChangeXlimit(limit.minx + _rtcset->_space_len,
-            limit.maxx + _rtcset->_space_len,
+        _referframe->ChangeXlimit(limit.x0 + _rtcset->_space_len,
+            limit.xn + _rtcset->_space_len,
             limit.x0 + _rtcset->_space_len);
     }
 
@@ -319,16 +320,16 @@ HRESULT CDataLineGraph::RenewGraph()
 HRESULT CDataLineGraph::PreDraw()
 {
     int ndown = (_rtcset->_down_intval < 2) ? 1 : _rtcset->_down_intval;
-    char* p = (char*)(this->_data_container->getData());
+    char* p = (char*)(_graph_data._pdata);
 
 
-    int mycount = (int)((float)_data_container->getCount() / (float)ndown) + 1;
+    int mycount = (int)((float)_graph_data._count / (float)ndown) + 1;
     if (mycount < 2) return S_OK;
 
     BeginSetData(p);
 
-    p += _data_container->getDataSize() * ndown;
-    for (int i = 1; i < _data_container->getCount(); i += ndown, p += _data_container->getDataSize() * ndown) {
+    p += _graph_data._data_size * ndown;
+    for (int i = 1; i < _graph_data._count; i += ndown, p += _graph_data._data_size * ndown) {
         AddDataToPathGeometry(p);
     }
 

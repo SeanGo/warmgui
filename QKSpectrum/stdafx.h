@@ -92,3 +92,5 @@ using namespace std;
 #endif 
 
 
+#pragma warning(disable : 4100)
+#pragma warning(disable : 4512)

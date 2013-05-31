@@ -2,6 +2,7 @@
 #define __warmgui_include_h_include__
 
 #include "utility.h"
+#include "datatype.h"
 #include "ChineseCodeLib.h"
 #include "DataPtr.h"
 
@@ -10,8 +11,9 @@
 #include "warmgui.h"
 
 #include "warmgui_type.h"
-#include "WarmguiConfig.h"
+#include "IObject.h"
 
+#include "WarmguiConfig.h"
 #include "DxFactorys.h"
 #include "WndApp.h"
 #include "DxWinApp.h"
@@ -20,29 +22,35 @@
 
 #include "tree.hpp"
 
-#include "Data.h"
 
-
-#include "cartesian.h"
+#include "World.h"
 #include "Artist.h"
 #include "Glyph.h"
 #include "Layout.h"
 #include "Canvas.h"
 #include "Atelier.h"
 
+
+#include "ImageList.h"
+#include "ScrollBar.h"
+#include "CellRange.h"
+#include "GridCellBase.h"
+#include "GridCell.h"
+#include "GridCtrl.h"
+
+
 #include "Toolbar.h"
 
 #include "DxWindow.h"
 
 #include "CoordFrame.h"
-#include "SeriesDataGraph.h"
-#include "SeriesDataChart.h"
-#include "RtDataCanvas.h"
-#include "WarmGridCtrl.h"
+#include "DataLineGraph.h"
+#include "DataLineChart.h"
 #include "GridCanvas.h"
 
 
-#include "ICalculator.h"
+#include "DataCanvas.h"
+#include "Calculator.h"
 #include "DataContainer.h"
 #include "DataDispatcher.h"
 
@@ -53,5 +61,9 @@
 #include "InputListener.h"
 #include "Command.h"
 */
+
+#include "CanvasCreator.h"
+#include "GuiFactory.h"
+
 #endif //__warmgui_include_h_include__
 

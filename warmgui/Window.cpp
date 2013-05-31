@@ -893,6 +893,16 @@ bool CWindow::Create(TCHAR *  szClassName,	//NULL for default class name
 
 	_pParent = pParentWnd;
 
+	/*
+    if (_hwnd) {
+        WNDPROC wpOrigProc = (WNDPROC)SetWindowLong(_hwnd, GWL_WNDPROC, (LONG)WndProc);
+        if (!wpOrigProc) {
+            DestroyWindow(hWnd);
+            return FALSE;
+        }
+	}
+    */
+
 	ShowWindow(hWnd, nShowState);
 	UpdateWindow(hWnd);
 

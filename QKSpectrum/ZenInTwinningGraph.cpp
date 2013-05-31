@@ -1,43 +1,31 @@
 #include "StdAfx.h"
 #include "qks_incs.h"
 
-CZenInTwiningGraph::CZenInTwiningGraph(const TCHAR* name)
-    : IGlyph(name)
+CZenInTwiningGraph::CZenInTwiningGraph(const char* name)
+    : IDataGraph(name)
     , _down_sample(0)
 {
-    memset(&extCentral, 0, sizeof(extCentral));
-    memset(&inflBest  , 0, sizeof(inflBest  ));
-    memset(&central   , 0, sizeof(central   ));
-    memset(&lha       , 0, sizeof(lha       ));
-
-
-    extCentral.extremum = new EXTREMUM[200];
-    inflBest.infl       = new INFLEXION[100];
-    central.central     = new CENTRAL[200];
-    lha.lha             = new L_H_AREA[200];
+    setClass();
 }
 
 
 CZenInTwiningGraph::~CZenInTwiningGraph(void)
 {
-    delete extCentral.extremum;
-    delete inflBest.infl;
-    delete central.central;
-    delete lha.lha;
 }
 
 
 HRESULT CZenInTwiningGraph::DrawGraph(bool /*redraw*/)
 {
-    if (_data_ds != _down_sample) return S_OK;
+    if (_zit_data.data_ds != _down_sample) return S_OK;
 
     MATRIX_2D backtrans;
     _artist->GetTransform(&backtrans);
 
+
     D2D1_ANTIALIAS_MODE am = _artist->GetHwndRT()->GetAntialiasMode();
 	_artist->GetUsingRT()->SetAntialiasMode(D2D1_ANTIALIAS_MODE_ALIASED);
 
-    if (extCentral.nAllNum) {
+    if (_zit_data.extCentral.nAllNum) {
         //MYTRACE(L"ext %.02f %.02f %.02f - %.02f %.02f %.02f\n",
         //Time2Index(((CZenInTwiningAtelier*)_atelier)->GetTimeSec(), extCentral.extremum[0].ftime),
         //    extCentral.extremum[0].fValue,
@@ -58,8 +46,8 @@ HRESULT CZenInTwiningGraph::DrawGraph(bool /*redraw*/)
 
     	_artist->SetSolidColorBrush(D2D1::ColorF(BGR(0, 255, 0), 1.0f));
 
-        for (int i = 0; i < extCentral.nAllNum; i++) {
-            DrawPoint(extCentral.extremum[i].ftime, extCentral.extremum[i].fOrngValue);
+        for (int i = 0; i < _zit_data.extCentral.nAllNum; i++) {
+            DrawPoint(_zit_data.extCentral.extremum[i].ftime, _zit_data.extCentral.extremum[i].fOrngValue);
         }
         
     }
@@ -69,11 +57,11 @@ HRESULT CZenInTwiningGraph::DrawGraph(bool /*redraw*/)
     newtrans._32 += static_cast<float>(_canvas->GetRect().top + _rect.top);
     _artist->SetTransform(&newtrans);
 
-    if (inflBest.nNum) {
+    if (_zit_data.inflBest.nNum) {
 
     	_artist->SetSolidColorBrush(D2D1::ColorF(BGR(255, 255, 0), 1.0f));
 
-        for (int i = 0; i < inflBest.nNum; i++) {
+        for (int i = 0; i < _zit_data.inflBest.nNum; i++) {
             //MYTRACE(L"inf %d: %.02f %.02f %.02f - %.02f %.02f %.02f\n",
             //    i,
             //    Time2Index(((CZenInTwiningAtelier*)_atelier)->GetTimeSec(), inflBest.infl[i].fstime),
@@ -83,17 +71,17 @@ HRESULT CZenInTwiningGraph::DrawGraph(bool /*redraw*/)
             //    inflBest.infl[i].feValue,
             //    inflBest.infl[i].fetime);
             _artist->DrawLine(
-                Time2Index(((CZenInTwiningAtelier*)_atelier)->GetTimeSec(), inflBest.infl[i].fstime),
-                inflBest.infl[i].fsValue,
-                Time2Index(((CZenInTwiningAtelier*)_atelier)->GetTimeSec(), inflBest.infl[i].fetime),
-                inflBest.infl[i].feValue,
+                Time2Index(((CZenInTwiningAtelier*)_atelier)->GetTimeSec(), _zit_data.inflBest.infl[i].fstime),
+                _zit_data.inflBest.infl[i].fsValue,
+                Time2Index(((CZenInTwiningAtelier*)_atelier)->GetTimeSec(), _zit_data.inflBest.infl[i].fetime),
+                _zit_data.inflBest.infl[i].feValue,
                 0.1f);
 
         }
         //MYTRACE(L"\n");
     }
 
-    if (central.nNum) {
+    if (_zit_data.central.nNum) {
         //MYTRACE(L"cnt %.02f %.02f %.02f - %.02f %.02f %.02f\n",
         //Time2Index(((CZenInTwiningAtelier*)_atelier)->GetTimeSec(), central.central[0].fstime),
         //central.central[0].fstime,
@@ -105,12 +93,12 @@ HRESULT CZenInTwiningGraph::DrawGraph(bool /*redraw*/)
 
         _artist->SetSolidColorBrush(D2D1::ColorF(BGR(0, 255, 255), 1.0f));
 
-        for (int i = 0; i < central.nNum; i++)
+        for (int i = 0; i < _zit_data.central.nNum; i++)
             _artist->DrawRectangle(
-                Time2Index(((CZenInTwiningAtelier*)_atelier)->GetTimeSec(), central.central[i].fstime),
-                central.central[i].stat.fMax,
-                Time2Index(((CZenInTwiningAtelier*)_atelier)->GetTimeSec(), central.central[i].fetime),
-                central.central[i].stat.fMin,
+                Time2Index(((CZenInTwiningAtelier*)_atelier)->GetTimeSec(), _zit_data.central.central[i].fstime),
+                _zit_data.central.central[i].stat.fMax,
+                Time2Index(((CZenInTwiningAtelier*)_atelier)->GetTimeSec(), _zit_data.central.central[i].fetime),
+                _zit_data.central.central[i].stat.fMin,
                 0.1f);
     }
     _artist->GetUsingRT()->SetAntialiasMode(am);
@@ -119,72 +107,12 @@ HRESULT CZenInTwiningGraph::DrawGraph(bool /*redraw*/)
     return S_OK;
 }
 
-#define move_to_next_data(l) { len -= (l); if (len < 1) return result; buf += (l); }
 
 GLYPH_CHANGED_TYPE CZenInTwiningGraph::AppendData(DataObjectPtr dopNewData)
 {
-    size_t len = dopNewData->GetDataLength();
-    char*  buf = (char*)(dopNewData->GetData());
-
-    GLYPH_CHANGED_TYPE result = GLYPH_CHANGED_TYPE_CHANGED;
-    //pointer to ZIT data
-    move_to_next_data(sizeof(CTPMMD));
-
-    //down sampler
-    _data_ds = *(int*)buf;
-    if (_data_ds != _down_sample) return GLYPH_CHANGED_TYPE_NONE;
-    move_to_next_data(sizeof(int));
-
-    //get the number of extreme
-    extCentral.nAllNum = *(int*)buf;
-	if (extCentral.nAllNum < 0 || extCentral.nAllNum > 200)
-        return result;
-
-    //get the extremes
-    move_to_next_data(sizeof(int));
-    memcpy(extCentral.extremum, buf, sizeof(EXTREMUM) * extCentral.nAllNum);
-
-    //get the number of inflexion
-    move_to_next_data(sizeof(EXTREMUM) * extCentral.nAllNum);
-    inflBest.nNum = *(int*) buf;
-    if (inflBest.nNum < 0 || inflBest.nNum > 100)
-        return result;
-
-    //get the inflexions
-    move_to_next_data(sizeof(int));
-    memcpy(inflBest.infl, buf, sizeof(INFLEXION) * inflBest.nNum);
-    
-    //get the number of central 
-    move_to_next_data(sizeof(INFLEXION) * inflBest.nNum);
-    central.nNum = *(int*)buf;
-    if (central.nNum < 0 || central.nNum > 200)
-        return result;
-    
-    //get centrals
-    move_to_next_data(sizeof(int));
-    memcpy(central.central, buf, sizeof(CENTRAL) * central.nNum);
-    
-    //get number of the area
-    move_to_next_data(sizeof(CENTRAL) * central.nNum);
-    lha.nNum = *(int*)buf;
-    if (lha.nNum < 0 || lha.nNum > 200)
-        return result;
-
-    //get the areas
-    move_to_next_data(sizeof(int));
-    memcpy(lha.lha, buf, sizeof(L_H_AREA) * lha.nNum);
-    
-    //buf += sizeof(L_H_AREA) * lha.nNum; len -= sizeof(L_H_AREA) * lha.nNum;
-
-#   ifdef _DEBUG
-    //MYTRACE(L"extremum %d, infl %d, central %d, area %d\n",
-    //    extCentral.nAllNum, 
-    //    inflBest.nNum,
-    //    central.nNum,
-    //    lha.nNum);
-#   endif //_DEBUG
-
-    return result;
+    //if (
+    //return result;
+    return GLYPH_CHANGED_TYPE_NONE;
 }
 
 

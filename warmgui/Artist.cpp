@@ -31,9 +31,7 @@ eArtist::~eArtist(void)
 	SafeRelease(&     _pbmpBrush);
 	SafeRelease(&      _plgBrush);
 	SafeRelease(&      _prgBrush);
-	SafeRelease(&   _pTextFormat);
 	SafeRelease(& _pDefaultBmpRT);
-	SafeRelease(&   _pTextLayout);
 	SafeRelease(&         _layer);
 	SafeRelease(&   _bmprt_layer);
 }
@@ -168,7 +166,7 @@ inline HRESULT eArtist::SetStrokeStyle(int argc, TCHAR * argv[])
 	return SetStrokeStyle(startCap, endCap, dashCap, lineJoin, miterLimit, dashStyle, dashOffset);
 }
 
-inline HRESULT eArtist::SetSolidColorBrush(const D2D1_COLOR_F &color, GLYPH_STATE_TYPE scbt/* = SOLID_COLOR_BRUSH_NORMAL*/)
+inline HRESULT eArtist::SetSolidColorBrush(const COLORALPHA   &color, GLYPH_STATE_TYPE scbt/* = SOLID_COLOR_BRUSH_NORMAL*/)
 {
 	if (!_pHwndRT) return (-1);
 
@@ -210,14 +208,28 @@ inline HRESULT eArtist::SetSolidColorBrush(int argc, TCHAR * argv[])
 	return SetSolidColorBrush(D2D1::ColorF(RGB(r, g, b), alpha));
 }
 
-HRESULT eArtist::SetTextFormat(const TCHAR * fontFamilyName,
-							   FLOAT  fontSize,
-							   DWRITE_FONT_WEIGHT  fontWeight /*= DWRITE_FONT_WEIGHT_NORMAL */,
-							   DWRITE_FONT_STYLE   fontStyle  /*= DWRITE_FONT_STYLE_NORMAL  */,
-							   DWRITE_FONT_STRETCH fontStretch/*= DWRITE_FONT_STRETCH_NORMAL*/,
-							   DWRITE_TEXT_ALIGNMENT textAlignment /*= DWRITE_TEXT_ALIGNMENT_CENTER*/,
-							   DWRITE_PARAGRAPH_ALIGNMENT  paragraphAlignment /*= DWRITE_PARAGRAPH_ALIGNMENT_CENTER*/,
-							   const WCHAR * localeName /*= L"en-us"*/)
+inline void eArtist::SetTextFormat(IDWriteTextFormat* pTextFormat)
+{
+    _pTextFormat = pTextFormat;
+}
+
+
+inline void eArtist::SetTextLayout(IDWriteTextLayout* pTextLayout)
+{
+    _pTextLayout = pTextLayout;
+}
+
+
+
+//HRESULT eArtist::SetTextFormat(const TCHAR * fontFamilyName,
+							   //FLOAT  fontSize,
+							   //DWRITE_FONT_WEIGHT  fontWeight /*= DWRITE_FONT_WEIGHT_NORMAL */,
+							   //DWRITE_FONT_STYLE   fontStyle  /*= DWRITE_FONT_STYLE_NORMAL  */,
+							   //DWRITE_FONT_STRETCH fontStretch/*= DWRITE_FONT_STRETCH_NORMAL*/,
+							   //DWRITE_TEXT_ALIGNMENT textAlignment /*= DWRITE_TEXT_ALIGNMENT_CENTER*/,
+							   //DWRITE_PARAGRAPH_ALIGNMENT  paragraphAlignment /*= DWRITE_PARAGRAPH_ALIGNMENT_CENTER*/,
+							   //const WCHAR * localeName /*= L"en-us"*/)
+/*
 {
 	HRESULT hr = S_OK;
 	IDWriteFontCollection* pFontCollection = NULL;
@@ -313,7 +325,7 @@ HRESULT eArtist::SetTextFormat(int argc, TCHAR * argv[])
 
 	return hr;
 }
-
+*/
 inline HRESULT eArtist::Flush()
 {
 	D2D1_TAG tag1, tag2;
@@ -376,7 +388,8 @@ inline HRESULT eArtist::EndBmpDraw()
 	//copy bitmap
 	D2D1_POINT_2U pnt0 = D2D1::Point2U(0,0);
 	D2D1_RECT_U rect = D2D1::RectU(0, 0, static_cast<uint32_t>(size.width), static_cast<uint32_t>(size.height));
-	hr = _pDefaultBmp->CopyFromRenderTarget(&pnt0, _pDefaultBmpRT, &rect);
+	if (_pDefaultBmp)
+        hr = _pDefaultBmp->CopyFromRenderTarget(&pnt0, _pDefaultBmpRT, &rect);
 
 	//backup transfprm
 	_pDefaultBmpRT->SetTransform(&trans);
@@ -481,7 +494,20 @@ inline void eArtist::GetHwndRtTransform(MATRIX_2D* trans)
 
 inline void eArtist::DrawText(const TCHAR * text, D2D1_RECT_F& rect)
 {
-	_pPaintRT->DrawText(text, _tcslen(text), _pTextFormat, rect, _pscBrush);
+    if (_pTextFormat)
+	    _pPaintRT->DrawText(text, _tcslen(text), _pTextFormat, rect, _pscBrush);
+}
+
+inline void eArtist::DrawText(const TCHAR * text, RECT& rect)
+{
+    if (_pTextFormat) {
+        D2D1_RECT_F rect_f = D2D1::RectF(
+            (float)rect.left,
+            (float)rect.top,
+            (float)rect.right,
+            (float)rect.bottom);
+	    _pPaintRT->DrawText(text, _tcslen(text), _pTextFormat, rect_f, _pscBrush);
+    }
 }
 
 
@@ -496,10 +522,31 @@ inline void eArtist::DrawRectangle(float x1, float y1, float x2, float y2, float
 	DrawRectangle(rectf, fStrokeWidth);
 }
 
+inline void eArtist::DrawRectangle(RECT& rect, float fStrokeWidth/* = 1.0f*/)
+{
+    D2D1_RECT_F rect_f = D2D1::RectF(
+        (float)rect.left,
+        (float)rect.top,
+        (float)rect.right,
+        (float)rect.bottom);
+	DrawRectangle(rect_f, fStrokeWidth);
+}
+
 inline void eArtist::FillRectangle(RECT_f& rect_f, float fStrokeWidth/* = 1.0f*/)
 {
 	_pPaintRT->FillRectangle(rect_f, _pscBrush);
 }
+
+inline void eArtist::FillRectangle(RECT& rect, float fStrokeWidth/* = 1.0f*/)
+{
+    D2D1_RECT_F rect_f = D2D1::RectF(
+        (float)rect.left,
+        (float)rect.top,
+        (float)rect.right,
+        (float)rect.bottom);
+	_pPaintRT->FillRectangle(rect_f, _pscBrush);
+}
+
 
 inline void eArtist::FillRectangle(float x1, float y1, float x2, float y2, float fStrokeWidth/* = 1.0f*/)
 {
@@ -560,6 +607,34 @@ inline void eArtist::DrawLine(POINT_f p1, POINT_f p2, float fStrokeWidth/* = 1.0
 	_pPaintRT->DrawLine(p1, p2, _pscBrush, fStrokeWidth, _pStroke);
 }
 
+
+inline HRESULT eArtist::PushLayer(float left, float top, float right, float bottom)
+{
+	SafeRelease(&_layer);
+	HRESULT hr = S_OK;
+	hr = _pPaintRT->CreateLayer(&_layer);
+	if (SUCCEEDED(hr))
+		_pPaintRT->PushLayer(
+			D2D1::LayerParameters(
+				D2D1::RectF(
+					(float)left,
+					(float)top,
+					(float)right,
+					(float)bottom)),
+				_layer);
+	return hr;
+}
+
+inline HRESULT eArtist::PushLayer(RECT& rect)
+{
+	return PushLayer((float)rect.left, (float)rect.top, (float)rect.right, (float)rect.bottom);
+}
+
+inline void eArtist::PopLayer()
+{
+	_pPaintRT->PopLayer();
+	SafeRelease(&_layer);
+}
 
 
 }

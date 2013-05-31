@@ -1,0 +1,74 @@
+#ifndef __zenintwining_gui_factory_h__
+#define __zenintwining_gui_factory_h__
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+class CQksGuiFactory :  public WARMGUI::IGuiFactory
+{
+protected:
+    virtual const bool init_factory();
+
+};
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+class CQksCanvasCreator : public WARMGUI::ICanvasCreator
+{
+public:
+    virtual ICanvas* CreateCanvas(const char* config);
+};
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+class CQksDataContainerCreator : public WARMGUI::IDataContainerCreator
+{
+public:
+    virtual IDataContainer* CreateContainer(const char* conf_pos);
+};
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+class CQksDataDispatcherCreator : public WARMGUI::IDataDispatcherCreator
+{
+public:
+    virtual IDataDispatcher* CreateDispathcer(const char* conf_pos);
+
+};
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+class CQksAtelierCreator : public WARMGUI::IAtelierCreator
+{
+public:
+    virtual IAtelier* CreateAtelier(const char* conf_pos);
+
+};
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// class CQksLayoutCreator
+class CQksLayoutCreator : public WARMGUI::ILayoutCreator
+{
+public:
+    virtual ILayout* CreateLayout(const char* layout_config);
+};
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// class CQksCalculator
+class CQksCalculatorCreator : public WARMGUI::ICalculatorCreator
+{
+public:
+    virtual ICalculator* CreateCalculator(const char* str_conf);
+
+};
+
+extern CTPTIMESEC g_ctpsec;
+
+
+#endif //__zenintwining_gui_factory_h__

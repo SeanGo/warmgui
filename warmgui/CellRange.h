@@ -22,14 +22,16 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#if !defined( __cell_range_h__ )
-#define __cell_range_h__
+#if !defined( __warmgui_cell_range_h__ )
+#define __warmgui_cell_range_h__
 
 
 // The code contained in this file is based on the original
 // WorldCom Grid control written by Joe Willcoxson,
 //      mailto:chinajoe@aol.com
 //      http://users.aol.com/chinajoe
+
+namespace WARMGUI {
 
 class CCellID
 {    
@@ -46,6 +48,55 @@ public:
     int operator!=(const CCellID& rhs)    { return !operator==(rhs); }
 };
 
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+// class CCellIDMap
+typedef std::map<DWORD, const CCellID*> CellIDMap;
+typedef CellIDMap::iterator CellIDMapIter;
+typedef CellIDMap::const_iterator CellIDMapConstIter;
+typedef std::pair<DWORD, const CCellID*> CellIDPair;
+
+class CCellIDMap : public CellIDMap
+{
+public:
+    CCellIDMap() {}
+    ~CCellIDMap(){}
+
+    void Remove(int row, int col)
+    {
+        CellIDMapConstIter iter = find(MAKEWORD(row, col));
+        if (iter != end())
+            erase(iter);
+    }
+
+
+    void Remove(const CCellID* cellid)
+    {
+        CellIDMapConstIter iter = find(MAKEWORD(cellid->row, cellid->col));
+        if (iter != end())
+            erase(iter);
+    }
+
+    void Add(const CCellID* cellid)
+    {
+        DWORD key = MAKEWORD(cellid->row, cellid->col);
+        CellIDPair cellpair(key, cellid);
+        insert(cellpair);
+    }
+
+    const CCellID* Find(int row, int col) const {
+        DWORD key = MAKEWORD(row, col);
+        CellIDMapConstIter iter = find(key);
+        if (iter != end())
+            return (0);
+        else
+            return iter->second;
+    }
+};
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+// class CCellRange
 class CCellRange
 { 
 public:
@@ -142,4 +193,6 @@ inline CCellRange CCellRange::Intersect(const CCellRange& rhs) const
                        min(m_nMaxRow,rhs.m_nMaxRow), min(m_nMaxCol,rhs.m_nMaxCol));
 }
 
-#endif // __cell_range_h__
+} //namespace WARMGUI
+
+#endif // __warmgui_cell_range_h__

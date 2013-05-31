@@ -5,12 +5,14 @@
 //layout
 CZenInTwiningLayout::CZenInTwiningLayout(void)
 {
+    setClass();
 }
+
 CZenInTwiningLayout::~CZenInTwiningLayout(void)
 {
 }
 
-void CZenInTwiningLayout::Disposal(WARMGUI::CAtelier* atelier, RECT& rectAtelier)
+void CZenInTwiningLayout::Disposal(WARMGUI::IAtelier* atelier, RECT& rectAtelier)
 {
 	RECT rect = rectAtelier, rectRealAtelier = rectAtelier;
 	if (RectWidth(rect) <= 0 || RectHeight(rect) <= 0)

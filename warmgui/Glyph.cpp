@@ -8,28 +8,26 @@ namespace WARMGUI {
 
 IGlyphNode::IGlyphNode(void)
 	: _myid(0)
-	, _config(0)
 	, _rect(NULL_RECT)
 	, _common_artist(0)
 	, _glyph_state(GLYPH_STATE_NORMAL)
 	, _changed_type(GLYPH_CHANGED_TYPE_NONE)
-    , _data_container(0)
 	, _visible(true)
 {
-	*_name = L'0';
+	*_name = 0;
+    setClass();
 }
 
-IGlyphNode::IGlyphNode(const TCHAR * name)
+IGlyphNode::IGlyphNode(const char* name)
 	: _myid(0)
-	, _config(0)
 	, _rect(NULL_RECT)
 	, _common_artist(0)
 	, _glyph_state(GLYPH_STATE_NORMAL)
 	, _changed_type(GLYPH_CHANGED_TYPE_NONE)
-    , _data_container(0)
 	, _visible(true)
 {
-	_tcscpy_s(_name, MAX_WARMGUI_NAME_LEN, name);
+	strcpy_s(_name, MAX_WARMGUI_NAME_LEN, name);
+    setClass();
 }
 
 
@@ -78,15 +76,15 @@ IGlyph::IGlyph(void)
 	, _bResponseInput(false)
 	, _glyph_type(GLYPH_TYPE_GLYPH)
 	, _draw_method(DRAW_METHOD_TYPE_DRAW)
-    , _referframe(0)
     , _ops(0)
 {
 	memset(&_rect, 0, sizeof(RECT));
 	*_name = L'\0';
+    setClass();
 }
 
 
-IGlyph::IGlyph(const TCHAR* name, bool own_artist/* = false*/)
+IGlyph::IGlyph(const char* name, bool own_artist/* = false*/)
 	: _canvas(0)
     , _artist(0)
 	, _atelier(0)
@@ -95,11 +93,10 @@ IGlyph::IGlyph(const TCHAR* name, bool own_artist/* = false*/)
 	, _bResponseInput(false)
 	, _glyph_type(GLYPH_TYPE_GLYPH)
 	, _draw_method(DRAW_METHOD_TYPE_DRAW)
-    , _referframe(0)
     , _ops(0)
 {
 	memset(&_rect, 0, sizeof(RECT));
-	_tcscpy_s(_name, MAX_WARMGUI_NAME_LEN, name);
+	strcpy_s(_name, MAX_WARMGUI_NAME_LEN, name);
 
     if (own_artist) {
         _myown_artist = new eArtist();
@@ -108,6 +105,7 @@ IGlyph::IGlyph(const TCHAR* name, bool own_artist/* = false*/)
         _myown_artist = 0;
         _lockArtist   = 0;
     }
+    setClass();
 }
 
 IGlyph::~IGlyph(void)
@@ -121,8 +119,12 @@ IGlyph::~IGlyph(void)
 HRESULT IGlyph::PreDraw()
 {
     if (_myown_artist) {
-        _artist = _myown_artist;
-        return Draw();
+        CriticalLock::Scoped scope(_myown_artist->_lock_artist);
+		eArtist* back_artist = _artist;
+		_artist = _myown_artist;
+        HRESULT r = Draw();
+		_artist = back_artist;
+		return r;
     }
     
     return  S_OK;
@@ -134,17 +136,22 @@ HRESULT IGlyph::Draw(bool redraw/* = false*/)
 
 	HRESULT hr = S_OK;
     if (_myown_artist) {
+        CriticalLock::Scoped scope(_myown_artist->_lock_artist);
+
+		eArtist* back_artist = _artist;
         D2D1_RECT_F dest = {0, 0, fRectWidth(_rect), fRectHeight(_rect)};
         D2D1_RECT_F src  = {0, 0, fRectWidth(_rect), fRectHeight(_rect)};
 
         MATRIX_2D backmatrix, m;
         _artist->GetTransform(&backmatrix);
         m = backmatrix;
-        m._31 += _rect.left, m._32 += _rect.top;
+        m._31 = _rect.left, m._32 = _rect.top;
         _artist->SetTransform(&m);
 
         _artist->DrawBitmap(_myown_artist->GetDefaultBmp(), dest, src);
         _artist->SetTransform(&backmatrix);
+
+		_artist = back_artist;
     } else {
         hr = DrawGraph(redraw);
     }
@@ -174,7 +181,6 @@ HRESULT IGlyph::DrawBkg(bool drawbuf/* = true*/)
 		return S_OK;
 }
 
-
 HRESULT IGlyph::RenewGraph()
 {
 	return S_OK;
@@ -183,34 +189,34 @@ HRESULT IGlyph::RenewGraph()
 inline void IGlyph::SetRenderTarget()
 {
     if (_myown_artist && _common_artist) {
-        _myown_artist->SetHwndRenderTarget(_common_artist->GetHwndRT(), _common_artist->GetHwnd());
+		CriticalLock::Scoped scope(_myown_artist->_lock_artist);
+		_myown_artist->SetHwndRenderTarget(_common_artist->GetHwndRT(), _common_artist->GetHwnd());
     }
 }
 
-inline void IGlyph::SetReferenceFrameTransform()
+
+inline void IGlyph::SetTransform(const MATRIX_2D* mytrans)
 {
-	if (_referframe) {
-		_artist->GetTransform(&_backup_trans);
-		MATRIX_2D mytrans = *(_referframe->GetTransform());
-        mytrans._31 += _backup_trans._31 + _rect.left, mytrans._32 += _backup_trans._32 + _rect.top;
-		_artist->SetTransform(&mytrans);
+	_artist->GetTransform(&_backup_trans);
+    MATRIX_2D trans = D2D1::Matrix3x2F::Identity();
+    trans._11 = mytrans->_11, trans._12 = mytrans->_12, trans._21 = mytrans->_21, trans._22 = mytrans->_22,
+    trans._31 += _backup_trans._31 + _rect.left, trans._32 += _backup_trans._32 + _rect.top;
+	_artist->SetTransform(&trans);
 
 #		ifdef _DEBUG
-		/*
-		MATRIX_2D m;
-		_artist->GetTransform(&m);
-		MYTRACE(L"ReferFrame %s %.02f %.02f %.02f %.02f %.02f %.02f\n", 
-			_name,
-			m._11, m._12, m._21, m._22, m._31, m._32);
-		*/
+	/*
+	MATRIX_2D m;
+	_artist->GetTransform(&m);
+	MYTRACE(L"ReferFrame %s %.02f %.02f %.02f %.02f %.02f %.02f\n", 
+		_name,
+		m._11, m._12, m._21, m._22, m._31, m._32);
+	*/
 #		endif //_DEBUG
-	}
 }
 
-inline void IGlyph::GetbackArtistTransform()
+inline void IGlyph::GetbackTransform()
 {
-	if (_referframe)
-		_artist->SetTransform(&_backup_trans);
+	_artist->SetTransform(&_backup_trans);
 }
 
 
@@ -253,8 +259,10 @@ inline void IGlyph::SetRect(RECT& rect)
 {
     _changed_type = GLYPH_CHANGED_TYPE_GLYPH_RESIZE, _rect = rect;
 
-    if (_myown_artist)
+    if (_myown_artist) {
+		CriticalLock::Scoped scope(_myown_artist->_lock_artist);
         _myown_artist->ResizeRenderTarget(RectWidth(rect), RectHeight(rect));
+	}
 }
 
 
@@ -269,6 +277,7 @@ CImage::CImage()
 {
 	memset(_imgpath, 0, MAX_PATH);
 	memset(&_srcRect,0, sizeof(RECT));
+    setClass();
 }
 
 CImage::~CImage()
@@ -276,36 +285,39 @@ CImage::~CImage()
 	SafeRelease(&_pImage);
 }
 
-CImage::CImage(const TCHAR * name, const char* imgpath)
+CImage::CImage(const char* name, const char* imgpath)
 	: _pImage(0)
 	, _opacity(1.0f)
 //	, _srcRect(D2D1::RectF(0, 0, 0, 0))
 {
-	_tcscpy_s(_name, MAX_WARMGUI_NAME_LEN, name);
+	strcpy_s(_name, MAX_WARMGUI_NAME_LEN, name);
 	TCHAR Out[MAX_PATH];
 	CChineseCodeLib::Gb2312ToUnicode(Out, MAX_PATH, (char*)imgpath);
 	_tcscpy_s(_imgpath, MAX_PATH, Out);
 	memset(&_srcRect,0, sizeof(RECT));
+    setClass();
 }
 
-CImage::CImage(const TCHAR * name, const TCHAR* imgpath)
+CImage::CImage(const char* name, const TCHAR* imgpath)
 	: _pImage(0)
 	, _opacity(1.0f)
 //	, _srcRect(D2D1::RectF(0, 0, 0, 0))
 {
-	_tcscpy_s(_name, MAX_WARMGUI_NAME_LEN, name);
+	strcpy_s(_name, MAX_WARMGUI_NAME_LEN, name);
 	_tcscpy_s(_imgpath, MAX_PATH, imgpath);
 	memset(&_srcRect,0, sizeof(RECT));
+    setClass();
 }
 
 
-CImage::CImage(const TCHAR * name)
+CImage::CImage(const char* name)
 	: _pImage(0)
 	, _opacity(1.0f)
 {
-	_tcscpy_s(_name, MAX_WARMGUI_NAME_LEN, name);
+	strcpy_s(_name, MAX_WARMGUI_NAME_LEN, name);
 	memset(_imgpath, 0, MAX_PATH);
 	memset(&_srcRect,0, sizeof(RECT));
+    setClass();
 }
 
 
@@ -448,6 +460,7 @@ CSharedImage::CSharedImage()
     , _sm(GLYPH_STRETCH_METHOD_RECT)
 {
 	memset(_imgpath, 0, MAX_WARMGUI_NAME_LEN);
+    setClass();
 }
 
 CSharedImage::CSharedImage(IGlyph::GLYPH_TYPE glyph_type, WGBitmap* pBmp, GLYPH_STRETCH_METHOD sm/* = GLYPH_STRETCH_METHOD_RECT*/)
@@ -458,6 +471,7 @@ CSharedImage::CSharedImage(IGlyph::GLYPH_TYPE glyph_type, WGBitmap* pBmp, GLYPH_
     , _sm(sm)
 {
 	_glyph_type = glyph_type;
+    setClass();
 }
 
 CSharedImage::~CSharedImage()
@@ -530,7 +544,7 @@ HRESULT CBlind::DrawGraph(bool /*redraw = false*/)
 	//_artist->GetTransform(&matrix);
 	//MYTRACE(L"BLIND %s: %.02f %.02f, frect: %.02f %.02f %.02f %.02f\n", _name, matrix._31, matrix._32, frect.left, frect.top, frect.right, frect.bottom);
 	ID2D1SolidColorBrush* scBrush = _artist->GetSCBrush();
-	D2D1_COLOR_F clr = scBrush->GetColor();
+	COLORALPHA   clr = scBrush->GetColor();
 	scBrush->SetColor(D2D1::ColorF(_bkgclr, _alpha));
 	//scBrush->SetColor(D2D1::ColorF(ccc[(k++)%3], _alpha));
 	_artist->FillRectangle(frect);
@@ -538,6 +552,10 @@ HRESULT CBlind::DrawGraph(bool /*redraw = false*/)
 
 	return S_OK;
 }
+
+
+
+
 
 
 } //namespace WARMGUI

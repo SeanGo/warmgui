@@ -6,7 +6,7 @@
 #define EDIT_FINISHED_INPUT 101
 #define EDIT_TABLE_INPUTED  102
 #define BGR(b,g,r) ((COLORREF)(((BYTE)(b)|((WORD)((BYTE)(g))<<8))|(((DWORD)(BYTE)(r))<<16)))
-#define MAX_WARMGUI_NAME_LEN 40
+#define MAX_WARMGUI_NAME_LEN 64
 
 
 
@@ -104,9 +104,9 @@ EXTERN_C IMAGE_DOS_HEADER __ImageBase;
     std::allocator<std::pair<const mapkey,mapvalue> > >;
 
 
-
 WARMGUI_API void WINAPI _MyTraceW( LPCWSTR strMsg, ... );
 WARMGUI_API void WINAPI _MyTraceA( LPCSTR strMsg, ... );
+
 #ifdef UNICODE
 #define MYTRACE _MyTraceW
 #else
@@ -127,6 +127,7 @@ WARMGUI_API void WINAPI _MyTraceA( LPCSTR strMsg, ... );
 #define IsInRect(rect, x, y) (((x) >= (rect).left) && ((x) <= (rect).right) && ((y) >= (rect).top) && ((y )<= (rect).bottom))
 #define RectWidth(rect) ((rect).right  - (rect).left)
 #define RectHeight(rect) ((rect).bottom - (rect).top)
+#define DeflateRect(rect, l,r) ((rect).left += (l), (rect).right -= (r))
 #define fRectWidth(rect) (static_cast<float>((rect).right  - (rect).left))
 #define fRectHeight(rect) (static_cast<float>((rect).bottom - (rect).top))
 
@@ -203,17 +204,23 @@ enum TOOLBAR_POSITION {
 typedef struct SIZE_u {
 	long width;
 	long height;
+
+    SIZE_u() {width = height = 0;}
+    SIZE_u(long w, long h) {width = w, height = h;}
 } SIZE_u;
 
 
-typedef struct LIMIT_2D {
-	float minx;
-	float maxx;
-	float miny;
-	float maxy;
-	float   x0;
-	float   y0;
-} LIMIT_2D;
+typedef struct POINT_u {
+	long x;
+	long y;
+    POINT_u() {x = y = 0;}
+    //POINT_u(POINT_u& pnt) {x = pnt.x, y = pnt.y;}
+    POINT_u(long xx, long yy) {x = xx, y = yy;}
+    POINT_u& operator-(POINT_u& pnt) {x -= pnt.x, y -= pnt.y; return *this; }
+    POINT_u& operator-(POINT_u pnt)  {x -= pnt.x, y -= pnt.y; return *this; }
+    POINT_u& operator=(POINT_u& pnt) {x  = pnt.x, y  = pnt.y; return *this; }
+    POINT_u& operator-=(POINT_u pnt) {x -= pnt.x, y -= pnt.y; return *this; }
+} POINT_u;
 
 typedef struct FPOINT {
     float x, y;
@@ -223,6 +230,7 @@ typedef struct FPOINT {
     FPOINT& operator= (FPOINT pnt) {x = pnt.x, y = pnt.y; return *this;}
 } FPOINT;
 
+
 #ifdef _WINDOWS
 	typedef D2D1_POINT_2F     POINT_f;
 	typedef D2D1_ELLIPSE      ELLIPSE_f;
@@ -230,12 +238,8 @@ typedef struct FPOINT {
 	typedef D2D1_MATRIX_3X2_F MATRIX_2D;
 	typedef ID2D1Bitmap       WGBitmap;
 	typedef D2D1_SIZE_F       SIZE_f;
-	typedef POINT             POINT_u;
+    typedef D2D1_COLOR_F      COLORALPHA;
 #else
-	typedef struct POINT_u {
-		long x;
-		long y;
-	} POINT_u;
 
 	typedef struct POINT_f {
 		float x;
@@ -275,13 +279,20 @@ typedef struct FPOINT {
 		float width ;
 		float height;
 	} SIZE_f;
+
+    typedef struct COLORALPHA {
+        float blue;
+        float green;
+        float red;
+        float alpha;
+    } COLORALPHA;
 #endif
 
-typedef RECT  MARGIN;
-typedef RECT  RULER_WIDTH;
-typedef unsigned int uint32_t;
+typedef RECT              MARGIN;
+typedef RECT         RULER_WIDTH;
+typedef unsigned int    uint32_t;
 
-extern WARMGUI_API RECT  NULL_RECT;
+extern WARMGUI_API RECT       NULL_RECT;
 extern WARMGUI_API POINT_f NULL_POINT_f;
 
 enum ARTIST_TYPE {
@@ -329,26 +340,127 @@ enum GLYPH_CHANGED_TYPE {
 	 GLYPH_CHANGED_TYPE_COORDFRAME     = 0x040,  ///the coordinate-frame of glyph was changed, N/A for atelier and canvas
 	 GLYPH_CHANGED_TYPE_CHANGED        = 0x080,  ///the glyph was changed, N/A for atelier and canvas
      GLYPH_CHANGED_TYPE_INCREASED      = 0x100,  ///glyph was increased
+     GLYPH_CHANGED_TYPE_FRAME_RSHIFT   = 0x200,  ///the coordinate-frame of glyph was right-shift
 };
 
+
+//enum COORD_FRAME_FIX_TYPE {
+     //COORD_FRAME_FIX_TYPE_LEFT,
+     //COORD_FRAME_FIX_TYPE_RIGHT,
+//};
+
 typedef struct ValueIncrease {
-	float      _init_y0_S_mag;
-	float      _init_y0_L_mag;
+	float           _min_decres_mag;
+	float           _max_incres_mag;
 	DATA_BREADTH_TYPE _breadth_type;
+    //COORD_FRAME_FIX_TYPE   _fixtype;
+    float              _left_shirft;
+
+    ValueIncrease()
+        : _min_decres_mag(0)
+        , _max_incres_mag(0)
+        , _breadth_type(DATA_BREADTH_TYPE_VALUE)
+        //, _fixtype(COORD_FRAME_FIX_TYPE_LEFT)
+        , _left_shirft(0)
+    { }
 } ValueIncrease;
 
 typedef struct RtChartSettings {
     int       _predict_len;
     int         _space_len;
     int       _down_intval;
-    LIMIT_2D        _limit;
+    WORLD_RECT      _limit;
     ValueIncrease      _vi;
     float    _stroke_width;
     RULER_WIDTH _rule_size;
 } RtChartSettings;
 
+typedef struct TripleTuple {
+    float f1;
+    float f2;
+    float f3;
+    TripleTuple() : f1(0), f2(0), f3(0) {}
+}TripleTuple;
 
 typedef void* dataptr;
+typedef const void* const_dataptr;
+
+typedef struct FONT {
+    TCHAR                       fontName[64];
+    float                       fontSize;
+	DWRITE_FONT_WEIGHT          fontWeight /*= DWRITE_FONT_WEIGHT_NORMAL */;
+	DWRITE_FONT_STYLE           fontStyle  /*= DWRITE_FONT_STYLE_NORMAL  */;
+	DWRITE_FONT_STRETCH         fontStretch/*= DWRITE_FONT_STRETCH_NORMAL*/;
+	DWRITE_TEXT_ALIGNMENT       textAlignment /*= DWRITE_TEXT_ALIGNMENT_CENTER*/;
+	DWRITE_PARAGRAPH_ALIGNMENT  paragraphAlignment /*= DWRITE_PARAGRAPH_ALIGNMENT_CENTER*/;
+    TCHAR                       localeName[64];
+
+    FONT()
+        : fontWeight (DWRITE_FONT_WEIGHT_NORMAL)
+        , fontStyle  (DWRITE_FONT_STYLE_NORMAL )
+        , fontStretch(DWRITE_FONT_STRETCH_NORMAL)
+        , textAlignment(DWRITE_TEXT_ALIGNMENT_CENTER)
+        , paragraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_CENTER)
+        , fontSize(16)
+    {
+        _tcscpy_s(localeName, 64, L"en-us");
+        *fontName = L'\0';
+    }
+
+} FONT;
+
+#ifdef _UNICODE
+    typedef std::wstring tstring;
+#else //_UNICODE
+    typedef std::string  tstring;
+#endif//_UNICODE
+
+
+EXPORT_STL_VECTOR(WARMGUI_API, int)
+typedef std::vector<int> IntArray;
+typedef IntArray::iterator IntIter;
+typedef IntArray::const_iterator IntConstIter;
+
+
+EXPORT_STL_VECTOR(WARMGUI_API, std::string)
+typedef std::vector<std::string> StringArray;
+typedef StringArray::iterator StrIter;
+typedef StringArray::const_iterator StrConstIter;
+
+EXPORT_STL_VECTOR(WARMGUI_API, std::wstring)
+typedef std::vector<std::wstring> WStringArray;
+typedef WStringArray::iterator WStrIter;
+typedef WStringArray::const_iterator WStrConstIter;
+
+EXPORT_STL_VECTOR(WARMGUI_API, HWND)
+typedef std::vector<HWND> HwndArray;
+typedef HwndArray::iterator HwndIter;
+typedef HwndArray::const_iterator HwndConstIter;
+
+class WARMGUI_API CIntArray : public IntArray
+{
+public:
+    CIntArray()  {}
+    ~CIntArray() {}
+
+    void InsertAt(int pos, int value) {
+        IntIter iter = begin();
+        iter += pos;
+        if (iter != end())
+            insert(iter, value);
+    }
+
+    void RemoveAt(int pos) {
+        IntIter iter = begin();
+        iter += pos;
+        if (iter != end())
+            erase(iter);
+    }
+};
+
+extern const COLORALPHA DEFAULT_COLOR_ALPHA;
+
+extern bool operator== (const COLORALPHA& a, const COLORALPHA& b);
 
 namespace WARMGUI {
 
@@ -357,11 +469,15 @@ extern TCHAR* toptarg;
 extern inline bool pt_in_rect(RECT& rect, int x, int y);
 extern inline bool pt_in_rect(RECT& rect, POINT_u pt);
 extern inline bool pt_in_rect(RECT& rect, POINT pt);
+
+
 } //namespace WARMGUI
 
 #ifndef SafeDelete
 #   define SafeDelete(p) if ((p)) {delete (p); (p) = 0;}
 #endif //SafeDelete
+
+
 
 
 #endif //__warmgui_type_define_h_include__

@@ -3,10 +3,13 @@
 
 namespace WARMGUI {
 
-class CAtelier;
+class IAtelier;
 
+
+//////////////////////////////////////////////////////////////////////////////////////////
+// ILayout
 /// Layout interface, give a Layout the configure of something, Layout will set the its position
-class WARMGUI_API ILayout
+class WARMGUI_API ILayout : public IObject
 {
 public:
 	ILayout(void)
@@ -36,23 +39,55 @@ public:
 		memset(_region, 0, sizeof(RECT) * m * n);
 	}
 
-	virtual void Disposal(CAtelier* atelier, RECT& rect) = 0;
-
+	virtual void Disposal(IAtelier* atelier, RECT& rect) = 0;
+    virtual void SetConfig(CWarmguiConfig* config, const char* conf_str)
+                 {_config = config; strcpy_s(_cnf_str, MAX_PATH, conf_str);}
 protected:
-	int  _m, _n;
-	int _margin;	//left, r, t, b, 4 margins.
-	RECT _rectFull;
-	RECT*  _region;
-
+	int              _m, _n;
+	int             _margin;    //left, r, t, b, 4 margins.
+	RECT          _rectFull;
+	RECT*           _region;
+    CWarmguiConfig* _config;
+    char _cnf_str[MAX_PATH];
+private:
+    //set class name, by IObject
+    virtual void setClass() { SetMyClass("ILayout"); }
 };
 
+
+
+//////////////////////////////////////////////////////////////////////////////////////////
+// COneLayout
 class WARMGUI_API COneLayout : public ILayout
 {
 public:
 	COneLayout();
 	~COneLayout();
 
-	virtual void Disposal(CAtelier* atelier, RECT& rect);
+	virtual void Disposal(IAtelier* atelier, RECT& rect);
+
+private:
+    //set class name, by IObject
+    virtual void setClass() { SetMyClass("COneLayout"); }
+};
+
+
+
+
+//////////////////////////////////////////////////////////////////////////////////////////
+// ILayoutCreator
+class WARMGUI_API ILayoutCreator
+{
+public:
+    ILayoutCreator() {}
+    ~ILayoutCreator() {}
+
+    void SetConfigure(CWarmguiConfig* config) { _config = config; }
+    virtual ILayout* CreateLayout(const char* layout_config) = 0;
+
+
+protected:
+    CWarmguiConfig* _config;
 };
 
 }//namespace WARMGUI

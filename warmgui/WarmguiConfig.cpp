@@ -68,6 +68,7 @@ bool CWarmguiConfig::getRect(RECT& rect, const char* config_str)
 		}
 		delete buf;
 	} catch(Poco::NotFoundException&) {
+        MYTRACE(L"CWarmguiConfig::getRect\n");
 		return r;
 	}
 	return r;
@@ -92,30 +93,47 @@ bool CWarmguiConfig::getRulerWidth(RULER_WIDTH& rw, const char* config_str)
 		}
 		delete buf;
 	} catch(Poco::NotFoundException&) {
+        MYTRACE(L"CWarmguiConfig::getRulerWidth\n");
 		return r;
 	}
 	return r;
 }
 
 
-bool CWarmguiConfig::getWorldRect(LIMIT_2D& limit, const char* config_str)
+bool CWarmguiConfig::getWorldRect(WORLD_RECT& world, const char* config_str)
 {
 	bool r = false;
 	try {
 		std::string str = getString(config_str);
 		char *buf = strdup(str.c_str());
-		char* tmp = get_one_float(buf, ',', &limit.minx);
+        float value;
+    	//      x0,   y0,    xn,   yn, minpos, miny, maxpos, maxy
+    	//<world>0, 3000, 32400, 3000,      0, 2985,  32400, 3015</world>
+		char* tmp = get_one_float(buf, ',', &value);
+        world.x0 = value; //X0
 		if (tmp) {
-			tmp = get_one_float(++tmp, ',', &limit.maxx);
+			tmp = get_one_float(++tmp, ',', &value);
+            world.y0 = value; //Y0
 			if (tmp) {
-				tmp = get_one_float(++tmp, ',', &limit.miny);
+				tmp = get_one_float(++tmp, ',', &value);
+                world.xn = value;  //Xn
 				if (tmp) {
-					tmp = get_one_float(++tmp, ',', &limit.maxy);
+					tmp = get_one_float(++tmp, ',', &value);
+                    world.yn = value;  //Yn
 					if (tmp) {
-						tmp = get_one_float(++tmp, ',', &limit.x0);
+						tmp = get_one_float(++tmp, ',', &value);
+                        world.minpos = value;  //MINPOS
 						if (tmp) {
-							limit.y0 = (float)atof(++tmp);
-							r = true;
+						    tmp = get_one_float(++tmp, ',', &value);
+                            world.miny = value;  //MINY
+						    if (tmp) {
+						        tmp = get_one_float(++tmp, ',', &value);
+                                world.maxpos = value;  //MAXPOS
+						        if (tmp) {
+						            world.maxy = (float)atof(++tmp);  //MAXY
+						            r = true;
+                                }
+                            }
 						}
 					}
 				}
@@ -123,6 +141,7 @@ bool CWarmguiConfig::getWorldRect(LIMIT_2D& limit, const char* config_str)
 		}
 		delete buf;
 	} catch(Poco::NotFoundException&) {
+        MYTRACE(L"CWarmguiConfig::getWorldRect\n");
 		return r;
 	}
 	return r;
@@ -134,16 +153,46 @@ bool CWarmguiConfig::getValueIncrease(ValueIncrease& increase, const char* confi
 	try {
 		std::string str = getString(config_str);
 		char *buf = strdup(str.c_str());
-        char* tmp = get_one_float(buf, ',', &increase._init_y0_S_mag);
+        char* tmp = get_one_float(buf, ',', &increase._min_decres_mag);
 		if (tmp) {
-            tmp = get_one_float(++tmp, ',', &increase._init_y0_L_mag);
+            tmp = get_one_float(++tmp, ',', &increase._max_incres_mag);
 			if (tmp) {
-                increase._breadth_type = (DATA_BREADTH_TYPE)atoi(++tmp);
-                r = true;
+                char* t = strstr(tmp + 1, "DATA_BREADTH_TYPE_VALUE");
+                {//get breadth type
+                    if (t) {
+                        increase._breadth_type = DATA_BREADTH_TYPE_VALUE;
+                        tmp = t + strlen("DATA_BREADTH_TYPE_VALUE");
+                        goto get_fixed_type;
+                    }
+                    t = strstr(tmp + 1, "DATA_BREADTH_TYPE_PERCENT");
+                    if (t) {
+                        increase._breadth_type = DATA_BREADTH_TYPE_PERCENT;
+                        tmp = t + strlen("DATA_BREADTH_TYPE_PERCENT");
+                        goto get_fixed_type;
+                    }
+
+                    goto will_exit;
+                }
+get_fixed_type:
+                {//get fix type
+                    t = strchr(tmp, ',');
+                    if (t) {
+                        t++;
+                        increase._left_shirft = (float)atof(t);
+                        r = true;
+                        //if (strstr(t, "left"))
+                        //    increase._fixtype = COORD_FRAME_FIX_TYPE_LEFT , r = true;
+                        //else if (strstr(t, "right"))
+                        //    increase._fixtype = COORD_FRAME_FIX_TYPE_RIGHT, r = true;
+                    }
+                }
+
 			}
 		}
+will_exit:
 		delete buf;
 	} catch(Poco::NotFoundException&) {
+        MYTRACE(L"CWarmguiConfig::getValueIncrease\n");
 		return r;
 	}
 	return r;
@@ -162,6 +211,7 @@ bool CWarmguiConfig::getSize(SIZE& size, const char* config_str)
 		}
 		delete buf;
 	} catch(Poco::NotFoundException&) {
+        MYTRACE(L"CWarmguiConfig::getSize\n");
 		return r;
 	}
 	return r;
@@ -181,8 +231,149 @@ bool CWarmguiConfig::getToolbarPos(TOOLBAR_POSITION& pos, const char* config_str
 			pos = TOOLBAR_POSITION_BOTTOM;
 		return true;
 	} catch(Poco::NotFoundException&) {
+        MYTRACE(L"CWarmguiConfig::getToolbarPos\n");
 		return false;
 	}
+}
+
+
+bool CWarmguiConfig::getColorAlpha(COLORALPHA   &color, const char* config_str)
+{
+	bool r = false;
+	try {
+		std::string str = getString(config_str);
+		char *buf = strdup(str.c_str());
+        char* tmp = get_one_float(buf, ',', &color.b);
+		if (tmp) {
+            tmp = get_one_float(++tmp, ',', &color.g);
+			if (tmp) {
+                tmp = get_one_float(++tmp, ',', &color.r);
+				if (tmp) {
+                    color.a = (float)atof(++tmp);
+                    r = true;
+                }
+			}
+		}
+		delete buf;
+	} catch(Poco::NotFoundException&) {
+        MYTRACE(L"CWarmguiConfig::getColorAlpha\n");
+		return r;
+	}
+	return r;
+}
+
+bool CWarmguiConfig::getTripleFloat(TripleTuple &tt, const char* config_str)
+{
+	bool r = false;
+	try {
+		std::string str = getString(config_str);
+		char *buf = strdup(str.c_str());
+        char* tmp = get_one_float(buf, ',', &tt.f1);
+		if (tmp) {
+            tmp = get_one_float(++tmp, ',', &tt.f2);
+			if (tmp) {
+                tt.f3 = (float)atof(++tmp);
+                r = true;
+            }
+		}
+		delete buf;
+	} catch(Poco::NotFoundException&) {
+        MYTRACE(L"CWarmguiConfig::getTripleFloat\n");
+		return r;
+	}
+	return r;
+}
+
+
+bool CWarmguiConfig::getFontSetting(FONT& font, const char* config_str)
+{
+    bool r = false;
+	try {
+		std::string str = getString(config_str);
+		char *buf = strdup(str.c_str());
+        char* tmp = strchr(buf, ',');
+        if (tmp) {
+            font.fontSize = (float)atof(tmp+1);
+            *tmp = 0;
+            CChineseCodeLib::Gb2312ToUnicode(font.fontName, sizeof(font.fontName), buf);
+            *tmp = ',';
+            r = true;
+        } else
+            r = false;
+		delete buf;
+	} catch(Poco::NotFoundException&) {
+        MYTRACE(L"CWarmguiConfig::getFontSetting\n");
+		return r;
+	}
+    return r;
+}
+
+
+bool CWarmguiConfig::getStringVector(StringArray& strs, const char* config_str)
+{
+    bool r = false;
+	try {
+		std::string str = getString(config_str);
+        char* buf = strdup(str.c_str());
+        char* t1  = buf;
+        while(t1 && *t1) {
+            if (isspace(*t1)) {
+                t1++;
+                continue;
+            }
+
+            char* t2  = strchr(t1, ',');
+            if (t2) {
+                *t2 = 0;
+                strs.push_back(t1);
+                t1 = t2 + 1;
+            } else {
+                strs.push_back(t1);
+                break;
+            }
+        }
+        free(buf);
+	} catch(Poco::NotFoundException&) {
+        MYTRACE(L"CWarmguiConfig::getStringVector\n");
+		return r;
+	}
+    return r;
+}
+
+bool CWarmguiConfig::getStringVector(WStringArray& strs, const char* config_str)
+{
+    bool r = false;
+	try {
+		std::string str = getString(config_str);
+        char* buf = strdup(str.c_str());
+        size_t len = 2 * strlen(buf);
+        WCHAR* wstr = new WCHAR[len];
+        char* t1  = buf;
+        while(t1 && *t1) {
+            if (isspace(*t1)) {
+                t1++;
+                continue;
+            }
+
+            char* t2  = strchr(t1, ',');
+            if (t2) {
+                *t2 = 0;
+                CChineseCodeLib::Gb2312ToUnicode(wstr, len, t1);
+                strs.push_back(wstr);
+                t1 = t2 + 1;
+            } else {
+                CChineseCodeLib::Gb2312ToUnicode(wstr, len, t1);
+                strs.push_back(wstr);
+                break;
+            }
+        }
+        delete wstr;
+        free(buf);
+	} catch(Poco::NotFoundException&) {
+        MYTRACE(L"CWarmguiConfig::getStringVector\n");
+		return r;
+	}
+    return r;
 }
 
 }

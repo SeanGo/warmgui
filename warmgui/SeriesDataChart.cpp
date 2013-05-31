@@ -3,23 +3,11 @@
 
 
 namespace WARMGUI {
-/*
-CSeriesDataChart::CSeriesDataChart(void)
-    : _blind(0)
-    , _coord(0)
-    , _graph(0)
-    , _datalen(0)
-{
-    memset(&_rtcset._rule_size, 0, sizeof(RECT));
-}
-*/
-
-CSeriesDataChart::CSeriesDataChart(const TCHAR* name)
-    : IGlyph(name)
-    , _blind(0)
+CSeriesDataChart::CSeriesDataChart(const char* name)
+    : IDataGraph(name)
     , _coord(0)
 {
-    memset(&_rtcset, 0, sizeof(RtChartSettings));
+    setClass();
 }
 
 
@@ -42,15 +30,10 @@ void CSeriesDataChart::SetRect(RECT& rect)
 	SetGlyphRect(cartRect);
 }
 
-inline void CSeriesDataChart::SetWorldRect(LIMIT_2D& limit)
+inline void CSeriesDataChart::SetWorldRect(WORLD_RECT& limit)
 {
-    limit.maxx = (_rtcset._down_intval < 2) ? limit.maxx : limit.maxx * _rtcset._down_intval;
+    limit.xn = (_rtcset._down_intval < 2) ? limit.xn : limit.xn * _rtcset._down_intval;
 	_cart.SetWorldRect(limit);
-}
-
-inline void CSeriesDataChart::SetWorldRect(float minx, float maxx, float miny, float maxy, float x0, float y0)
-{
-	_cart.SetWorldRect(minx, maxx, miny, maxy, x0, y0);
 }
 
 
@@ -58,11 +41,6 @@ void CSeriesDataChart::SetGlyphRect(RECT& cartrect)
 {
     //rectGraph.left 
 
-    //MYTRACE(L"Chart Rect %s %d %d %d %d\n", _blind->_name, _rect.left, _rect.top, _rect.right, _rect.bottom);
-    if (_blind)
-        _blind->SetRect(_rect);
-
-    //MYTRACE(L"Chart Rect %s %d %d %d %d\n", _coord->_name, _rect.left, _rect.top, _rect.right, _rect.bottom);
     if (_coord)
 		_coord->SetRect(_rect);
 
@@ -77,32 +55,30 @@ void CSeriesDataChart::SetGlyphRect(RECT& cartrect)
 
 void CSeriesDataChart::GetChartSettings()
 {
-    char key[MAX_PATH] ,cname[MAX_PATH], canvasname[MAX_PATH];
-    CChineseCodeLib::UnicodeToGB2312(cname, MAX_PATH, _name);
-    CChineseCodeLib::UnicodeToGB2312(canvasname, MAX_PATH, _canvas->_name);
+    char key[MAX_PATH];
 
-    _snprintf_s(key, MAX_PATH, _TRUNCATE, "%s.rtchart-%s.increase", canvasname, cname);
+    _snprintf_s(key, MAX_PATH, _TRUNCATE, "%s.increase", _strconf, _name);
     _config->getValueIncrease(_rtcset._vi, key);
 
-    _snprintf_s(key, MAX_PATH, _TRUNCATE, "%s.rtchart-%s.rulersize", canvasname, cname);
+    _snprintf_s(key, MAX_PATH, _TRUNCATE, "%s.rulersize", _strconf, _name);
     _config->getRulerWidth(_rtcset._rule_size, key);
 
-    _snprintf_s(key, MAX_PATH, _TRUNCATE, "%s.rtchart-%s.spacelen", canvasname, cname);
+    _snprintf_s(key, MAX_PATH, _TRUNCATE, "%s.spacelen", _strconf, _name);
     _rtcset._space_len = _config->getInt(key);
 
-    _snprintf_s(key, MAX_PATH, _TRUNCATE, "%s.rtchart-%s.prdtlen", canvasname, cname);
+    _snprintf_s(key, MAX_PATH, _TRUNCATE, "%s.prdtlen", _strconf, _name);
     _rtcset._predict_len = _config->getInt(key);
 
-    _snprintf_s(key, MAX_PATH, _TRUNCATE, "%s.rtchart-%s.down-sampler-interval", canvasname, cname);
+    _snprintf_s(key, MAX_PATH, _TRUNCATE, "%s.down-sampler-interval", _strconf, _name);
     _rtcset._down_intval = _config->getInt(key);
 
-    _snprintf_s(key, MAX_PATH, _TRUNCATE, "%s.rtchart-%s.stroke-width", canvasname, cname);
+    _snprintf_s(key, MAX_PATH, _TRUNCATE, "%s.stroke-width", _strconf, _name);
     _rtcset._stroke_width = (float)(_config->getDouble(key));
 
-    _snprintf_s(key, MAX_PATH, _TRUNCATE, "%s.rtchart-%s.world", canvasname, cname);
+    _snprintf_s(key, MAX_PATH, _TRUNCATE, "%s.world", _strconf, _name);
     _config->getWorldRect(_rtcset._limit, key);
     //add the additional length to limit
-    _rtcset._limit.maxx += (_rtcset._predict_len + _rtcset._space_len);
+    _rtcset._limit.xn += (_rtcset._predict_len + _rtcset._space_len);
     //must set the world after got down-sampler-interval
     SetWorldRect(_rtcset._limit);
 }
@@ -112,14 +88,12 @@ HRESULT CSeriesDataChart::Init()
 {
     GetChartSettings();
 
-    TCHAR name[MAX_WARMGUI_NAME_LEN];
-    _blind = new CBlind(_name, BGR(0, 0, 0), 0);
-    _canvas->AppendChild(_iter, _blind);
+    char name[MAX_WARMGUI_NAME_LEN];
 
-	_sntprintf_s(name, MAX_WARMGUI_NAME_LEN, _TRUNCATE, L"coord-%s", _name);
+	_snprintf_s(name, MAX_WARMGUI_NAME_LEN, _TRUNCATE, "coord-%s", _name);
     _coord = new CCoordGrid(name);
-    _canvas->InsertNext(_blind->GetGlyphTreeIter(), _coord);
-    _coord->SetWorldRect(&(_cart.GetWorldRect()));
+    _canvas->AppendChild(_iter, _coord);
+    //_coord->SetWorldRect(&(_cart.GetWorldRect()));
     _coord->SetSideBarWidth(_rtcset._rule_size);
 
     return S_OK;
@@ -129,9 +103,9 @@ HRESULT CSeriesDataChart::AddGraph(IGlyph* g, bool bDataLine/* = true*/)
 {
     IGlyph* graph = _canvas->AppendChild(_iter, g);
     if (!graph) return (-1);
-    g->SetCartesian(&_cart);
-    if (bDataLine)
-        ((CDataLineGraph*)g)->SetRtChartSettings(&_rtcset);
+    //g->SetCartesian(&_cart);
+    //if (bDataLine)
+    //    ((CDataLineGraph*)g)->SetRtChartSettings(&_rtcset);
 
     return S_OK;
 }
@@ -142,7 +116,8 @@ GLYPH_CHANGED_TYPE CSeriesDataChart::NewData(DataObjectPtr dop)
     int num = _canvas->getChildNumber(_iter);
     if (2 < num) {
         for (int i = 2; i < num; i++) {
-            if (_canvas->getChild(_iter, i)->AppendData(dop) & GLYPH_CHANGED_TYPE_COORDFRAME)
+            //if (_canvas->getChild(_iter, i)->AppendData(dop) & GLYPH_CHANGED_TYPE_COORDFRAME)
+            //if (_canvas->getChild(_iter, i)->AddNewData() & GLYPH_CHANGED_TYPE_COORDFRAME)
                 _coord->PreDraw();
         }
     }

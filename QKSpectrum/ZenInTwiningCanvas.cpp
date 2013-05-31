@@ -2,13 +2,13 @@
 #include "qks_incs.h"
 
 
-CZenInTwiningCanvas::CZenInTwiningCanvas(const TCHAR* name)
-    : ICanvas(name)
+CZenInTwiningCanvas::CZenInTwiningCanvas(const char* name)
+    : IDataCanvas(name)
     , _blind(0)
     , _chart(0)
     ,  _zitg(0)
 {
-
+    setClass();
 }
 
 
@@ -17,25 +17,30 @@ CZenInTwiningCanvas::~CZenInTwiningCanvas(void)
 }
 
 
-HRESULT CZenInTwiningCanvas::Init()
+const HRESULT CZenInTwiningCanvas::Init(const char* name/* = 0*/)
 {
-    TCHAR name[MAX_PATH];
+    char temp[MAX_PATH];
+    _snprintf_s(temp, MAX_PATH, _TRUNCATE, "%s.blind", _strconf);
+    _bHasBackground = _config->getBool(temp);
+
     if (_bHasBackground) {
         _blind = new CBlind(_name, BGR(0, 0, 0), 0.5);
         AppendChild(_gt.begin(), _blind);
     }
 
-    _chart = new CSeriesDataChart(L"price");
+    _chart = new CSeriesDataChart("price");
     InsertNext(_blind->GetGlyphTreeIter(), _chart);
+    _snprintf_s(temp, MAX_PATH, _TRUNCATE, "%s.rtchart-price", _strconf);
+    _chart->setConfig(_config, temp);
     _chart->Init();
 
     //add price lines graph
-    _sntprintf_s(name, MAX_WARMGUI_NAME_LEN, _TRUNCATE, L"graph-%s-price", _name);
-    CDataLineGraph* graph = new CDataLineGraph(name, true, _chart);
+    _snprintf_s(temp, MAX_WARMGUI_NAME_LEN, _TRUNCATE, "graph-%s-price", _name);
+    CDataLineGraph* graph = new CDataLineGraph(temp, true);
     _chart->AddGraph(graph);
     graph->SetDrawType(CDataLineGraph::SDATA_GRAPH_LINE_TYPE_LINE);
 
-    _zitg = new CZenInTwiningGraph(L"zenintwining");
+    _zitg = new CZenInTwiningGraph("zenintwining");
     _zitg->SetDownSample(_chart->_rtcset._down_intval);
     _chart->AddGraph(_zitg, false);
 
@@ -56,7 +61,7 @@ void CZenInTwiningCanvas::SetGlyphRect()
 
 void CZenInTwiningCanvas::setDataOffset(int pxo, int pyo)
 {
-    _chart->GetGraph()->SetDataOffset(1, pxo, pyo);
+    _chart->GetGraph()->SetDataOffset(pxo, pyo);
 }
 
 GLYPH_CHANGED_TYPE CZenInTwiningCanvas::NewData(DataObjectPtr data)
@@ -69,6 +74,5 @@ GLYPH_CHANGED_TYPE CZenInTwiningCanvas::NewData(DataObjectPtr data)
 
 void CZenInTwiningCanvas::SetChatToDataContanier()
 {
-    _data_container->RegisterChart(_chart);
 }
 

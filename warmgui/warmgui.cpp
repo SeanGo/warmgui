@@ -29,6 +29,15 @@ BOOL APIENTRY DllMain( HMODULE hModule,
 	return TRUE;
 }
 
+
+const COLORALPHA DEFAULT_COLOR_ALPHA = D2D1::ColorF(.0f, .0f, .0f, -1.0f);
+
+bool operator== (const COLORALPHA& a, const COLORALPHA& b)
+{
+    return (a.a == b.a && a.b == b.b && a.g == b.g && a.r == b.r);
+}
+
+
 //--------------------------------------------------------------------------------------
 // Outputs to the debug stream a formatted Unicode string with a variable-argument list.
 //--------------------------------------------------------------------------------------

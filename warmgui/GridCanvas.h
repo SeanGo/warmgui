@@ -6,14 +6,18 @@ class WARMGUI_API CGridCanvas : public ICanvas
 {
 public:
     CGridCanvas(void);
-	CGridCanvas(const TCHAR * name);
+	CGridCanvas(const char* name);
     ~CGridCanvas(void);
 
-	virtual HRESULT Init();
+	virtual const HRESULT Init(const char* name = 0);
 	virtual void SetGlyphRect();
 
 protected:
-    CWarmGridCtrl* _gc;
+    CGridCtrl* _gc;
+
+private:
+    //set class name, by IObject
+    virtual void setClass() { SetMyClass("CGridCanvas"); }
 };
 
 }

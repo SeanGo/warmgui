@@ -2,10 +2,10 @@
 #define __warmgui_chart_h_include__
 
 namespace WARMGUI {
-class WARMGUI_API CSeriesDataChart : public IGlyph
+class WARMGUI_API CSeriesDataChart : public IDataGraph
 {
 public:
-    CSeriesDataChart(const TCHAR* name);
+    CSeriesDataChart(const char* name);
     ~CSeriesDataChart(void);
 
     ///resize
@@ -13,35 +13,37 @@ public:
     ///resize sub-glyph
     void SetGlyphRect(RECT& rect);
 
-    ///set background of chart
-    void SetBlind() {}
     ///add a new graph
     HRESULT AddGraph(IGlyph* g, bool bDataLine = true);
     virtual HRESULT DrawGraph(bool /*redraw = false*/) {return S_OK;}
 
-	inline void SetWorldRect(LIMIT_2D& limit);
-	/// if the scale was changed return 1, else return 0
-	inline void SetWorldRect(float minx, float maxx, float miny, float maxy, float x0, float y0);
-	inline CCartesian* GetCartesian() { return &_cart; }
+	inline void SetWorldRect(WORLD_RECT& limit);
+	inline CWorld* GetCartesian() { return &_cart; }
 
     GLYPH_CHANGED_TYPE NewData(DataObjectPtr dop);
+    GLYPH_CHANGED_TYPE NewData(IDataContainer* data_cont, DataObject::MARKET_DATA_TYPE datatype) {return GLYPH_CHANGED_TYPE_NONE;}
 
     inline CDataLineGraph* GetGraph();
 
-    HRESULT Init();
+    virtual HRESULT Init();
     void GetChartSettings();
 
     void SetGeometryData(dataptr pdata, int count, int datasize);
 
     RtChartSettings* GetRtcSet() { return &_rtcset; }
 
+    virtual bool               AddNewData(DataObjectPtr) {return true;}
+
 public:
     RtChartSettings _rtcset;
 
 protected:
-    CBlind*          _blind;
-	CCartesian        _cart;
+	CWorld            _cart;
     CCoordGrid*      _coord;
+
+private:
+    //set class name, by IObject
+    virtual void setClass() { SetMyClass("CSeriesDataChart"); }
 };
 
 }//namespace WARMGUI

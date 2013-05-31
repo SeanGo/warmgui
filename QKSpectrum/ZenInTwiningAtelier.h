@@ -2,26 +2,29 @@
 #define __qks_zen_in_twining_atelier_h_include__
 
 class CZenInTwiningLayout;
-class CZenInTwiningAtelier :  public WARMGUI::CAtelier
+class CZenInTwiningAtelier :  public WARMGUI::IAtelier
 {
 public:
-    CZenInTwiningAtelier(const TCHAR* name);
+    CZenInTwiningAtelier(const char* name);
 
     friend class CZenInTwiningLayout;
 
     virtual HRESULT      InitAtelier(HWND hwnd, WARMGUI::CWarmguiConfig* config);
-    virtual void         SetLayout();
-    void                 SetChatToDataContanier();
 
 	void                 ToggleToolbar();
     CPVICanvas*          GetPVICanvas() {return _pvicanvas;}
 
     void                 ReceiveData(DataObjectPtr dop, const char* name);
     CTPTIMESEC&          GetTimeSec() { return _ctptimesec; }
+
+    inline virtual bool  GetAllCanvas();
+
 protected:
+    CZenInTwiningLayout*    _layoutOne;
+
+    ///canvases
     WARMGUI::CBkgCanvas* _canvasImgbkg;
     CPVICanvas*             _pvicanvas;
-    CZenInTwiningLayout*    _layoutOne;
     CZenInTwiningCanvas*     _rtcanvas;
     CZenInTwiningCanvas*     _1mcanvas;
     CZenInTwiningCanvas*     _5mcanvas;
@@ -31,6 +34,9 @@ protected:
 	WARMGUI::CToolbar*        _toolbar;
 
     CTPTIMESEC             _ctptimesec;
+private:
+    //set class name, by IObject
+    virtual void setClass() { SetMyClass("CZenInTwiningAtelier"); }
 };
 
 #endif //__qks_zen_in_twining_atelier_h_include__

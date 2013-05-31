@@ -4,11 +4,12 @@
 
 namespace WARMGUI {
 
+/*
 class ISeriesDataGraph : public IGlyph
 {
 public:
     ISeriesDataGraph(void);
-    ISeriesDataGraph(const TCHAR* name);
+    ISeriesDataGraph(const char* name);
     ~ISeriesDataGraph(void);
 
     enum DATA_MANIPULATOR_TYPE {
@@ -32,20 +33,20 @@ class IFrameDataGraph : public IGlyph
 {
 public:
     IFrameDataGraph(void);
-    IFrameDataGraph(const TCHAR* name);
+    IFrameDataGraph(const char* name);
     ~IFrameDataGraph(void);
 
 
 
 };
-
+*/
 
 class CSeriesDataChart;
 
-class WARMGUI_API CDataLineGraph : public IGlyph
+class WARMGUI_API CDataLineGraph : public IDataGraph
 {
 public:
-	CDataLineGraph(const TCHAR* name, bool own_artist, CSeriesDataChart *parent);
+	CDataLineGraph(const char* name, bool own_artist, CSeriesDataChart *parent);
 	virtual ~CDataLineGraph(void);
 
 
@@ -71,6 +72,7 @@ public:
 	virtual HRESULT       RenewGraph();
     virtual HRESULT       Renew();
     virtual HRESULT       PreDraw();
+    virtual bool          AddNewData() {return true;}
 
 	virtual void          SetDrawType(SDATA_GRAPH_LINE_TYPE draw_type) { _draw_type = draw_type; }
     SDATA_GRAPH_LINE_TYPE getDrawType() { return _draw_type; }
@@ -99,6 +101,22 @@ public:
     inline virtual void   EndSetData();
     void                  AddDataToPathGeometry(dataptr data);
 
+    typedef struct GraphData {
+        bool            _own_data;
+        dataptr            _pdata;
+        size_t         _data_size;
+        size_t       _data_length;
+        size_t             _count;
+
+        GraphData() {memset(this, 0, sizeof(GraphData));}
+        ~GraphData(){release();}
+        void release() {if (_own_data && _pdata) delete _pdata;}
+        void set_data(dataptr pdata, size_t data_size, size_t length)
+             {_pdata = pdata, _data_size = data_size, _data_length = length, _own_data = false;}
+    } GraphData;
+
+    GraphData             _graph_data;
+
 protected:
 	COLORREF                  _color;
 	float                     _alpha;
@@ -115,6 +133,10 @@ protected:
 
 protected:
     void             RedrawGraph();
+
+private:
+    //set class name, by IObject
+    virtual void setClass() { SetMyClass("CDataLineGraph"); }
 
 };
 

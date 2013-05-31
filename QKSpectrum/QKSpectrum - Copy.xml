@@ -1,0 +1,216 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<config>
+	<!-- configure for materials Tranquil-21.jpg -->
+	<application_bitmap_materials>e:/projects/bin/qks/media/aks-pics.png</application_bitmap_materials>
+
+	<network>
+		<!-- configure for ssl -->
+		<Client-Key>e:/projects/bin/ca/client.key</Client-Key>
+		<Client-CRT>e:/projects/bin/ca/client.crt</Client-CRT>
+		<CA-CRT>e:/projects/bin/ca/ca.crt</CA-CRT>
+
+		<!-- network connection -->
+		<ctpmmd-server-address>qiankunpu.com:34567</ctpmmd-server-address>
+		<rtcalc-server-address>qiankunpu.com:34568</rtcalc-server-address>
+		<!--rtcalc-server-address>192.168.0.102:34568</rtcalc-server-address-->
+
+		<username>guoyaoqiang</username>
+		<password>123456</password>
+	</network>
+
+
+	<!-- CTP market data interface -->
+	<ctp-market>
+		<sng-config-file>d:/projects/bin/sng1.conf</sng-config-file>
+		<ctpmdif-config-file>d:/projects/bin/snowtf.conf</ctpmdif-config-file>
+		<using-ctpmdif-simulator>false</using-ctpmdif-simulator>
+	</ctp-market>
+
+	<!-- First Atelier Config -->
+	<atelier-0>
+		<data-dispatcher>
+			<dispatcher-type>qks</dispatcher-type>
+			<data-container-number>5</data-container-number>
+			<data-container-1>
+				<data-length>32400</data-length>
+				<ts-length>4096</ts-length>
+				<container-type>ctpmmd-zit</container-type>
+				<down-sampler>0</down-sampler>
+			</data-container-1>
+			<data-container-2>
+				<data-length>2048</data-length>
+				<ts-length>512</ts-length>
+				<container-type>ctpmmd-zit</container-type>
+				<down-sampler>0</down-sampler>
+			</data-container-2>
+			<data-container-3>
+				<data-length>2048</data-length>
+				<ts-length>2048</ts-length>
+				<container-type>ctpmmd-zit</container-type>
+				<down-sampler>120</down-sampler>
+			</data-container-3>
+			<data-container-4>
+				<data-length>2048</data-length>
+				<ts-length>2048</ts-length>
+				<container-type>ctpmmd-zit</container-type>
+				<down-sampler>600</down-sampler>
+			</data-container-4>
+			<data-container-5>
+				<data-length>2048</data-length>
+				<ts-length>2048</ts-length>
+				<container-type>ctpmmd-zit</container-type>
+				<down-sampler>1800</down-sampler>
+			</data-container-5>
+		</data-dispatcher>
+
+		<!-- atelier type -->
+		<atelier-type>ZenInTwining</atelier-type>
+
+		<!-- here is the configure of layout -->
+		<layout>zit-layout</layout>
+
+		<!-- Canvas setting -->
+		<canvases>
+			<canvas-num>9</canvas-num>
+			<!-- background canvas -->
+			<canvas-0>
+				<canvas-type>background-canvas</canvas-type>
+				<canvas-name>mainwindow-bkgimg</canvas-name>
+				<blind>false</blind>
+				<rect>0, 0, 1920, 1080</rect>
+			</canvas-0>
+			<canvas-1>
+				<canvas-type>pvi-canvas</canvas-type>
+				<canvas-name>pvi-canvas</canvas-name>
+				<data-container>1</data-container>
+				<blind>true</blind>
+				<rtchart-price>
+					<stroke-width>.5</stroke-width>
+					<spacelen>0</spacelen>
+					<prdtlen>0</prdtlen>
+					<down-sampler-interval>0</down-sampler-interval>
+
+					<rulersize>50, 20, 50,  5</rulersize>
+					<world>0, 32400, 2985, 3015, 0, 3000</world>
+					<increase>.005, .005, 0</increase>
+				</rtchart-price>
+
+				<rtchart-volume>
+					<stroke-width>1</stroke-width>
+					<spacelen>0</spacelen>
+					<prdtlen>0</prdtlen>
+					<down-sampler-interval>0</down-sampler-interval>
+
+					<rulersize>50,  5, 50,  5</rulersize>
+					<world>0, 32400, 0, 100, 0, 0</world>
+					<increase>0.0, 150.0, 1</increase>
+				</rtchart-volume>
+
+				<rtchart-intr>
+					<stroke-width>12</stroke-width>
+					<spacelen>0</spacelen>
+					<prdtlen>0</prdtlen>
+					<down-sampler-interval>0</down-sampler-interval>
+
+					<rulersize>50,  5, 50, 20</rulersize>
+					<world>0, 32400, 2985, 3015, 0, 3000</world>
+					<increase>2000.0, 2000.0, 1</increase>
+				</rtchart-intr>
+			</canvas-1>
+
+			<canvas-2>
+				<canvas-type>zen-in-twining</canvas-type>
+				<canvas-name>zit-realtime</canvas-name>
+				<data-container>2</data-container>
+				<blind>true</blind>
+				<rtchart-price>
+					<stroke-width>.1</stroke-width>
+					<spacelen>128</spacelen>
+					<prdtlen>360</prdtlen>
+					<down-sampler-interval>0</down-sampler-interval>
+
+					<rulersize>50, 20, 50,  5</rulersize>
+					<world>0, 512, 2985, 3015, 0, 3000</world>
+					<increase>.005, .005, 0</increase>
+				</rtchart-price>
+			</canvas-2>
+
+			<canvas-3>
+				<canvas-type>zen-in-twining</canvas-type>
+				<canvas-name>zit-1m</canvas-name>
+				<data-container>3</data-container>
+				<blind>true</blind>
+				<rtchart-price>
+					<stroke-width>.3</stroke-width>
+					<spacelen>32</spacelen>
+					<prdtlen>30</prdtlen>
+					<down-sampler-interval>120</down-sampler-interval>
+
+					<rulersize>50, 20, 50,  5</rulersize>
+					<world>0, 270, 2985, 3015, 0, 3000</world>
+					<increase>.005, .005, 0</increase>
+				</rtchart-price>
+			</canvas-3>
+
+			<canvas-4>
+				<canvas-type>zen-in-twining</canvas-type>
+				<canvas-name>zit-5m</canvas-name>
+				<data-container>4</data-container>
+				<blind>true</blind>
+				<rtchart-price>
+					<stroke-width>.1</stroke-width>
+					<spacelen>16</spacelen>
+					<prdtlen>20</prdtlen>
+					<down-sampler-interval>600</down-sampler-interval>
+
+					<rulersize>50, 20, 50,  5</rulersize>
+					<world>0, 54, 2985, 3015, 0, 3000</world>
+					<increase>.005, .005, 0</increase>
+				</rtchart-price>
+			</canvas-4>
+
+			<canvas-5>
+				<canvas-type>zen-in-twining</canvas-type>
+				<canvas-name>zit-15m</canvas-name>
+				<data-container>5</data-container>
+				<blind>true</blind>
+				<rtchart-price>
+					<stroke-width>.1</stroke-width>
+					<spacelen>8</spacelen>
+					<prdtlen>18</prdtlen>
+					<down-sampler-interval>1800</down-sampler-interval>
+
+					<rulersize>50, 20, 50,  5</rulersize>
+					<world>0, 18, 2985, 3015, 0, 3000</world>
+					<increase>.005, .005, 0</increase>
+				</rtchart-price>
+			</canvas-5>
+			<canvas-6>
+				<canvas-type>grid</canvas-type>
+				<canvas-name>zit</canvas-name>
+				<data-container>1</data-container>
+				<blind>true</blind>
+			</canvas-6>>
+			<canvas-7>
+				<canvas-type>grid</canvas-type>
+				<canvas-name>trade</canvas-name>
+				<data-container>1</data-container>
+				<blind>true</blind>
+			</canvas-7>>
+			<canvas-8>
+				<canvas-type>toolbar</canvas-type>
+				<canvas-name>trade</canvas-name>
+				<!-- top, left, right, bottom -->
+				<first-command>32772</first-command>
+				<position>top</position>
+				<button-size>64, 64</button-size>
+				<!-- must be zero now (forever ? heihei) -->
+				<interval>0</interval>
+				<toolbar-materials-rect>0, 1080, 128, 1144</toolbar-materials-rect>
+			</canvas-8>>
+		</canvases>
+	</atelier-0>
+
+</config>
+
+

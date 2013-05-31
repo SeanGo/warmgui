@@ -34,7 +34,6 @@ private:
     int      _nDataCount;
     CZenInTwiningAtelier*  _atelier;
     CZenInTwiningLayout*    _layout;
-    IDataContainer* _data_container;
 
 public:
     HANDLE hSimulator;

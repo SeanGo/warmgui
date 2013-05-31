@@ -30,27 +30,24 @@
 //
 /////////////////////////////////////////////////////////////////////////////
 
-#include "stdafx.h"
-#include "warmgui_incs.h"
-#include "GridCell.h"
-#include "GridCtrl.h"
+#include "StdAfx.h"
+#include "warmgui.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
+
+
+namespace WARMGUI {
 
 
 /////////////////////////////////////////////////////////////////////////////
 // GridCell
 
-CGridCell::CGridCell()
+CGridCell::CGridCell(void)
+    : m_pTextFont(0)
 {
     Reset();
 }
 
-CGridCell::~CGridCell()
+CGridCell::~CGridCell(void)
 {
 }
 
@@ -59,7 +56,7 @@ CGridCell::~CGridCell()
 
 void CGridCell::operator=(const CGridCell& cell)
 {
-    CGridCellBase::operator=(cell);
+    CGridCellBase::operator=(  cell);
 }
 
 void CGridCell::Reset()
@@ -70,48 +67,36 @@ void CGridCell::Reset()
     m_nImage   = -1;
     m_pGrid    = NULL;
     m_bEditing = FALSE;
-    m_pEditWnd = NULL;
+    ////m_pEditWnd = NULL;       //CWnd
 
     m_nFormat = (DWORD)-1;       // Use default from CGridDefaultCell
-    m_crBkClr = CLR_DEFAULT;     // Background colour (or CLR_DEFAULT)
-    m_crFgClr = CLR_DEFAULT;     // Forground colour (or CLR_DEFAULT)
+    m_crBkClr = DEFAULT_COLOR_ALPHA;     // Background colour (or DEFAULT_COLOR_ALPHA)
+    m_crFgClr = DEFAULT_COLOR_ALPHA;     // Forground colour (or DEFAULT_COLOR_ALPHA)
     m_nMargin = (UINT)-1;        // Use default from CGridDefaultCell
+
+    m_pTextFont = NULL;            // Cell font
 }
 
-void CGridCell::SetFont(const LOGFONT* plf)
+void CGridCell::SetFont(IDWriteTextFormat* plf)
 {
-    if (plf)
-        memcpy(&m_plfFont, plf, sizeof(LOGFONT)); 
+    m_pTextFont = plf;
 }
 
-LOGFONT* CGridCell::GetFont()
+IDWriteTextFormat* CGridCell::GetFont() const
 {
-    return &m_plfFont; 
-}
-
-LOGFONT* CGridCell::GetFontObject()
-{
-    // If the default font is specified, use the default cell implementation
-    /*if (m_plfFont == NULL)
+    if (m_pTextFont == NULL)
     {
         CGridDefaultCell *pDefaultCell = (CGridDefaultCell*) GetDefaultCell();
         if (!pDefaultCell)
             return NULL;
 
-        return pDefaultCell->GetFontObject();
+        return pDefaultCell->GetFont();
     }
-    else
-    {
-        static CFont Font;
-        Font.DeleteObject();
-        Font.CreateFontIndirect(m_plfFont);
-        return &Font;
-    }*/
 
-    return (0);
+    return m_pTextFont; 
 }
 
-DWORD CGridCell::GetFormat()
+DWORD CGridCell::GetFormat() const
 {
     if (m_nFormat == (DWORD)-1)
     {
@@ -122,10 +107,10 @@ DWORD CGridCell::GetFormat()
         return pDefaultCell->GetFormat();
     }
 
-    return m_nFormat; 
+    return m_nFormat;
 }
 
-UINT CGridCell::GetMargin()           
+UINT CGridCell::GetMargin() const           
 {
     if (m_nMargin == (UINT)-1)
     {
@@ -142,13 +127,12 @@ UINT CGridCell::GetMargin()
 /////////////////////////////////////////////////////////////////////////////
 // GridCell Operations
 
-BOOL CGridCell::Edit(int nRow, int nCol, RECT& rect, POINT& /* point */, UINT nID, UINT nChar)
+BOOL CGridCell::Edit(int nRow, int nCol, RECT rect, POINT_u /* point */, UINT nID, UINT nChar)
 {
-    ////SEAN SEAN SEAN
-    /*if ( m_bEditing )
+    if ( m_bEditing )
 	{      
-        if (m_pEditWnd)
-		    m_pEditWnd->SendMessage ( WM_CHAR, nChar );    
+        ////if (m_pEditWnd)
+		////    m_pEditWnd->SendMessage ( WM_CHAR, nChar );    
     }  
 	else  
 	{   
@@ -162,21 +146,22 @@ BOOL CGridCell::Edit(int nRow, int nCol, RECT& rect, POINT& /* point */, UINT nI
 		
 		// InPlaceEdit auto-deletes itself
 		CGridCtrl* pGrid = GetGrid();
-		//m_pEditWnd = new CInPlaceEdit(pGrid, rect, dwStyle, nID, nRow, nCol, GetText(), nChar);
-    }*/
+        ////SET A EDIT WINDOW
+		////m_pEditWnd = new CInPlaceEdit(pGrid, rect, dwStyle, nID, nRow, nCol, GetText(), nChar);
+    }
     return TRUE;
 }
 
 void CGridCell::EndEdit()
 {
-    //if (m_pEditWnd)
-    //    ((CInPlaceEdit*)m_pEditWnd)->EndEdit();
+    ////if (m_pEditWnd)
+    ////    ((CInPlaceEdit*)m_pEditWnd)->EndEdit();
 }
 
 void CGridCell::OnEndEdit()
 {
     m_bEditing = FALSE;
-    m_pEditWnd = NULL;
+    ////m_pEditWnd = NULL;
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -184,72 +169,67 @@ void CGridCell::OnEndEdit()
 
 CGridDefaultCell::CGridDefaultCell() 
 {
-#ifdef _WIN32_WCE
-    m_nFormat = DT_LEFT|DT_VCENTER|DT_SINGLELINE|DT_NOPREFIX;
-#else
     m_nFormat = DT_LEFT|DT_VCENTER|DT_SINGLELINE|DT_NOPREFIX | DT_END_ELLIPSIS;
-#endif
-    m_crFgClr = CLR_DEFAULT;
-    m_crBkClr = CLR_DEFAULT;
-    ////SEAN SEAN SEAN m_Size    = CSize(30,10);
-    ////SEAN SEAN SEAN m_dwStyle = 0;
 
-#ifdef _WIN32_WCE
-    LOGFONT lf;
-    GetObject(GetStockObject(SYSTEM_FONT), sizeof(LOGFONT), &lf);
-    SetFont(&lf);
-#else // not CE
-    NONCLIENTMETRICS ncm;
-    ncm.cbSize = sizeof(NONCLIENTMETRICS);
-    ////SEAN SEAN SEAN VERIFY(SystemParametersInfo(SPI_GETNONCLIENTMETRICS, sizeof(NONCLIENTMETRICS), &ncm, 0));
-    SystemParametersInfo(SPI_GETNONCLIENTMETRICS, sizeof(NONCLIENTMETRICS), &ncm, 0);
-    SetFont(&(ncm.lfMessageFont));
-#endif
+    m_crFgClr = DEFAULT_COLOR_ALPHA;
+    m_crBkClr = DEFAULT_COLOR_ALPHA;
+    m_Size.width = 30, m_Size.height = 10;
+    m_dwStyle = 0;
+
+    if (m_pGrid)
+        SetFont(m_pGrid->GetUiSetting()._pDefaultFont);
 }
 
 CGridDefaultCell::~CGridDefaultCell()
 {
-    //m_Font.DeleteObject(); 
 }
 
-void CGridDefaultCell::SetFont(const LOGFONT* plf)
+void CGridDefaultCell::SetFont(IDWriteTextFormat* plf)
 {
-    /*ASSERT(plf);
-
     if (!plf) return;
 
-    m_Font.DeleteObject();
-    m_Font.CreateFontIndirect(plf);
 
     CGridCell::SetFont(plf);
 
     // Get the font size and hence the default cell size
-    CDC* pDC = CDC::FromHandle(::GetDC(NULL));
-    if (pDC)
+    HDC hdc = ::GetDC(NULL);
+    if (hdc && m_pTextFont)
     {
-        CFont* pOldFont = pDC->SelectObject(&m_Font);
+        LOGFONT lf;
+        memset(&lf, 0, sizeof(LOGFONT));
+        lf.lfHeight = (long)m_pTextFont->GetFontSize();
+        TCHAR fontName[32];
+        if (SUCCEEDED(m_pTextFont->GetFontFamilyName(fontName, 32))) { 
+            _tcscpy_s(lf.lfFaceName, 32, fontName);
 
-        SetMargin(pDC->GetTextExtent(_T(" "), 1).cx);
-        m_Size = pDC->GetTextExtent(_T(" XXXXXXXXXXXX "), 14);
-        m_Size.cy = (m_Size.cy * 3) / 2;
+            HFONT hMyFont = CreateFontIndirect(&lf);
+            HFONT oldFont = (HFONT)::SelectObject(hdc, hMyFont);
 
-        pDC->SelectObject(pOldFont);
-        ReleaseDC(NULL, pDC->GetSafeHdc());
+            SIZE size;
+            GetTextExtentPoint32(hdc, _T(" "), 1, &size);
+            SetMargin(size.cx);
+            GetTextExtentPoint32(hdc, _T(" XXXXXXXXXXXX "), 14, &size);
+            m_Size.width = size.cx, m_Size.height = (size.cy * 3) / 2;
+
+            SelectObject(hdc, oldFont);
+            DeleteObject(hMyFont);
+        } else {
+            SetMargin(3);
+            m_Size.width = 40, m_Size.height = 16;
+        }
+        ReleaseDC(NULL, hdc);
     }
     else
     {
         SetMargin(3);
-        m_Size = CSize(40,16);
-    }*/
+        m_Size.width = 40, m_Size.height = 16;
+    }
 }
 
-LOGFONT* CGridDefaultCell::GetFont()
+IDWriteTextFormat* CGridDefaultCell::GetFont() const
 {
-    ////SEAN SEAN SEAN ASSERT(m_plfFont);  // This is the default - it CAN'T be NULL!
-    return &m_plfFont;
+    return m_pTextFont;
 }
 
-LOGFONT* CGridDefaultCell::GetFontObject()
-{
-    return &m_Font; 
-}
+
+} //namespace WARMGUI

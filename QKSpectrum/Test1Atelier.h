@@ -7,11 +7,11 @@ public:
 	CTest1Layout();
 	~CTest1Layout();
 
-	virtual void Disposal(WARMGUI::CAtelier* atelier, RECT& rect);
+	virtual void Disposal(WARMGUI::IAtelier* atelier, RECT& rect);
 };
 
 
-class CTest1Atelier : public WARMGUI::CAtelier
+class CTest1Atelier : public WARMGUI::IAtelier
 {
 public:
     CTest1Atelier();

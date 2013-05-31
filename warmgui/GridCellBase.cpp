@@ -41,11 +41,10 @@
 //        
 /////////////////////////////////////////////////////////////////////////////
 
-#include "stdafx.h"
-#include "warmgui_incs.h"
 
-#include "GridCtrl.h"
-#include "GridCellBase.h"
+#include "StdAfx.h"
+#include "warmgui.h"
+
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -53,16 +52,21 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
+#ifndef ASSERT
+#define ASSERT(s)
+#endif //ASSERT
+
+namespace WARMGUI {
 
 /////////////////////////////////////////////////////////////////////////////
 // GridCellBase
 
-CGridCellBase::CGridCellBase()
+CGridCellBase::CGridCellBase(void)
 {
     Reset();
 }
 
-CGridCellBase::~CGridCellBase()
+CGridCellBase::~CGridCellBase(void)
 {
 }
 
@@ -93,12 +97,44 @@ void CGridCellBase::operator=(const CGridCellBase& cell)
 // CGridCellBase Attributes
 
 // Returns a pointer to a cell that holds default values for this particular type of cell
-CGridCellBase* CGridCellBase::GetDefaultCell()
+CGridCellBase* CGridCellBase::GetDefaultCell() const
 {
     if (GetGrid())
         return GetGrid()->GetDefaultCell(IsFixedRow(), IsFixedCol());
     return NULL;
 }
+
+void CGridCellBase::SetArtistFont(CGridCellBase* cell)
+{
+    if (cell->GetFont()) {
+        GetGrid()->_artist->SetTextFormat(cell->GetFont());
+    }else if (cell->IsFixedCol()) {
+        GetGrid()->_artist->SetTextFormat(GetGrid()->_uiSetting._pFixedColFont);
+    } else if (cell->IsFixedRow()) {
+        GetGrid()->_artist->SetTextFormat(GetGrid()->_uiSetting._pFixedRowFont);
+    } else if (cell->IsFixed()) {
+        GetGrid()->_artist->SetTextFormat(GetGrid()->_uiSetting._pFixedRowColFont);
+    } else {
+        GetGrid()->_artist->SetTextFormat(GetGrid()->_uiSetting._pDefaultFont);
+    }
+}
+
+void CGridCellBase::SetArtistTextClr(CGridCellBase* cell, COLORALPHA& TextClr, COLORALPHA& TextBkClr)
+{
+    TextBkClr = cell->GetTextClr(), TextClr = cell->GetBackClr();
+    if (TextClr.a < 0) {
+        if (cell->IsFixedCol()) {
+            TextClr = GetGrid()->_uiSetting._crFixColText, TextBkClr = GetGrid()->_uiSetting._crFixColBkgText;
+        } else if (cell->IsFixedRow()) {
+            TextClr = GetGrid()->_uiSetting._crFixRowText, TextBkClr = GetGrid()->_uiSetting._crFixRowBkgText;
+        } else if (cell->IsFixed()) {
+            TextClr = GetGrid()->_uiSetting._crFixRowColText, TextBkClr = GetGrid()->_uiSetting._crFixRowColBkgText;
+        } else {
+            TextClr = GetGrid()->_uiSetting._crDefaultText, TextBkClr = GetGrid()->_uiSetting._crDefaultBkgText;
+        }
+    }
+}
+
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -108,44 +144,40 @@ CGridCellBase* CGridCellBase::GetDefaultCell()
 // color schemes.  Also removed printing references as that's now done
 // by PrintCell() and fixed the sort marker so that it doesn't draw out
 // of bounds.
-BOOL CGridCellBase::Draw()
-    //CDC* pDC, int nRow, int nCol, CRect rect,  BOOL bEraseBkgnd /*=TRUE*/)
+BOOL CGridCellBase::Draw(int nRow, int nCol, RECT rect,  BOOL bEraseBkgnd /*=TRUE*/)
 {
     // Note - all through this function we totally brutalise 'rect'. Do not
     // depend on it's value being that which was passed in.
-    /*
+
     CGridCtrl* pGrid = GetGrid();
     ASSERT(pGrid);
 
-    if (!pGrid || !pDC)
+    CGridCellBase* cell = pGrid->GetCell(nRow, nCol);
+    ASSERT(cell);
+
+    if (!pGrid)
         return FALSE;
 
-    if( rect.Width() <= 0 || rect.Height() <= 0)  // prevents imagelist item from drawing even
+    if( RectWidth(rect) <= 0 || RectHeight(rect) <= 0)  // prevents imagelist item from drawing even
         return FALSE;                             //  though cell is hidden
 
-    //TRACE3("Drawing %scell %d, %d\n", IsFixed()? _T("Fixed ") : _T(""), nRow, nCol);
+    //MYTRACE(L"Drawing %scell %d, %d\n", IsFixed()? _T("Fixed ") : _T(""), nRow, nCol);
 
-    int nSavedDC = pDC->SaveDC();
-    pDC->SetBkMode(TRANSPARENT);
+    ////SEAN SEAN SEAN
+    //// Set alpha = 0
+
 
     // Get the default cell implementation for this kind of cell. We use it if this cell
     // has anything marked as "default"
-    CGridDefaultCell *pDefaultCell = (CGridDefaultCell*) GetDefaultCell();
-    if (!pDefaultCell)
-        return FALSE;
+    //CGridDefaultCell *pDefaultCell = (CGridDefaultCell*) GetDefaultCell();
+    //if (!pDefaultCell)
+    //    return FALSE;
 
     // Set up text and background colours
-    COLORREF TextClr, TextBkClr;
+    COLORALPHA TextClr, TextBkClr;
+    SetArtistTextClr(cell, TextClr, TextBkClr);
 
-    TextClr = (GetTextClr() == CLR_DEFAULT)? pDefaultCell->GetTextClr() : GetTextClr();
-    if (GetBackClr() == CLR_DEFAULT)
-        TextBkClr = pDefaultCell->GetBackClr();
-    else
-    {
-        bEraseBkgnd = TRUE;
-        TextBkClr = GetBackClr();
-    }
-
+    
     // Draw cell background and highlighting (if necessary)
     if ( IsFocused() || IsDropHighlighted() )
     {
@@ -153,24 +185,15 @@ BOOL CGridCellBase::Draw()
         // cursor is at.  Use the highlight colors though.
         if(GetState() & GVIS_SELECTED)
         {
-            TextBkClr = ::GetSysColor(COLOR_HIGHLIGHT);
-            TextClr = ::GetSysColor(COLOR_HIGHLIGHTTEXT);
+            TextBkClr = pGrid->_uiSetting._crHighLightBkg, TextClr = pGrid->_uiSetting._crHighLightTxt;
             bEraseBkgnd = TRUE;
         }
 
         rect.right++; rect.bottom++;    // FillRect doesn't draw RHS or bottom
         if (bEraseBkgnd)
         {
-            TRY 
-            {
-                CBrush brush(TextBkClr);
-                pDC->FillRect(rect, &brush);
-            } 
-            CATCH(CResourceException, e)
-            {
-                //e->ReportError();
-            }
-            END_CATCH
+            pGrid->_artist->SetSolidColorBrush(TextBkClr);
+            pGrid->_artist->FillRectangle(rect);
         }
 
         // Don't adjust frame rect if no grid lines so that the
@@ -183,20 +206,14 @@ BOOL CGridCellBase::Draw()
 
         if (pGrid->GetFrameFocusCell())
         {
-                // Use same color as text to outline the cell so that it shows
-                // up if the background is black.
-            TRY 
-            {
-                CBrush brush(TextClr);
-                pDC->FrameRect(rect, &brush);
-            }
-            CATCH(CResourceException, e)
-            {
-                //e->ReportError();
-            }
-            END_CATCH
+            // Use same color as text to outline the cell so that it shows
+            // up if the background is black.
+            pGrid->_artist->SetSolidColorBrush(TextClr);
+            pGrid->_artist->FillRectangle(rect);
         }
-        pDC->SetTextColor(TextClr);
+        ////SEAN SEAN SEAN
+        ////Set Text color
+        pGrid->_artist->SetSolidColorBrush(TextClr);
 
         // Adjust rect after frame draw if no grid lines
         if(pGrid->GetGridLines() == GVL_NONE)
@@ -205,25 +222,33 @@ BOOL CGridCellBase::Draw()
             rect.bottom--;
         }
 
-        rect.DeflateRect(1,1);
+        DeflateRect(rect, 1, 1);
     }
     else if ((GetState() & GVIS_SELECTED))
     {
         rect.right++; rect.bottom++;    // FillRect doesn't draw RHS or bottom
-        pDC->FillSolidRect(rect, ::GetSysColor(COLOR_HIGHLIGHT));
+        pGrid->_artist->SetSolidColorBrush(pGrid->_uiSetting._crHighLightBkg);
+        pGrid->_artist->FillRectangle(rect);
         rect.right--; rect.bottom--;
-        pDC->SetTextColor(::GetSysColor(COLOR_HIGHLIGHTTEXT));
+        ////SEAN SEAN SEAN
+        ////Set Text Color
+        pGrid->_artist->SetSolidColorBrush(pGrid->_uiSetting._crHighLightTxt);
     }
     else
     {
         if (bEraseBkgnd)
         {
             rect.right++; rect.bottom++;    // FillRect doesn't draw RHS or bottom
-            CBrush brush(TextBkClr);
-            pDC->FillRect(rect, &brush);
+            ////SEAN SEAN SEAN
+            ////Fill Rect
+            pGrid->_artist->SetSolidColorBrush(TextBkClr);
+            pGrid->_artist->FillRectangle(rect);
+
             rect.right--; rect.bottom--;
         }
-        pDC->SetTextColor(TextClr);
+        ////SEAN SEAN SEAN
+        ////Set Text Color
+        pGrid->_artist->SetSolidColorBrush(TextClr);
     }
 
     // Draw lines only when wanted
@@ -241,40 +266,43 @@ BOOL CGridCellBase::Draw()
         if (bHiliteFixed)
         {
             rect.right++; rect.bottom++;
-            pDC->DrawEdge(rect, BDR_SUNKENINNER /*EDGE_RAISED*//*, BF_RECT);
-            rect.DeflateRect(1,1);
+            ////SEAN SEAN SEAN
+            ////Draw edge
+            pGrid->_artist->DrawRectangle(rect);
+            DeflateRect(rect, 1,1);
         }
         else
         {
-            CPen lightpen(PS_SOLID, 1,  ::GetSysColor(COLOR_3DHIGHLIGHT)),
-                darkpen(PS_SOLID,  1, ::GetSysColor(COLOR_3DDKSHADOW)),
-                *pOldPen = pDC->GetCurrentPen();
+            ////SEAN SEAN SEAN
+            ////Draw 3d rectangle line
+            pGrid->_artist->SetSolidColorBrush(pGrid->_uiSetting._cr3DFace);
+            pGrid->_artist->DrawLine(rect.right, rect.top, rect.left, rect.top);
+            pGrid->_artist->DrawLine(rect.left, rect.top, rect.left, rect.bottom);
+            pGrid->_artist->SetSolidColorBrush(pGrid->_uiSetting._crShadow);
+            pGrid->_artist->DrawLine(rect.right, rect.top, rect.right, rect.bottom);
+            pGrid->_artist->DrawLine(rect.right, rect.bottom, rect.left, rect.bottom);
 
-            pDC->SelectObject(&lightpen);
-            pDC->MoveTo(rect.right, rect.top);
-            pDC->LineTo(rect.left, rect.top);
-            pDC->LineTo(rect.left, rect.bottom);
-
-            pDC->SelectObject(&darkpen);
-            pDC->MoveTo(rect.right, rect.top);
-            pDC->LineTo(rect.right, rect.bottom);
-            pDC->LineTo(rect.left, rect.bottom);
-
-            pDC->SelectObject(pOldPen);
-            rect.DeflateRect(1,1);
+            DeflateRect(rect, 1,1);
         }
     }
 
     // Draw Text and image
-    if (!pDC->m_bPrinting)
+    ////SEAN SEAN SEAN
+    ////Set Font
+    /****if (!pDC->m_bPrinting)
     {
-        CFont *pFont = GetFontObject();
-        if (pFont)
-            pDC->SelectObject(pFont);
-    }
+        IDWriteTextFormat* pFont = GetFontObject();
+        if (pFont) {
+            ////pDC->SelectObject(pFont);
+        }
+    }****/
 
-    rect.DeflateRect(GetMargin(), 0);
+    SetArtistFont(cell);
+    DeflateRect(rect, GetMargin(), 0);
 
+    ////SEAN SEAN SEAN
+    ////Draw Image in image list
+    /*
     if (pGrid->GetImageList() && GetImage() >= 0)
     {
         IMAGEINFO Info;
@@ -301,89 +329,92 @@ BOOL CGridCellBase::Draw()
             //rect.left += nImageWidth+GetMargin();
         }
     }
-
+    */
     // Draw sort arrow
     if (pGrid->GetSortColumn() == nCol && nRow == 0)
     {
-        CSize size = pDC->GetTextExtent(_T("M"));
+        ////SEAN SEAN SEAN
+        SIZE_u size;    //// = pDC->GetTextExtent(_T("M"));
         int nOffset = 2;
 
         // Base the size of the triangle on the smaller of the column
         // height or text height with a slight offset top and bottom.
         // Otherwise, it can get drawn outside the bounds of the cell.
-        size.cy -= (nOffset * 2);
+        size.height -= (nOffset * 2);
 
-        if (size.cy >= rect.Height())
-            size.cy = rect.Height() - (nOffset * 2);
+        if (size.height >= RectHeight(rect))
+            size.height = RectHeight(rect) - (nOffset * 2);
 
-        size.cx = size.cy;      // Make the dimensions square
+        size.width = size.height;      // Make the dimensions square
 
         // Kludge for vertical text
-        BOOL bVertical = (GetFont()->lfEscapement == 900);
+        BOOL bVertical = FALSE;    //(GetFont()->lfEscapement == 900);
 
         // Only draw if it'll fit!
-        if (size.cx + rect.left < rect.right + (int)(2*GetMargin()))
+        if (size.width + rect.left < rect.right + (int)(2*GetMargin()))
         {
-            int nTriangleBase = rect.bottom - nOffset - size.cy;    // Triangle bottom right
-            //int nTriangleBase = (rect.top + rect.bottom - size.cy)/2; // Triangle middle right
+            int nTriangleBase = rect.bottom - nOffset - size.height;    // Triangle bottom right
+            //int nTriangleBase = (rect.top + rect.bottom - size.height)/2; // Triangle middle right
             //int nTriangleBase = rect.top + nOffset;                 // Triangle top right
 
-            //int nTriangleLeft = rect.right - size.cx;                 // Triangle RHS
-            //int nTriangleLeft = (rect.right + rect.left - size.cx)/2; // Triangle middle
+            //int nTriangleLeft = rect.right - size.width;                 // Triangle RHS
+            //int nTriangleLeft = (rect.right + rect.left - size.width)/2; // Triangle middle
             //int nTriangleLeft = rect.left;                            // Triangle LHS
 
             int nTriangleLeft;
             if (bVertical)
-                nTriangleLeft = (rect.right + rect.left - size.cx)/2; // Triangle middle
+                nTriangleLeft = (rect.right + rect.left - size.width)/2; // Triangle middle
             else
-                nTriangleLeft = rect.right - size.cx;               // Triangle RHS
+                nTriangleLeft = rect.right - size.width;               // Triangle RHS
 
-            CPen penShadow(PS_SOLID, 0, ::GetSysColor(COLOR_3DSHADOW));
-            CPen penLight(PS_SOLID, 0, ::GetSysColor(COLOR_3DHILIGHT));
+            ////SEAN SEAN SEAN
+            ////Draw 3d triangle point upwards/downward
             if (pGrid->GetSortAscending())
             {
                 // Draw triangle pointing upwards
-                CPen *pOldPen = (CPen*) pDC->SelectObject(&penLight);
-                pDC->MoveTo( nTriangleLeft + 1, nTriangleBase + size.cy + 1);
-                pDC->LineTo( nTriangleLeft + (size.cx / 2) + 1, nTriangleBase + 1 );
-                pDC->LineTo( nTriangleLeft + size.cx + 1, nTriangleBase + size.cy + 1);
-                pDC->LineTo( nTriangleLeft + 1, nTriangleBase + size.cy + 1);
+                pGrid->_artist->SetSolidColorBrush(pGrid->_uiSetting._cr3DFace);
+                pGrid->_artist->DrawLine( nTriangleLeft + 1, nTriangleBase + size.height + 1, nTriangleLeft + (size.width / 2) + 1, nTriangleBase + 1 );
+                pGrid->_artist->DrawLine( nTriangleLeft + (size.width / 2) + 1, nTriangleBase + 1, nTriangleLeft + size.width + 1, nTriangleBase + size.height + 1);
+                pGrid->_artist->DrawLine( nTriangleLeft + size.width + 1, nTriangleBase + size.height + 1, nTriangleLeft + 1, nTriangleBase + size.height + 1);
 
-                pDC->SelectObject(&penShadow);
-                pDC->MoveTo( nTriangleLeft, nTriangleBase + size.cy );
-                pDC->LineTo( nTriangleLeft + (size.cx / 2), nTriangleBase );
-                pDC->LineTo( nTriangleLeft + size.cx, nTriangleBase + size.cy );
-                pDC->LineTo( nTriangleLeft, nTriangleBase + size.cy );
-                pDC->SelectObject(pOldPen);
+                pGrid->_artist->SetSolidColorBrush(pGrid->_uiSetting._crShadow);
+                pGrid->_artist->DrawLine( nTriangleLeft, nTriangleBase + size.height, nTriangleLeft + (size.width / 2), nTriangleBase );
+                pGrid->_artist->DrawLine( nTriangleLeft + (size.width / 2), nTriangleBase, nTriangleLeft + size.width, nTriangleBase + size.height );
+                pGrid->_artist->DrawLine( nTriangleLeft + size.width, nTriangleBase + size.height, nTriangleLeft, nTriangleBase + size.height );
             }
             else
             {
                 // Draw triangle pointing downwards
-                CPen *pOldPen = (CPen*) pDC->SelectObject(&penLight);
-                pDC->MoveTo( nTriangleLeft + 1, nTriangleBase + 1 );
-                pDC->LineTo( nTriangleLeft + (size.cx / 2) + 1, nTriangleBase + size.cy + 1 );
-                pDC->LineTo( nTriangleLeft + size.cx + 1, nTriangleBase + 1 );
-                pDC->LineTo( nTriangleLeft + 1, nTriangleBase + 1 );
+                pGrid->_artist->SetSolidColorBrush(pGrid->_uiSetting._cr3DFace);
+                pGrid->_artist->DrawLine( nTriangleLeft + 1, nTriangleBase + 1, nTriangleLeft + (size.width / 2) + 1, nTriangleBase + size.height + 1 );
+                pGrid->_artist->DrawLine( nTriangleLeft + (size.width / 2) + 1, nTriangleBase + size.height + 1, nTriangleLeft + size.width + 1, nTriangleBase + 1 );
+                pGrid->_artist->DrawLine( nTriangleLeft + size.width + 1, nTriangleBase + 1, nTriangleLeft + 1, nTriangleBase + 1 );
     
-                pDC->SelectObject(&penShadow);
-                pDC->MoveTo( nTriangleLeft, nTriangleBase );
-                pDC->LineTo( nTriangleLeft + (size.cx / 2), nTriangleBase + size.cy );
-                pDC->LineTo( nTriangleLeft + size.cx, nTriangleBase );
-                pDC->LineTo( nTriangleLeft, nTriangleBase );
-                pDC->SelectObject(pOldPen);
+                pGrid->_artist->SetSolidColorBrush(pGrid->_uiSetting._crShadow);
+                pGrid->_artist->DrawLine( nTriangleLeft, nTriangleBase, nTriangleLeft + (size.width / 2), nTriangleBase + size.height );
+                pGrid->_artist->DrawLine( nTriangleLeft + (size.width / 2), nTriangleBase + size.height, nTriangleLeft + size.width, nTriangleBase );
+                pGrid->_artist->DrawLine( nTriangleLeft + size.width, nTriangleBase, nTriangleLeft, nTriangleBase );
             }
-            
             if (!bVertical)
-                rect.right -= size.cy;
+                rect.right -= size.height;
         }
     }
 
     // We want to see '&' characters so use DT_NOPREFIX
-    GetTextRect(rect);
-    DrawText(pDC->m_hDC, GetText(), -1, rect, GetFormat() | DT_NOPREFIX);
+    GetTextRect(&rect);
+    ////SEAN SEAN SEAN
+    ////Draw Text
+    ////DrawText(pDC->m_hDC, GetText(), -1, rect, GetFormat() | DT_NOPREFIX);
 
-    pDC->RestoreDC(nSavedDC);
-    */
+    if (GetText()) {
+        pGrid->_artist->SetSolidColorBrush(TextClr);
+        pGrid->_artist->DrawTextW(GetText(), rect);
+    }
+
+    ////SEAN SEAN SEAN
+    ////get every thing back
+    ////pDC->RestoreDC(nSavedDC);
+
     return TRUE;
 }
 
@@ -393,50 +424,46 @@ BOOL CGridCellBase::Draw()
 // Not yet implemented
 void CGridCellBase::OnMouseEnter()
 {
-    ////SEAN SEAN SEAN TRACE0("Mouse entered cell\n");
+    MYTRACE(L"Mouse entered cell\n");
 }
 
 void CGridCellBase::OnMouseOver()
 {
-    //////SEAN SEAN SEAN TRACE0("Mouse over cell\n");
+    //MYTRACE(L"Mouse over cell\n");
 }
 
 // Not Yet Implemented
 void CGridCellBase::OnMouseLeave()
 {
-    ////SEAN SEAN SEAN TRACE0("Mouse left cell\n");
+    MYTRACE(L"Mouse left cell\n");
 }
 
-void CGridCellBase::OnClick(POINT PointCellRelative)
+void CGridCellBase::OnClick(POINT_u PointCellRelative)
 {
-    ////SEAN SEAN SEAN UNUSED_ALWAYS(PointCellRelative);
-    ////SEAN SEAN SEAN TRACE0("Mouse Left btn up in cell at x=%i y=%i\n", PointCellRelative.x, PointCellRelative.y);
+    MYTRACE(L"Mouse Left btn up in cell at x=%i y=%i\n", PointCellRelative.x, PointCellRelative.y);
 }
 
-void CGridCellBase::OnClickDown(POINT PointCellRelative)
+void CGridCellBase::OnClickDown( POINT_u PointCellRelative)
 {
-    ////SEAN SEAN SEAN UNUSED_ALWAYS(PointCellRelative);
-    ////SEAN SEAN SEAN TRACE0("Mouse Left btn down in cell at x=%i y=%i\n", PointCellRelative.x, PointCellRelative.y);
+    MYTRACE(L"Mouse Left btn down in cell at x=%i y=%i\n", PointCellRelative.x, PointCellRelative.y);
 }
 
-void CGridCellBase::OnRClick(POINT PointCellRelative)
+void CGridCellBase::OnRClick( POINT_u PointCellRelative)
 {
-    ////SEAN SEAN SEAN UNUSED_ALWAYS(PointCellRelative);
-    ////SEAN SEAN SEAN TRACE0("Mouse right-clicked in cell at x=%i y=%i\n", PointCellRelative.x, PointCellRelative.y);
+    MYTRACE(L"Mouse right-clicked in cell at x=%i y=%i\n", PointCellRelative.x, PointCellRelative.y);
 }
 
-void CGridCellBase::OnDblClick(POINT PointCellRelative)
+void CGridCellBase::OnDblClick( POINT_u PointCellRelative)
 {
-    ////SEAN SEAN SEAN UNUSED_ALWAYS(PointCellRelative);
-    ////SEAN SEAN SEAN TRACE0("Mouse double-clicked in cell at x=%i y=%i\n", PointCellRelative.x, PointCellRelative.y);
+    MYTRACE(L"Mouse double-clicked in cell at x=%i y=%i\n", PointCellRelative.x, PointCellRelative.y);
 }
 
 // Return TRUE if you set the cursor
 BOOL CGridCellBase::OnSetCursor()
 {
-#ifndef _WIN32_WCE_NO_CURSOR
-    ////SEAN SEAN SEAN SetCursor(AfxGetApp()->LoadStandardCursor(IDC_ARROW));
-#endif
+    ////SEAN SEAN SEAN
+    ////Set cursor
+    ////SetCursor(AfxGetApp()->LoadStandardCursor(IDC_ARROW));
     return TRUE;
 }
 
@@ -450,7 +477,6 @@ void CGridCellBase::OnEndEdit()
 
 BOOL CGridCellBase::ValidateEdit(LPCTSTR str)
 {
-    //////SEAN SEAN SEAN UNUSED_ALWAYS(str);
 	return TRUE;
 }
 
@@ -464,57 +490,50 @@ BOOL CGridCellBase::GetTextRect( LPRECT pRect)  // i/o:  i=dims of cell rect; o=
         IMAGEINFO Info;
 
         CGridCtrl* pGrid = GetGrid();
-        ////SEAN SEAN SEAN CImageList* pImageList = pGrid->GetImageList();
-        
-        ////SEAN SEAN SEAN if (pImageList && pImageList->GetImageInfo( GetImage(), &Info))
-        ////SEAN SEAN SEAN {
-        ////SEAN SEAN SEAN     int nImageWidth = Info.rcImage.right-Info.rcImage.left+1;
-        ////SEAN SEAN SEAN     pRect->left += nImageWidth + GetMargin();
-        ////SEAN SEAN SEAN }
+        ////SEAN SEAN SEAN
+        ////Set image
+        ////CImageList* pImageList = pGrid->GetImageList();
+        /****
+        if (pImageList && pImageList->GetImageInfo( GetImage(), &Info))
+        {
+            int nImageWidth = Info.rcImage.right-Info.rcImage.left+1;
+            pRect->left += nImageWidth + GetMargin();
+        }****/
     }
 
     return TRUE;
 }
 
 // By default this uses the selected font (which is a bigger font)
-SIZE_u CGridCellBase::GetTextExtent(LPCTSTR szText)
+SIZE_u CGridCellBase::GetTextExtent(LPCTSTR szText)////, CDC* pDC /*= NULL*/)
 {
-    /*
     CGridCtrl* pGrid = GetGrid();
     ASSERT(pGrid);
 
-    BOOL bReleaseDC = FALSE;
-    if (pDC == NULL || szText == NULL)
+    if (!szText) 
     {
-        if (szText)
-			pDC = pGrid->GetDC();
-        if (pDC == NULL || szText == NULL) 
-        {
-            CGridDefaultCell* pDefCell = (CGridDefaultCell*) GetDefaultCell();
-            ASSERT(pDefCell);
-            return CSize(pDefCell->GetWidth(), pDefCell->GetHeight());
-        }
-        bReleaseDC = TRUE;
+        CGridDefaultCell* pDefCell = (CGridDefaultCell*) GetDefaultCell();
+        if (pDefCell)
+            return SIZE_u(pDefCell->GetWidth(), pDefCell->GetHeight());
+        else
+            return SIZE_u(0, 0);
     }
 
-    CFont *pOldFont = NULL,
-          *pFont = GetFontObject();
-    if (pFont)
-        pOldFont = pDC->SelectObject(pFont);
-
-    CSize size;
+    SIZE_u size;
+    /**** SEAN SEAN SEAN
+    Draw Text and get the size of text
     int nFormat = GetFormat();
 
     // If the cell is a multiline cell, then use the width of the cell
     // to get the height
     if ((nFormat & DT_WORDBREAK) && !(nFormat & DT_SINGLELINE))
     {
-        CString str = szText;
+        tstring str = szText;
         int nMaxWidth = 0;
         while (TRUE)
         {
-            int nPos = str.Find(_T('\n'));
-            CString TempStr = (nPos < 0)? str : str.Left(nPos);
+            size_t nPos = str.find(_T('\n'));
+            tstring TempStr = (nPos == tstring::npos)? str : str.Left(nPos);
             int nTempWidth = pDC->GetTextExtent(TempStr).cx;
             if (nTempWidth > nMaxWidth)
                 nMaxWidth = nTempWidth;
@@ -524,8 +543,8 @@ SIZE_u CGridCellBase::GetTextExtent(LPCTSTR szText)
             str = str.Mid(nPos + 1);    // Bug fix by Thomas Steinborn
         }
         
-        CRect rect;
-        rect.SetRect(0,0, nMaxWidth+1, 0);
+        RECT rect;
+        rect.left = rect.top = rect.bottom = 0, rect.right = nMaxWidth + 1;
         pDC->DrawText(szText, -1, rect, nFormat | DT_CALCRECT);
         size = rect.Size();
     }
@@ -534,35 +553,34 @@ SIZE_u CGridCellBase::GetTextExtent(LPCTSTR szText)
 
     TEXTMETRIC tm;
     pDC->GetTextMetrics(&tm);
-    size.cx += (tm.tmOverhang);
+    size.width += (tm.tmOverhang);
 
     if (pOldFont)
         pDC->SelectObject(pOldFont);
     
-    size += CSize(4*GetMargin(), 2*GetMargin());
+    size += SIZE_u(4*GetMargin(), 2*GetMargin());
 
     // Kludge for vertical text
     LOGFONT *pLF = GetFont();
     if (pLF->lfEscapement == 900 || pLF->lfEscapement == -900)
     {
-        int nTemp = size.cx;
-        size.cx = size.cy;
-        size.cy = nTemp;
-        size += CSize(0, 4*GetMargin());
+        int nTemp = size.width;
+        size.width = size.height;
+        size.height = nTemp;
+        size += SIZE_u(0, 4*GetMargin());
     }
     
     if (bReleaseDC)
         pGrid->ReleaseDC(pDC);
-    */
-    SIZE_u size;
+    ****/
     return size;
 }
 
-SIZE_u CGridCellBase::GetCellExtent()
+SIZE_u CGridCellBase::GetCellExtent()////CDC* pDC)
 {
+    SIZE_u size = GetTextExtent(GetText());////, pDC);
     /*
-    CSize size = GetTextExtent(GetText(), pDC);
-    CSize ImageSize(0,0);
+    SIZE_u ImageSize(0,0);
 
     int nImage = GetImage();
     if (nImage >= 0) 
@@ -574,174 +592,13 @@ SIZE_u CGridCellBase::GetCellExtent()
         {
             IMAGEINFO Info;
             if (pGrid->GetImageList()->GetImageInfo(nImage, &Info))
-                ImageSize = CSize(Info.rcImage.right-Info.rcImage.left+1, 
+                ImageSize = SIZE_u(Info.rcImage.right-Info.rcImage.left+1, 
                                   Info.rcImage.bottom-Info.rcImage.top+1);
         }
     }
     
-    return CSize(size.cx + ImageSize.cx, max(size.cy, ImageSize.cy));
-    */
-    SIZE_u size;
-    return size;
-}
-
-// EFW - Added to print cells so that grids that use different colors are
-// printed correctly.
-BOOL CGridCellBase::PrintCell(int /*nRow*/, int /*nCol*/, RECT& rect)
-{
-    /*
-#if defined(_WIN32_WCE_NO_PRINTING) || defined(GRIDCONTROL_NO_PRINTING)
-    return FALSE;
-#else
-    COLORREF crFG, crBG;
-    GV_ITEM Item;
-
-    CGridCtrl* pGrid = GetGrid();
-    if (!pGrid || !pDC)
-        return FALSE;
-
-    if( rect.Width() <= 0
-        || rect.Height() <= 0)  // prevents imagelist item from drawing even
-        return FALSE;           //  though cell is hidden
-
-    int nSavedDC = pDC->SaveDC();
-
-    pDC->SetBkMode(TRANSPARENT);
-
-    if(pGrid->GetShadedPrintOut())
-    {
-        // Get the default cell implementation for this kind of cell. We use it if this cell
-        // has anything marked as "default"
-        CGridDefaultCell *pDefaultCell = (CGridDefaultCell*) GetDefaultCell();
-        if (!pDefaultCell)
-            return FALSE;
-
-        // Use custom color if it doesn't match the default color and the
-        // default grid background color.  If not, leave it alone.
-        if(IsFixed())
-            crBG = (GetBackClr() != CLR_DEFAULT) ? GetBackClr() : pDefaultCell->GetBackClr();
-        else
-            crBG = (GetBackClr() != CLR_DEFAULT && GetBackClr() != pDefaultCell->GetBackClr()) ?
-                GetBackClr() : CLR_DEFAULT;
-
-        // Use custom color if the background is different or if it doesn't
-        // match the default color and the default grid text color.  If not,
-        // use black to guarantee the text is visible.
-        if(IsFixed())
-            crFG = (GetBackClr() != CLR_DEFAULT) ? GetTextClr() : pDefaultCell->GetTextClr();
-        else
-            crFG = (GetBackClr() != CLR_DEFAULT ||
-                (GetTextClr() != CLR_DEFAULT && GetTextClr() != pDefaultCell->GetTextClr())) ?
-                    GetTextClr() : RGB(0, 0, 0);
-
-        // If not printing on a color printer, adjust the foreground color
-        // to a gray scale if the background color isn't used so that all
-        // colors will be visible.  If not, some colors turn to solid black
-        // or white when printed and may not show up.  This may be caused by
-        // coarse dithering by the printer driver too (see image note below).
-        if(pDC->GetDeviceCaps(NUMCOLORS) == 2 && crBG == CLR_DEFAULT)
-            crFG = RGB(GetRValue(crFG) * 0.30, GetGValue(crFG) * 0.59,
-                GetBValue(crFG) * 0.11);
-
-        // Only erase the background if the color is not the default
-        // grid background color.
-        if(crBG != CLR_DEFAULT)
-        {
-            CBrush brush(crBG);
-            rect.right++; rect.bottom++;
-            pDC->FillRect(rect, &brush);
-            rect.right--; rect.bottom--;
-        }
-    }
-    else
-    {
-        crBG = CLR_DEFAULT;
-        crFG = RGB(0, 0, 0);
-    }
-
-    pDC->SetTextColor(crFG);
-
-    CFont *pFont = GetFontObject();
-    if (pFont)
-        pDC->SelectObject(pFont);
-
-    /*
-    // ***************************************************
-    // Disabled - if you need this functionality then you'll need to rewrite.
-    // Create the appropriate font and select into DC.
-    CFont Font;
-    // Bold the fixed cells if not shading the print out.  Use italic
-    // font it it is enabled.
-    const LOGFONT* plfFont = GetFont();
-    if(IsFixed() && !pGrid->GetShadedPrintOut())
-    {
-        Font.CreateFont(plfFont->lfHeight, 0, 0, 0, FW_BOLD, plfFont->lfItalic, 0, 0,
-            ANSI_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS,
-#ifndef _WIN32_WCE
-            PROOF_QUALITY,
-#else
-            DEFAULT_QUALITY,
-#endif
-            VARIABLE_PITCH | FF_SWISS, plfFont->lfFaceName);
-    }
-    else
-        Font.CreateFontIndirect(plfFont);
-
-    pDC->SelectObject(&Font);
-    // ***************************************************
-    *//*
-
-    // Draw lines only when wanted on fixed cells.  Normal cell grid lines
-    // are handled in OnPrint.
-    if(pGrid->GetGridLines() != GVL_NONE && IsFixed())
-    {
-        CPen lightpen(PS_SOLID, 1,  ::GetSysColor(COLOR_3DHIGHLIGHT)),
-             darkpen(PS_SOLID,  1, ::GetSysColor(COLOR_3DDKSHADOW)),
-            *pOldPen = pDC->GetCurrentPen();
-
-        pDC->SelectObject(&lightpen);
-        pDC->MoveTo(rect.right, rect.top);
-        pDC->LineTo(rect.left, rect.top);
-        pDC->LineTo(rect.left, rect.bottom);
-
-        pDC->SelectObject(&darkpen);
-        pDC->MoveTo(rect.right, rect.top);
-        pDC->LineTo(rect.right, rect.bottom);
-        pDC->LineTo(rect.left, rect.bottom);
-
-        rect.DeflateRect(1,1);
-        pDC->SelectObject(pOldPen);
-    }
-
-    rect.DeflateRect(GetMargin(), 0);
-
-    if(pGrid->GetImageList() && GetImage() >= 0)
-    {
-        // NOTE: If your printed images look like fuzzy garbage, check the
-        //       settings on your printer driver.  If it's using coarse
-        //       dithering and/or vector graphics, they may print wrong.
-        //       Changing to fine dithering and raster graphics makes them
-        //       print properly.  My HP 4L had that problem.
-
-        IMAGEINFO Info;
-        if(pGrid->GetImageList()->GetImageInfo(GetImage(), &Info))
-        {
-            int nImageWidth = Info.rcImage.right-Info.rcImage.left;
-            pGrid->GetImageList()->Draw(pDC, GetImage(), rect.TopLeft(), ILD_NORMAL);
-            rect.left += nImageWidth+GetMargin();
-        }
-    }
-
-    // Draw without clipping so as not to lose text when printed for real
-	// DT_NOCLIP removed 01.01.01. Slower, but who cares - we are printing!
-    DrawText(pDC->m_hDC, GetText(), -1, rect,
-        GetFormat() | /*DT_NOCLIP | *//* DT_NOPREFIX);
-
-    pDC->RestoreDC(nSavedDC);
-    return TRUE;
-#endif
-    */
-    return TRUE;
+    return SIZE_u(size.width + ImageSize.cx, max(size.height, ImageSize.cy));*/
+    return SIZE_u(size.width, size.height);
 }
 
 /*****************************************************************************
@@ -755,3 +612,5 @@ LRESULT CGridCellBase::SendMessageToParent(int nRow, int nCol, int nMessage)
     else
         return 0;
 }
+
+} //namespace WARMGUI

@@ -5,6 +5,7 @@ namespace WARMGUI {
 CGridCanvas::CGridCanvas(void)
     : _gc(0)
 {
+    setClass();
 }
 
 
@@ -13,27 +14,28 @@ CGridCanvas::~CGridCanvas(void)
 }
 
 
-CGridCanvas::CGridCanvas(const TCHAR * name)
+CGridCanvas::CGridCanvas(const char* name)
 	: ICanvas(name)
     , _gc(0)
 {
+    setClass();
 }
 
 void CGridCanvas::SetGlyphRect()
 {
-    for (GlyphTreeIter iter = _gt.begin(); iter != _gt.end(); iter++)
+    for (GlyphTreeIter iter = _gt.begin(); iter != _gt.end(); iter++) {
         (*iter)->SetRect(_rect);
+    }
 }
 
-HRESULT CGridCanvas::Init()
+const HRESULT CGridCanvas::Init(const char* name/* = 0*/)
 {
-	ICanvas::Init();
-
 	if (!_config)
 		return (-1);
 
+    set_background();
     
-    _gc = new CWarmGridCtrl(L"grid_contrl");
+    _gc = new CGridCtrl("grid_contrl");
     InsertAfter(_gc);
 
 	return S_OK;

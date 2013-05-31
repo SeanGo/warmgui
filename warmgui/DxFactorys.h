@@ -3,39 +3,41 @@
 namespace WARMGUI {
 class WARMGUI_API CDxFactorys {
 private:
-	CDxFactorys();
-	~CDxFactorys();
+                        CDxFactorys();
+                       ~CDxFactorys();
 
 public:
 	//HRESULT CreateBitmapRenderTarget();
-	HRESULT CreateRenderTarget(HWND hwnd,
+	HRESULT             CreateRenderTarget(HWND hwnd,
 								ID2D1HwndRenderTarget ** pHwndRenderTarget,
 								ID2D1BitmapRenderTarget ** pBitmapRenderTarget);
-	HRESULT CreateRenderTarget(HWND hwnd,
+	HRESULT             CreateRenderTarget(HWND hwnd,
 								ID2D1HwndRenderTarget ** pHwndRenderTarget);
 	//IWICImagingFactory * CreateImageFactory();
 
 	//ID2D1HwndRenderTarget * GetHwndRenderTarget();
-	ID2D1Factory          * GetD2DFactory();
-	IWICImagingFactory    * GetImgFactory();
-	IDWriteFactory        * GetDWriteFactory();
+	ID2D1Factory*       GetD2DFactory();
+	IWICImagingFactory* GetImgFactory();
+	IDWriteFactory*     GetDWriteFactory();
 
-	HRESULT InitDxFactory();
-	void ReleaseResource();
+    bool                CreateTextFormat(FONT& font, IDWriteTextFormat** pTextFormat);
 
-	static CDxFactorys * GetInstance();
+	HRESULT             InitDxFactory();
+	void                ReleaseResource();
+
+	static CDxFactorys* GetInstance();
 public:
-	float   m_dpiScaleX;
-	float   m_dpiScaleY;
-	SIZE_f _size_screen;
+	float               m_dpiScaleX;
+	float               m_dpiScaleY;
+	SIZE_f              _size_screen;
 
 protected:
 	//HWND m_hwnd;
 	//ID2D1HwndRenderTarget * m_pHwndRenderTarget;
-	ID2D1Factory          * m_pD2DFactory;
-	IWICImagingFactory    * m_pImgFactory;
-	IDWriteFactory        * m_pDWriteFactory;
-	CDxFactorys * m_itsme;
+	ID2D1Factory*       m_pD2DFactory;
+	IWICImagingFactory* m_pImgFactory;
+	IDWriteFactory*     m_pDWriteFactory;
+	CDxFactorys*        m_itsme;
 
 };
 

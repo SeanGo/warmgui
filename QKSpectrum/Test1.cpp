@@ -22,7 +22,6 @@ CTest1::CTest1(void)
     _pdata = ReadMarketDataFromFile(datafile, &_nDataCount);
     //_ctpmmd = new CTPMMD[_nDataCount];
     //memset(_ctpmmd, 0, sizeof(CTPMMD) * _nDataCount);
-    _data_container = new IDataContainer();
 }
 
 
@@ -31,7 +30,6 @@ CTest1::~CTest1(void)
     if (_ctpmmd) delete _ctpmmd;
     if (_pdata) freedata(_pdata);
     if (_atelier) delete _atelier;
-    if (_data_container) delete _data_container;
 }
 
 
@@ -40,8 +38,6 @@ int CTest1::OnCreate(LPCREATESTRUCT /*cs*/)
 	if (InitAtelier())
 		return (-1);
 
-    _data_container->SetConfig(_config);
-    _data_container->SetContainerSize(sizeof(CTPMMD), 32400);
     //_data_container->RegisterCanvass(_atelier);
     //    _atelier->SetDataContanier();
 
@@ -66,7 +62,6 @@ BOOL CTest1::PreCreateWindow(LPCREATESTRUCT cs)
 void CTest1::OnSize(UINT /*nType*/, int cx, int cy)
 {
 	if (_atelier && cx > 0 && cy > 0) {
-        _data_container->SetGeometryData();
 		::GetClientRect(_hwnd, &_rectClient);
 		_atelier->SetRect(_rectClient);
 	}
@@ -98,7 +93,6 @@ int CTest1::InitAtelier()
 {
 	_atelier = new CTest1Atelier();
 	_atelier->SetConfigFile(_config);
-    _atelier->SetDataContainer(_data_container);
 	if (FAILED(_atelier->CreateRenderTarget(_hwnd)))
 		return (-2);
 
@@ -132,7 +126,6 @@ DWORD WINAPI CTest1::simulator_sending(LPVOID param)
         ConvertMmd2Ctpmmd(me->_pdata + n, ctpsec, &ctpmmd);
 
         dop->CopyData(&ctpmmd, sizeof(CTPMMD));
-        me->_data_container->AddData(dop);
 
         me->ReDraw(GLYPH_CHANGED_TYPE_NONE);
         

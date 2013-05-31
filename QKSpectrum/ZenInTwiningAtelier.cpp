@@ -5,7 +5,7 @@
 //////////////////////////////////////////////////////////////////////////////////////////
 // class CZenInTwiningAtelier
 
-CZenInTwiningAtelier::CZenInTwiningAtelier(const TCHAR* name)
+CZenInTwiningAtelier::CZenInTwiningAtelier(const char* name)
     :   _canvasImgbkg(0)
     ,      _pvicanvas(0)
     ,      _layoutOne(0)
@@ -17,70 +17,22 @@ CZenInTwiningAtelier::CZenInTwiningAtelier(const TCHAR* name)
     ,       _trademsg(0)
 	,        _toolbar(0)
 {
-    _tcscpy_s(_name, MAX_WARMGUI_NAME_LEN, name);
-}
-
-void CZenInTwiningAtelier::SetLayout()
-{
-	_layoutOne = new CZenInTwiningLayout();
-	_layout = _layoutOne;
+    strcpy_s(_name, MAX_WARMGUI_NAME_LEN, name);
+    setClass();
 }
 
 HRESULT CZenInTwiningAtelier::InitAtelier(HWND hwnd, WARMGUI::CWarmguiConfig* config)
 {
-	HRESULT hr = CAtelier::InitAtelier(hwnd, config);
+	HRESULT hr = IAtelier::InitAtelier(hwnd, config);
 
-	if (SUCCEEDED(hr) && GetBitmapMaterial()) {
-		_canvasImgbkg = new WARMGUI::CBkgCanvas(L"bkgcanvas");
+	/*
+    if (SUCCEEDED(hr) && GetBitmapMaterial()) {
+		_canvasImgbkg = new WARMGUI::CBkgCanvas("bkgcanvas");
 		_canvasImgbkg->SetBitmap(&_appbmp);
 		Insert(_canvasImgbkg);
 	}
-
-    _pvicanvas = new CPVICanvas(L"canvas-main-pvi");
-    Insert(_pvicanvas);
-
-	_rtcanvas = new CZenInTwiningCanvas(L"canvas-rt-twinig");
-	Insert(_rtcanvas);
-	CTPMMD ctpdata;
-    int x0 = (int)(&ctpdata.fIndex) - (int)&ctpdata;
-    int y0 = (int)(&ctpdata.LastPrice) - (int)&ctpdata; 
-    _rtcanvas->setDataOffset(x0, y0);
-
-	_1mcanvas = new CZenInTwiningCanvas(L"canvas-twining-1m");
-	Insert(_1mcanvas);
-    _1mcanvas->setDataOffset(x0, y0);
-
-	_5mcanvas = new CZenInTwiningCanvas(L"canvas-twining-5m");
-	Insert(_5mcanvas);
-    _5mcanvas->setDataOffset(x0, y0);
-
-	_15mcanvas = new CZenInTwiningCanvas(L"canvas-twining-15m");
-	Insert(_15mcanvas);
-    _15mcanvas->setDataOffset(x0, y0);
-
-    _message  = new CGridCanvas(L"analyse-info");
-	Insert(_message);
-
-    _trademsg = new CGridCanvas(L"trand-info");
-	Insert(_trademsg);
-
-	_toolbar = new WARMGUI::CToolbar(L"toolbar", ID_NETWORK_LOGIN);
-	Insert(_toolbar);
-
-    SetLayout();
+    */
 	return hr;
-}
-
-void CZenInTwiningAtelier::SetChatToDataContanier()
-{
-	if (_data_container)
-    {
-		_pvicanvas->SetChatToDataContanier();
-		_rtcanvas->SetChatToDataContanier();
-		_1mcanvas->SetChatToDataContanier();
-		_5mcanvas->SetChatToDataContanier();
-		_15mcanvas->SetChatToDataContanier();
-	}
 }
 
 
@@ -113,7 +65,6 @@ void CZenInTwiningAtelier::ReceiveData(DataObjectPtr dop, const char* name)
     
     if (!_ctptimesec.st1)
         _ctptimesec.set_time_sec(((CTPMMD*)(dop->GetData()))->m_time);
-    _data_container->AddData(dop);
 
     //buf += sizeof(CTPMMD), len -= sizeof(CTPMMD);
 
@@ -190,4 +141,21 @@ void CZenInTwiningAtelier::ReceiveData(DataObjectPtr dop, const char* name)
 	    }
     }
     */
+}
+
+
+bool CZenInTwiningAtelier::GetAllCanvas()
+{
+    CanvasIter iter = _canvasses.begin();
+    _canvasImgbkg   = (WARMGUI::CBkgCanvas* ) (*iter); ++iter;
+    _pvicanvas      = (CPVICanvas*)           (*iter); ++iter;
+    _rtcanvas       = (CZenInTwiningCanvas* ) (*iter); ++iter;
+    _1mcanvas       = (CZenInTwiningCanvas* ) (*iter); ++iter;
+    _5mcanvas       = (CZenInTwiningCanvas* ) (*iter); ++iter;
+    _15mcanvas      = (CZenInTwiningCanvas* ) (*iter); ++iter;
+    _message        = (WARMGUI::CGridCanvas*) (*iter); ++iter;
+    _trademsg       = (WARMGUI::CGridCanvas*) (*iter); ++iter;
+	_toolbar        = (WARMGUI::CToolbar*   ) (*iter);
+
+    return (true);
 }

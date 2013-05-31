@@ -26,8 +26,6 @@ public:
 	//msgfun int  OnRenewBitmap(ICanvas * canvas);
 	inline RECT* GetClientRect();
 
-	virtual int  InitAtelier();
-
     void         ReDraw();
 	void         SetConfig(CWarmguiConfig*  config) {_config = config;}
 
@@ -35,20 +33,18 @@ public:
     int          Login(const char* username, const char* password);
     int          Logout();
 
-protected:
+private:
 	RECT                _rectClient;
 	CWarmguiConfig*         _config;
-    IDataContainer* _data_container;
-
-private:
+    IDataDispatcher*    _dispatcher;
+	Poco::Thread  _th_data_receiver;
+    CQksGuiFactory     _zit_factory;
     CZenInTwiningAtelier*  _atelier;
     CZenInTwiningLayout*    _layout;
-
     CNetClient              _netcli;
-
     CtpRtFilters         _ctpfilter;
 };
 
 
 
-#endif //__qks_test_2_h_include__
+#endif //__qks_test_3_h_include__

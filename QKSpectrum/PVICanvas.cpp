@@ -2,57 +2,35 @@
 #include "qks_incs.h"
 
 
-CPVICanvas::CPVICanvas(const TCHAR* name)
-    : CRtDataCanvas(name)
+CPVICanvas::CPVICanvas(const char* name)
+    : IDataCanvas(name)
     ,    _chart_price(0)
     ,   _chart_volume(0)
     , _chart_interest(0)
 {
-
+    setClass();
 }
 
 CPVICanvas::~CPVICanvas(void)
 {
 }
 
-HRESULT CPVICanvas::Init()
+const HRESULT CPVICanvas::Init(const char* name/*=0*/)
 {
-    TCHAR name[MAX_PATH];
+    char temp[MAX_PATH];
+    _snprintf_s(temp, MAX_PATH, _TRUNCATE, "%s.blind", _strconf);
+    _bHasBackground = _config->getBool(temp);
+
     if (_bHasBackground) {
         _blind = new CBlind(_name, BGR(0, 0, 0), 0.5);
         AppendChild(_gt.begin(), _blind);
     }
 
+    // add data chart "price"
+    AddDataChart("price", &_chart_price);
+    AddDataChart("volume", &_chart_volume);
+    AddDataChart("interest", &_chart_interest);
 
-    _chart_price = new CSeriesDataChart(L"price");
-    InsertNext(_blind->GetGlyphTreeIter(), _chart_price);
-    _chart_price->Init();
-
-    //add price lines graph
-    _sntprintf_s(name, MAX_WARMGUI_NAME_LEN, _TRUNCATE, L"graph-%s-price", _name);
-    CDataLineGraph* graph = new CDataLineGraph(name, true, _chart_price);
-    _chart_price->AddGraph(graph);
-    graph->SetDrawType(CDataLineGraph::SDATA_GRAPH_LINE_TYPE_LINE);
-
-    _chart_volume = new CSeriesDataChart(L"volume");
-    InsertNext(_chart_price->GetGlyphTreeIter(), _chart_volume);
-    _chart_volume->Init();
-
-    //add volume lines graph
-    _sntprintf_s(name, MAX_WARMGUI_NAME_LEN, _TRUNCATE, L"graph-%s-vol", _name);
-    graph = new CDataLineGraph(name, true, _chart_volume);
-    _chart_volume->AddGraph(graph);
-    graph->SetDrawType(CDataLineGraph::SDATA_GRAPH_LINE_TYPE_DIFF_LINEBAR);
-
-    _chart_interest = new CSeriesDataChart(L"intr");
-    InsertNext(_chart_volume->GetGlyphTreeIter(), _chart_interest);
-    _chart_interest->Init();
-
-    //add interest lines graph
-    _sntprintf_s(name, MAX_WARMGUI_NAME_LEN, _TRUNCATE, L"graph-%s-intr", _name);
-    graph = new CDataLineGraph(name, true, _chart_interest);
-    _chart_interest->AddGraph(graph);
-    graph->SetDrawType(CDataLineGraph::SDATA_GRAPH_LINE_TYPE_LINE);
 
 	CTPMMD ctpdata;
 	setDataOffset(
@@ -65,9 +43,9 @@ HRESULT CPVICanvas::Init()
 
 void CPVICanvas::setDataOffset(int pxo, int pyo, int vxo, int vyo, int ixo, int iyo)
 {
-    _chart_price->GetGraph()->SetDataOffset(1, pxo, pyo);
-    _chart_volume->GetGraph()->SetDataOffset(1, vxo, vyo);
-    _chart_interest->GetGraph()->SetDataOffset(1, ixo, iyo);
+    _chart_price->GetGraph()->SetDataOffset(pxo, pyo);
+    _chart_volume->GetGraph()->SetDataOffset(vxo, vyo);
+    _chart_interest->GetGraph()->SetDataOffset(ixo, iyo);
 }
 
 
@@ -77,15 +55,15 @@ void CPVICanvas::SetGlyphRect()
 		_blind->SetRect(_rect);
 
     RECT tmp = {0, 0, RectWidth(_rect), (long)(fRectHeight(_rect) * .618)};
-    //MYTRACE(L"CPVICanvas::price %d %d %d %d\n", tmp.left, tmp.top, tmp.right, tmp.bottom);
+    //MYTRACE("CPVICanvas::price %d %d %d %d\n", tmp.left, tmp.top, tmp.right, tmp.bottom);
     _chart_price->SetRect(tmp);
 
     tmp.top = (long)(fRectHeight(_rect) * .618), tmp.bottom = (long)(fRectHeight(_rect) * (.618 + (1 - .618) * .5));
-    //MYTRACE(L"CPVICanvas::volume %d %d %d %d\n", tmp.left, tmp.top, tmp.right, tmp.bottom);
+    //MYTRACE("CPVICanvas::volume %d %d %d %d\n", tmp.left, tmp.top, tmp.right, tmp.bottom);
     _chart_volume->SetRect(tmp);
 
     tmp.top = (long)(fRectHeight(_rect) * (.618 + (1 - .618) * .5)), tmp.bottom = RectHeight(_rect);
-    //MYTRACE(L"CPVICanvas::interest %d %d %d %d\n", tmp.left, tmp.top, tmp.right, tmp.bottom);
+    //MYTRACE("CPVICanvas::interest %d %d %d %d\n", tmp.left, tmp.top, tmp.right, tmp.bottom);
     _chart_interest->SetRect(tmp);
 }
 
@@ -121,10 +99,44 @@ void CPVICanvas::SetGeometryData(dataptr pdata, int count, int datasize)
     _chart_interest->GetGraph()->EndSetData();
 }
 
-void CPVICanvas::SetChatToDataContanier()
-{
-	_data_container->RegisterChart(_chart_price);
-	_data_container->RegisterChart(_chart_volume);
-	_data_container->RegisterChart(_chart_interest);
-}
 
+void CPVICanvas::AddDataChart(const char* name, CSeriesDataChart** chart)
+{
+    *chart = new CSeriesDataChart(name);
+    InsertNext(_blind->GetGlyphTreeIter(), *chart);
+
+    char chartconf[MAX_PATH];
+    _snprintf_s(chartconf, MAX_PATH, _TRUNCATE, "%s.rtchart-price", _strconf);
+    (*chart)->setConfig(_config, chartconf);
+    (*chart)->Init();
+
+    //add price lines graph
+    char temp[MAX_WARMGUI_NAME_LEN];
+    _snprintf_s(temp, MAX_WARMGUI_NAME_LEN, _TRUNCATE, "graph-%s-price", _name);
+    CDataLineGraph* graph = new CDataLineGraph(temp, true);
+    (*chart)->AddGraph(graph);
+    graph->SetDrawType(CDataLineGraph::SDATA_GRAPH_LINE_TYPE_LINE);
+
+
+/*
+    _chart_volume = new CSeriesDataChart("volume");
+    InsertNext(_chart_price->GetGlyphTreeIter(), _chart_volume);
+    _chart_volume->Init();
+
+    //add volume lines graph
+    _snprintf_s(name, MAX_WARMGUI_NAME_LEN, _TRUNCATE, "graph-%s-vol", _name);
+    graph = new CDataLineGraph(name, true, _chart_volume);
+    _chart_volume->AddGraph(graph);
+    graph->SetDrawType(CDataLineGraph::SDATA_GRAPH_LINE_TYPE_DIFF_LINEBAR);
+
+    _chart_interest = new CSeriesDataChart("intr");
+    InsertNext(_chart_volume->GetGlyphTreeIter(), _chart_interest);
+    _chart_interest->Init();
+
+    //add interest lines graph
+    _snprintf_s(name, MAX_WARMGUI_NAME_LEN, _TRUNCATE, "graph-%s-intr", _name);
+    graph = new CDataLineGraph(name, true, _chart_interest);
+    _chart_interest->AddGraph(graph);
+    graph->SetDrawType(CDataLineGraph::SDATA_GRAPH_LINE_TYPE_LINE);
+*/
+}

@@ -20,7 +20,6 @@
 #endif //_WINDOWS
 
 
-#include "warmgui_type.h"
 #include "warmgui_incs.h"
 
 

@@ -19,7 +19,6 @@ CTest2::CTest2(void)
     _rectClient.left =  _rectClient.top = _rectClient.right = _rectClient.bottom = 0;
     const TCHAR* datafile = L"d:\\projects\\bin\\IF1008-20100810.dat";
     _pdata = ReadMarketDataFromFile(datafile, &_nDataCount);
-    _data_container = new IDataContainer();
 }
 
 
@@ -27,7 +26,6 @@ CTest2::~CTest2(void)
 {
     if (_pdata) freedata(_pdata);
     if (_atelier) delete _atelier;
-    if (_data_container) delete _data_container;
 }
 
 
@@ -36,10 +34,7 @@ int CTest2::OnCreate(LPCREATESTRUCT /*cs*/)
 	if (InitAtelier())
 		return (-1);
 
-    _data_container->SetConfig(_config);
-    _data_container->SetContainerSize(sizeof(CTPMMD), 32400);
 
-    _atelier->SetChatToDataContanier();
 	return 0;
 }
 
@@ -60,7 +55,6 @@ BOOL CTest2::PreCreateWindow(LPCREATESTRUCT cs)
 void CTest2::OnSize(UINT /*nType*/, int cx, int cy)
 {
 	if (_atelier && cx > 0 && cy > 0) {
-        _data_container->SetGeometryData();
 		::GetClientRect(_hwnd, &_rectClient);
 		_atelier->SetRect(_rectClient);
 	}
@@ -90,11 +84,8 @@ void CTest2::OnDestroy()
 
 int CTest2::InitAtelier()
 {
-	_atelier = new CZenInTwiningAtelier(L"zen-in-twining");
+	_atelier = new CZenInTwiningAtelier("zen-in-twining");
 	_atelier->SetConfigFile(_config);
-    _atelier->SetDataContainer(_data_container);
-	if (FAILED(_atelier->CreateRenderTarget(_hwnd)))
-		return (-2);
 
 	_atelier->InitAtelier(_hwnd, _config);
 	return (0);
@@ -123,7 +114,6 @@ DWORD WINAPI CTest2::simulator_sending(LPVOID param)
         ConvertMmd2Ctpmmd(me->_pdata + n, ctpsec, &ctpmmd);
 
         dop->CopyData(&ctpmmd, sizeof(CTPMMD));
-        me->_data_container->AddData(dop);
         me->ReDraw();
         
         if (n > 510) {

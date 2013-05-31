@@ -8,7 +8,7 @@ class IDataContainer;
 class WARMGUI_API CRtDataCanvas :  public ICanvas
 {
 public:
-    CRtDataCanvas(const TCHAR* name);
+    CRtDataCanvas(const char* name);
     ~CRtDataCanvas(void);
 
     virtual HRESULT            Init();

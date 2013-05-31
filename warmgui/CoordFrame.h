@@ -17,55 +17,43 @@ static const float STROKE_WIDTH    =  .4f;
 static const float SPLIT_PIECES    = 19.0;
 
 
-class WARMGUI_API CCoordFrame : public IGlyph
-{
-public:
-	CCoordFrame();
-	CCoordFrame(const TCHAR * name, bool bHasBuffer = false);
-	~CCoordFrame();
-
-	virtual HRESULT DrawGraph(bool redraw/* = false*/) = 0;
-	virtual bool Intersect(POINT /*point*/) { return false; }
-	inline void SetWorldRect(LIMIT_2D* limit);
-protected:
-    ///get from aCCartesian instance
-	LIMIT_2D* _limit;
-};
-
-
 
 ////////////////////////////////////////////////////////////////////////////////////////
-/// class CCoordGrid 
-class WARMGUI_API CCoordGrid : public CCoordFrame
+/// class CCoordFrame 
+class WARMGUI_API CCoordFrame : public IDataGraph
 {
 public:
-	CCoordGrid(const TCHAR * name);
-
-	virtual HRESULT DrawGraph(bool redraw/* = false*/);
-
-	inline void SetTextFormat(	const TCHAR * fontFamilyName,
-								float fontSize,
-								DWRITE_FONT_WEIGHT   fontWeight  = DWRITE_FONT_WEIGHT_NORMAL,
-								DWRITE_FONT_STYLE    fontStyle   = DWRITE_FONT_STYLE_NORMAL,
-								DWRITE_FONT_STRETCH  fontStretch = DWRITE_FONT_STRETCH_NORMAL,
-								const WCHAR * localeName = L"en-us");
-	inline void SetLineColor(COLORREF color, float a/* = 1.0f */);
-
-	inline void SetSideBarWidth(RULER_WIDTH& ruler_width) {_ruler_width = ruler_width;}
-    inline void SetRect(RECT& rect);
-    virtual HRESULT PreDraw();
-
+	                        CCoordFrame(const char* name);
+                           ~CCoordFrame();
+	virtual HRESULT         DrawGraph(bool redraw/* = false*/);
+    inline  virtual HRESULT Init();
+	inline  void            SetLineColor(COLORREF color, float a/* = 1.0f */);
+	inline  void            SetSideBarWidth(RULER_WIDTH& ruler_width) {_ruler_width = ruler_width;}
+    inline  void            SetRect(RECT& rect);
+    virtual HRESULT         PreDraw();
+    inline  virtual GLYPH_CHANGED_TYPE  NewData(IDataContainer* data_cont, DataObject::MARKET_DATA_TYPE datatype);
+    //inline  virtual GLYPH_CHANGED_TYPE  NewData(int index, float x, float y);
+    //GLYPH_CHANGED_TYPE      renew_world(WORLD_RECT* pwr, bool bfirstdata = false);
+    GLYPH_CHANGED_TYPE      renew_world(float x, float y, bool redraw_cood = false, bool bfirstdata = false);
+    RULER_WIDTH&            getRulerWidth() { return _ruler_width; }
 private:
-	D2D1_COLOR_F _lineclr;
-	float _barWidth;
-	RULER_WIDTH _ruler_width;
-    RECT _rect_calc;
+    //set class name, by IObject
+    virtual void           setClass() { SetMyClass("CCoordFrame"); }
+	void                   DrawSideBar();
+	void                   DrawGrid();
+	void                   DrawRuler();
+	void                   DrawRulerText(TCHAR * wszText, size_t len, float Y, float y);
 
+    void                   redraw();
+        
 private:
-	void DrawSideBar();
-	void DrawGrid();
-	void DrawRuler();
-	void DrawRulerText(TCHAR * wszText, size_t len, float Y, float y);
+	COLORALPHA            _clr_line;
+	float                 _barWidth;
+	RULER_WIDTH        _ruler_width;
+    RECT                 _rect_calc;
+    FONT                      _font;
+    IDWriteTextFormat* _pTextFormat;
+    IDWriteTextLayout* _pTextLayout;
 };
 
 

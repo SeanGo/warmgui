@@ -3,7 +3,7 @@
 
 namespace WARMGUI {
 
-CRtDataCanvas::CRtDataCanvas(const TCHAR* name)
+CRtDataCanvas::CRtDataCanvas(const char* name)
     : ICanvas(name)
     , _blind(0)
     , _chart(0)
@@ -19,18 +19,18 @@ CRtDataCanvas::~CRtDataCanvas(void)
 
 HRESULT CRtDataCanvas::Init()
 {
-    TCHAR name[MAX_PATH];
+    char name[MAX_PATH];
     if (_bHasBackground) {
         _blind = new CBlind(_name, BGR(0, 0, 0), 0.5);
         AppendChild(_gt.begin(), _blind);
     }
 
-    _chart = new CSeriesDataChart(L"price");
+    _chart = new CSeriesDataChart("price");
     InsertNext(_blind->GetGlyphTreeIter(), _chart);
     _chart->Init();
 
     //add price lines graph
-    _sntprintf_s(name, MAX_WARMGUI_NAME_LEN, _TRUNCATE, L"graph-%s-price", _name);
+    _snprintf_s(name, MAX_WARMGUI_NAME_LEN, _TRUNCATE, "graph-%s-price", _name);
     CDataLineGraph* graph = new CDataLineGraph(name, true, _chart);
     _chart->AddGraph(graph);
     graph->SetDrawType(CDataLineGraph::SDATA_GRAPH_LINE_TYPE_LINE);
