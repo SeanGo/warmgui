@@ -1,11 +1,12 @@
-#ifndef __euclid_calculator_h__
-#define __euclid_calculator_h__
+#ifndef __predictor_calculator_h__
+#define __predictor_calculator_h__
 
-class CEuclidCalculator : public WARMGUI::ICalculator
+
+class CPredictorCalculator : public WARMGUI::ICalculator
 {
 public:
-    CEuclidCalculator(const char* name);
-    ~CEuclidCalculator(void);
+    CPredictorCalculator(const char* name);
+    ~CPredictorCalculator(void);
 
 
     inline virtual int  calculate(MSG msg);
@@ -43,12 +44,10 @@ public:
 
 protected:
     //EUCLID::RtCalculate_ctpmmd _rtc;
-    EUCLID::CCalCentral        _rtc;
-    CTPMMD*                 _ctpmmd;
-    ZitData               _zit_data;
-    HWND                      _hwnd;
-    char            _name[MAX_PATH];
+    EUCLID::CDoubleFilterPredictor _prdtor;
+    CTPMMD*                  _ctpmmd;
+    HWND                       _hwnd;
+    char             _name[MAX_PATH];
 };
 
-
-#endif //__euclid_calculator_h__
+#endif //__predictor_calculator_h__

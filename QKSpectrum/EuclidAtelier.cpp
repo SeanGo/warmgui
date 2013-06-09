@@ -5,11 +5,11 @@
 CEuclidAtelier::CEuclidAtelier(const char* name)
     :     _canvas_imgbkg(0)
     , _canvas_recent_zit(0)
-    , _canvas_short_term(0)
-    ,  _canvas_long_term(0)
-    ,     _canvas_1m_zit(0)
-    ,     _canvas_5m_zit(0)
-    ,    _canvas_15m_zit(0)
+    , _canvas_rt_prodictor(0)
+    //,  _canvas_long_term(0)
+    //,     _canvas_1m_zit(0)
+    //,     _canvas_5m_zit(0)
+    //,    _canvas_15m_zit(0)
     ,           _toolbar(0)
 {
     setClass();
@@ -45,12 +45,14 @@ inline bool CEuclidAtelier::GetAllCanvas()
     CanvasIter iter    = _canvasses.begin();
     _canvas_imgbkg     = (WARMGUI::CBkgCanvas *) (*iter); ++iter;
     _canvas_recent_zit = (CZitCanvas*)   (*iter); ++iter;
-    _canvas_short_term = (CEuclidCanvas*)(*iter); ++iter;
+    _canvas_rt_prodictor = (CEuclidCanvas*)(*iter); ++iter;
+    /*
     _canvas_long_term  = (CEuclidCanvas*)(*iter); ++iter;
     _canvas_1m_zit     = (CZitCanvas*)(*iter); ++iter;
     _canvas_5m_zit     = (CZitCanvas*)(*iter); ++iter;
     _canvas_15m_zit    = (CZitCanvas*)(*iter); ++iter;
-    _toolbar           = (WARMGUI::CToolbar*)(*iter);;
+    */
+    //_toolbar           = (WARMGUI::CToolbar*)(*iter);;
 
     //it is a data-canvas, register to container
     for(CanvasIter canvas_iter = _canvasses.begin(); canvas_iter != _canvasses.end(); canvas_iter++) {

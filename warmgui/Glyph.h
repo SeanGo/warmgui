@@ -173,7 +173,7 @@ public:
 
     //transform
     inline void                SetTransform(const MATRIX_2D* mytrans);
-    inline void                GetbackTransform();
+    //inline void                GetbackTransform();
     inline void                InvertTransform(int x, int y, POINT_f* ptOut);
     inline void                Transform(float x, float y, POINT* ptOut);
 
@@ -220,7 +220,6 @@ public:
 
 protected:
     bool                   _bFill;
-    MATRIX_2D       _backup_trans;
 
     ICanvas*              _canvas;
     IAtelier*            _atelier;

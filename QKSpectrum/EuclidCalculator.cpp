@@ -41,8 +41,6 @@ int CEuclidCalculator::calculate(MSG msg)
         int npos = cc->getCount() - 1;
         if (_rtc.is_trade_time(npos)) {
             _rtc.CalucCentral(npos);
-			_rtc.CalucShortAnalyse(npos);
-			_rtc.CalucLongAnalyse(npos);
             _rtc.AddDataCount();
     		
             DataObject* dataobj = _rtc.CopyResult();
@@ -51,10 +49,12 @@ int CEuclidCalculator::calculate(MSG msg)
                 char* buf = (char*)dop->GetData();
                 size_t len = dop->GetDataLength();
                 //MYTRACE(L"zit-data %d\n", npos);
-                if (_zit_data.AppendData(buf, len)) {
-                    if (_zit_data.extCentral.nAllNum) {
+                if (_zit_data.AppendData(buf, len))
+                {
+                    if (_zit_data.extCentral.nAllNum)
+                    {
                         //MYTRACE(L"zit-data GOT ZIT %d\n", npos);
-                        GLYPH_CHANGED_TYPE change = AddData(&_zit_data, DataObject::MARKET_DATA_TYPE_ZITDATA);
+                        GLYPH_CHANGED_TYPE change = AddData(&_zit_data, len, DataObject::MARKET_DATA_TYPE_ZITDATA);
                         
                         for (size_t i = 0; i < this->_hwnd_array.size(); i++)
                             SendMessage(_hwnd_array[i], WM_RENEW_WINDOW, (WPARAM)change, 0);

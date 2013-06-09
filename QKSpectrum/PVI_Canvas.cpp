@@ -103,7 +103,7 @@ GLYPH_CHANGED_TYPE CPVI_Canvas::NewData(DataObjectPtr dop)
 }
 
 
-GLYPH_CHANGED_TYPE CPVI_Canvas::NewData(dataptr data, DataObject::MARKET_DATA_TYPE datatype)
+GLYPH_CHANGED_TYPE CPVI_Canvas::NewData(dataptr data, size_t datalen, DataObject::MARKET_DATA_TYPE datatype)
 {
     GLYPH_CHANGED_TYPE changed = GLYPH_CHANGED_TYPE_NONE;
     if (datatype == DataObject::MARKET_DATA_TYPE_ZITDATA) {

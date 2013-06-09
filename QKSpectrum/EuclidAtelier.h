@@ -20,11 +20,11 @@ protected:
     WARMGUI::CBkgCanvas* _canvas_imgbkg;
 
     CZitCanvas*      _canvas_recent_zit;
-    CEuclidCanvas*   _canvas_short_term;
-    CEuclidCanvas*    _canvas_long_term;
+    CEuclidCanvas* _canvas_rt_prodictor;
+    /*CEuclidCanvas*    _canvas_long_term;
     CZitCanvas*          _canvas_1m_zit;
     CZitCanvas*          _canvas_5m_zit;
-    CZitCanvas*         _canvas_15m_zit;
+    CZitCanvas*         _canvas_15m_zit;*/
     WARMGUI::CToolbar*         _toolbar;
 private:
     //set class name, by IObject

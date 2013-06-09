@@ -32,6 +32,8 @@
 #include "Central.h"
 #include "caluc_in_time.h"
 #include "RealtimeCalc.h"
+#include "CalCentral.h"
+#include "DoublePredict.h"
 #endif
 
 #include "warmgui.h"
@@ -118,9 +120,8 @@ typedef struct ZitData {
 #include "CtpDispatcher.h"
 
 #include "EuclidCalculator.h"
+#include "PredictorCalculator.h"
 #include "QksFactories.h"
-
-#include "EuclidFactories.h"
 
 #include "TickDataChart.h"
 
@@ -139,6 +140,9 @@ typedef struct ZitData {
 #include "EuclidCanvas.h"
 #include "EuclidLayout.h"
 #include "EuclidAtelier.h"
+
+
+#include "AnalystView.h"
 
 #include "qksapp.h"
 extern qksapp the_app;

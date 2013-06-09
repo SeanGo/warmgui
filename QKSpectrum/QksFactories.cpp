@@ -100,12 +100,14 @@ ICanvas* CQksCanvasCreator::CreateCanvas(const char* canvas_config)
             ICanvas* canvas = 0;
             if (!strcmp(type, "pvi-canvas")) {
                 //canvas = new CPVICanvas(name);
-            } if (!strcmp(type, "zen-in-twining")) {
+            } else if (!strcmp(type, "zen-in-twining")) {
                 canvas = new CZitCanvas(name);
-            } if (!strcmp(type, "PVICanvas")) {
+            } else if (!strcmp(type, "PVICanvas")) {
                 canvas = new CPVI_Canvas(name);
-            } if (!strcmp(type, "gridctrl")) {
+            } else if (!strcmp(type, "gridctrl")) {
                 canvas = new CTickdataCanvas(name);
+            } else if (!strcmp(type, "euclid")) {
+                canvas = new CEuclidCanvas(name);
             }
 
             return canvas;
@@ -189,6 +191,9 @@ IAtelier* CQksAtelierCreator::CreateAtelier(const char* conf_pos)
     if (!strcmp(_config->getString(temp).c_str(), "ZITAtelier")) {
 	    atelier = new CZITAtelier("zen-in-twining");
 	    if (atelier) atelier->SetConfigFile(_config, conf_pos);
+    } else if (!strcmp(_config->getString(temp).c_str(), "EuclidAtelier")) {
+	    atelier = new CEuclidAtelier("eulid-atelier");
+	    if (atelier) atelier->SetConfigFile(_config, conf_pos);
     }
     return atelier;
 }
@@ -208,6 +213,9 @@ ILayout* CQksLayoutCreator::CreateLayout(const char* layout_config)
         ILayout* layout = (0);
         if (!strcmp(_config->getString(temp).c_str(), "ZITLayout")) {
 	        layout = new CZITLayout();
+	        if (layout) layout->SetConfig(_config, layout_config);
+        } else if (!strcmp(_config->getString(temp).c_str(), "EuclidLayout")) {
+	        layout = new CEuclidLayout();
 	        if (layout) layout->SetConfig(_config, layout_config);
         }
         return layout;
@@ -232,6 +240,12 @@ ICalculator* CQksCalculatorCreator::CreateCalculator(const char* str_conf)
             const std::string strname = _config->getString(temp);
             const char* name = strname.c_str();
 	        calculator = new CEuclidCalculator(name);
+	        if (calculator) calculator->SetConfig(_config, str_conf);
+        } else if (!strcmp(_config->getString(temp).c_str(), "predictor-calculator")) {
+            _snprintf_s(temp, MAX_PATH, _TRUNCATE, "%s.name", str_conf);
+            const std::string strname = _config->getString(temp);
+            const char* name = strname.c_str();
+	        calculator = new CPredictorCalculator(name);
 	        if (calculator) calculator->SetConfig(_config, str_conf);
         }
         return calculator;

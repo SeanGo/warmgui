@@ -1,12 +1,11 @@
-#ifndef __euclid_view_h_include__
-#define __euclid_view_h_include__
+#ifndef __analyst_view_h__
+#define __analyst_view_h__
 
-
-class CEuclidView : public WARMGUI::CWindow
+class CAnalystView : public WARMGUI::CWindow
 {
 public:
-    CEuclidView(void);
-    ~CEuclidView(void);
+    CAnalystView(void);
+    ~CAnalystView(void);
 
 	virtual BOOL PreCreateWindow(LPCREATESTRUCT cs);
 	msgfun  int  OnCreate(LPCREATESTRUCT /*cs*/);
@@ -42,8 +41,4 @@ private:
     bool               _b_gui_ready;
 };
 
-
-
-
-
-#endif //__euclid_view_h_include__
+#endif //__analyst_view_h__

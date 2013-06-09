@@ -90,16 +90,17 @@
     <None Include="small.ico" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AnalystView.h" />
     <ClInclude Include="CtpDispatcher.h" />
     <ClInclude Include="Dxut9Dialog.h" />
     <ClInclude Include="EuclidAtelier.h" />
     <ClInclude Include="EuclidCalculator.h" />
     <ClInclude Include="EuclidCanvas.h" />
-    <ClInclude Include="EuclidFactories.h" />
     <ClInclude Include="EuclidLayout.h" />
     <ClInclude Include="EuclidView.h" />
     <ClInclude Include="LoginDlg.h" />
     <ClInclude Include="network_inc.h" />
+    <ClInclude Include="PredictorCalculator.h" />
     <ClInclude Include="PVI_Canvas.h" />
     <ClInclude Include="TickDataView.h" />
     <ClInclude Include="TickdataCanvas.h" />
@@ -124,15 +125,16 @@
     <ClInclude Include="ZITLayout.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AnalystView.cpp" />
     <ClCompile Include="CtpDispatcher.cpp" />
     <ClCompile Include="Dxut9Dialog.cpp" />
     <ClCompile Include="EuclidAtelier.cpp" />
     <ClCompile Include="EuclidCalculator.cpp" />
     <ClCompile Include="EuclidCanvas.cpp" />
-    <ClCompile Include="EuclidFactories.cpp" />
     <ClCompile Include="EuclidLayout.cpp" />
     <ClCompile Include="EuclidView.cpp" />
     <ClCompile Include="LoginDlg.cpp" />
+    <ClCompile Include="PredictorCalculator.cpp" />
     <ClCompile Include="PVI_Canvas.cpp" />
     <ClCompile Include="TickDataView.cpp" />
     <ClCompile Include="TickdataCanvas.cpp" />

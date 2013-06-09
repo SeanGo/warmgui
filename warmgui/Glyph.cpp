@@ -197,6 +197,7 @@ inline void IGlyph::SetRenderTarget()
 
 inline void IGlyph::SetTransform(const MATRIX_2D* mytrans)
 {
+    MATRIX_2D _backup_trans;
 	_artist->GetTransform(&_backup_trans);
     MATRIX_2D trans = D2D1::Matrix3x2F::Identity();
     trans._11 = mytrans->_11, trans._12 = mytrans->_12, trans._21 = mytrans->_21, trans._22 = mytrans->_22,
@@ -212,11 +213,6 @@ inline void IGlyph::SetTransform(const MATRIX_2D* mytrans)
 		m._11, m._12, m._21, m._22, m._31, m._32);
 	*/
 #		endif //_DEBUG
-}
-
-inline void IGlyph::GetbackTransform()
-{
-	_artist->SetTransform(&_backup_trans);
 }
 
 

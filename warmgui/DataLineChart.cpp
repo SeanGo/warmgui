@@ -70,6 +70,10 @@ void CDataLineChart::SetRect(RECT& rect)
             if (g->isClass("CCoordFrame"))
                 g->SetRect(rect);
             else {
+                //TCHAR name[MAX_PATH];
+                //CChineseCodeLib::Gb2312ToUnicode(name, MAX_PATH, _name);
+                //MYTRACE(L"%s\n", name);
+
                 g->SetRect(rect_graph);
                 g->Changed(GLYPH_CHANGED_TYPE_COORDFRAME);
             }

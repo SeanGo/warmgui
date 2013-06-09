@@ -42,8 +42,9 @@ void CEuclidLayout::Disposal(WARMGUI::IAtelier* atelier, RECT& rectAtelier)
 
     rect.left = rect.right + margin.right + margin.left,
         rect.right = rect.left + col_width - margin.left - margin.right;
-    euclidAtelier->_canvas_short_term->SetRect(rect);
+    euclidAtelier->_canvas_rt_prodictor->SetRect(rect);
 
+    /*
     //long term
     rect.left = rect.right + margin.right + margin.left,
         rect.right = rectAtelier.right - margin.right;
@@ -67,4 +68,5 @@ void CEuclidLayout::Disposal(WARMGUI::IAtelier* atelier, RECT& rectAtelier)
     rect.left = rect.right + margin.left + margin.right,
         rect.right = rectAtelier.right - margin.right;
     euclidAtelier->_canvas_15m_zit->SetRect(rect);
+    */
 }

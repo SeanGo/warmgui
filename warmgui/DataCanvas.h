@@ -16,7 +16,7 @@ public:
 
     virtual GLYPH_CHANGED_TYPE NewData(IDataContainer* data_cont, DataObject::MARKET_DATA_TYPE datatype) = 0;
     virtual GLYPH_CHANGED_TYPE NewData(DataObjectPtr dop) { return GLYPH_CHANGED_TYPE_NONE;}
-    virtual GLYPH_CHANGED_TYPE NewData(dataptr pdata, DataObject::MARKET_DATA_TYPE datatype) { return GLYPH_CHANGED_TYPE_NONE;}
+    virtual GLYPH_CHANGED_TYPE NewData(dataptr pdata, size_t datalen, DataObject::MARKET_DATA_TYPE datatype) { return GLYPH_CHANGED_TYPE_NONE;}
 
   	inline  void               SetWorldRect(WORLD_RECT& limit);
 	inline  void               SetWorldRect(float minx, float maxx, float miny, float maxy, float x0, float y0);

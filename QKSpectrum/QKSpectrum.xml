@@ -52,12 +52,17 @@
 	</data-container>
 	
 	<calculators>
-		<num>1</num>
+		<num>2</num>
 		<calculator-1>
 			<type>euclid-calculator</type>
 			<name>euclid</name>
 			<containers>ctpmmd</containers>
 		</calculator-1>
+		<calculator-2>
+			<type>predictor-calculator</type>
+			<name>predictor</name>
+			<containers>ctpmmd</containers>
+		</calculator-2>
 	</calculators>
 
 
@@ -201,7 +206,7 @@
 			</canvas-4>
 		</canvases>
 		<dispatchers>ctpmmd</dispatchers>
-		<calculators>euclid</calculators>
+		<calculators></calculators>
 	</atelier-realtime-ctpdata>
 
 	<atelier-euclid>
@@ -251,8 +256,28 @@
 			</canvas-2>
 			<canvas-3>
 				<canvas-type>euclid</canvas-type>
-				<canvas-name>short-term</canvas-name>
+				<canvas-name>rt-predictor</canvas-name>
 				<blind>true</blind>
+				<containers>ctpmmd, predictor</containers>
+				<price-chart>
+					<name>zit-prc-chart</name>
+					<stroke-width>0.05</stroke-width>
+					<coord-grid>
+						<name>price-coord-grid</name>
+						<!-- RULER_LEFT, RULER_RIGHT, RULER_TOP,RULER_BOTTOM -->
+						<ruler-size>50, 20, 50,  5</ruler-size>
+						<!-- B, G, R, alpah -->
+						<ruler-color-alpha>255, 0, 0, 1.0</ruler-color-alpha>
+						<font>Verdana, 10</font>
+						<world>
+							<name>price</name>
+							<!-- x0,y0, xn, yn, minpos, miny, maxpos, maxy -->
+							<!-- 872 = max ctpdata is 2048, but plus 180 * 2 predict data -->
+							<world>0, 3000, 3407, 3000, 0, 2985, 3407, 3015</world>
+							<increase>1, 1, DATA_BREADTH_TYPE_VALUE, 3047</increase>
+						</world>
+					</coord-grid>
+				</price-chart>
 			</canvas-3>
 			<canvas-4>
 				<canvas-type>euclid</canvas-type>
@@ -346,8 +371,8 @@
 				<toolbar-materials-rect>0, 1080, 320, 1144</toolbar-materials-rect>
 			</canvas-8>
 		</canvases>
-		<dispatchers></dispatchers>
-		<calculators>euclid</calculators>
+		<dispatchers>ctpmmd</dispatchers>
+		<calculators>euclid, predictor</calculators>
 	</atelier-euclid>
 </config>
 

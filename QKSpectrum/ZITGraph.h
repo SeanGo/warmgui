@@ -16,7 +16,7 @@ public:
     virtual HRESULT            Init();
 
 private:
-    HRESULT DrawPoint(double x, float y);
+    HRESULT DrawPoint(double x, float y, int type);
     HRESULT DrawInflLine(INFLEXION& infl);
     HRESULT DrawArea();
 

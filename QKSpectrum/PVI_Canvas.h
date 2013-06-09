@@ -13,7 +13,7 @@ public:
 
     void                       setDataOffset(int pxo, int pyo, int vxo, int vyo, int ixo, int iyo);
     virtual GLYPH_CHANGED_TYPE NewData(DataObjectPtr data);
-    virtual GLYPH_CHANGED_TYPE NewData(dataptr data, DataObject::MARKET_DATA_TYPE datatype);
+    virtual GLYPH_CHANGED_TYPE NewData(dataptr data, size_t datalen, DataObject::MARKET_DATA_TYPE datatype);
     virtual GLYPH_CHANGED_TYPE NewData(IDataContainer* data_cont, DataObject::MARKET_DATA_TYPE datatype);
 
     virtual void               SetGeometryData(dataptr pdata, int count, int datasize);

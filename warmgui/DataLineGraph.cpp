@@ -76,6 +76,7 @@ HRESULT CDataLineGraph::Renew()
         CriticalLock::Scoped scope(_myown_artist->_lock_artist);
         eArtist* _back_artist = _artist;
         _artist = _myown_artist;
+        MATRIX_2D  _backup_trans;
 
         _artist->BeginBmpDraw();
 	    if (_referframe) {
@@ -163,12 +164,16 @@ inline void CDataLineGraph::SetDataOffset(int x_offset, int y_offset)
 
 HRESULT CDataLineGraph::_draw_lines(bool /*redraw*/)
 {
+#ifdef _DEBUG
+    //TCHAR name[MAX_PATH];
+    //CChineseCodeLib::Gb2312ToUnicode(name, MAX_PATH, _name);
+    //MYTRACE(L"%s +draw-line\n", name);
+#endif //_DEBUG
 	HRESULT hr = S_OK;
 
     SafeRelease(&_pathg);
-        SafeRelease(&_pSink);
-
-        
+    SafeRelease(&_pSink);
+    
     D2D1_ANTIALIAS_MODE am = _artist->GetHwndRT()->GetAntialiasMode();
 	_artist->GetUsingRT()->SetAntialiasMode(D2D1_ANTIALIAS_MODE_ALIASED);
 
@@ -176,6 +181,7 @@ HRESULT CDataLineGraph::_draw_lines(bool /*redraw*/)
 
 	    hr = _pathg->Open(&_pSink);
 
+        MATRIX_2D       _backup_trans;
         _artist->GetTransform(&_backup_trans);
 
 	    //MYTRACE(L"backup %.02f %.02f %.02f %.02f %.02f %.02f\n", 
@@ -187,7 +193,7 @@ HRESULT CDataLineGraph::_draw_lines(bool /*redraw*/)
         _artist->PushLayer(.0f, .0f, fRectWidth(_rect), fRectHeight(_rect));
 
 
-        MATRIX_2D& newtrans = *(_referframe->GetTransform());
+        MATRIX_2D newtrans = *(_referframe->GetTransform());
         newtrans._31 += static_cast<float>(_rect.left),
         newtrans._32 += static_cast<float>(_rect.top);
         _artist->SetTransform(&newtrans);
@@ -199,31 +205,35 @@ HRESULT CDataLineGraph::_draw_lines(bool /*redraw*/)
                 D2D1_FIGURE_BEGIN_HOLLOW);
             psForSetData._pntOld.x = _myown_data._points[0].x, psForSetData._pntOld.y = _myown_data._points[0].y;
 
-            int start_pos = (_path_type == CDataLineGraph::GEOMETRY_PATH_TYPE_LINE) ? 1 : 2;
-            for (int i = start_pos; i < _myown_data._count; i++) {
 #ifdef          _DEBUG
                 {/*
+                    TCHAR name[MAX_PATH];
+                    CChineseCodeLib::Gb2312ToUnicode(name, MAX_PATH, _name);
+                    MYTRACE(L"%s rect %d %d,, %.02f %.02f == ", name, _rect.left, _rect.top, _myown_data._points[0].x, _myown_data._points[0].y);
+	                MYTRACE(L"trans %x %.02f %.02f %.02f %.02f %.02f %.02f\n", 
+	                    _referframe, newtrans._11, newtrans._12, newtrans._21, newtrans._22, newtrans._31, newtrans._32);
 	                MATRIX_2D m;
 	                _artist->GetTransform(&m);
                     //MYTRACE(L"Transform: %.02f %.02f, %.02f %.02f, %.02f %.02f\n", m._11, m._12, m._21, m._22, m._31, m._32);
 	                D2D1::Matrix3x2F trans(m._11, m._12, m._21, m._22, m._31, m._32);
-                    POINT_f P1 = D2D1::Point2F(_myown_data._points[i - 1].x, _myown_data._points[i - 1].y);
-                    POINT_f P2 = D2D1::Point2F(_myown_data._points[i].x, _myown_data._points[i].y);
+                    POINT_f P1 = D2D1::Point2F(_myown_data._points[0].x, _myown_data._points[0].y);
+                    POINT_f P2 = D2D1::Point2F(_myown_data._points[1].x, _myown_data._points[1].y);
                     //WORLD_RECT& wr = _referframe->GetWorldRect();
                     //POINT_f P1 = D2D1::Point2F(wr.maxpos, wr.maxy);
                     //POINT_f P2 = D2D1::Point2F(wr.minpos, wr.miny);
                     POINT_f p1 = trans.TransformPoint(P1);
 	                POINT_f p2 = trans.TransformPoint(P2);
 	                //MYTRACE(L"%s %.02f %.02f, %.02f %.02f ==> %.02f %.02f, %.02f %.02f\n",
-                    MYTRACE(L"%d -- %.02f %.02f, %.02f %.02f ==> %.02f %.02f, %.02f %.02f\n",
+                    MYTRACE(L"%.02f %.02f, %.02f %.02f ==> %.02f %.02f, %.02f %.02f\n",
 		                //_name,
-                        i,
 		                P1.x, P1.y,
 		                P2.x, P2.y,
 		                p1.x, p1.y,
 		                p2.x, p2.y);
                 */}
 #endif          //_DEBUG
+            int start_pos = (_path_type == CDataLineGraph::GEOMETRY_PATH_TYPE_LINE) ? 1 : 2;
+            for (int i = start_pos; i < _myown_data._count; i++) {
 
                 if (_path_type == CDataLineGraph::GEOMETRY_PATH_TYPE_BEZIER) {
                     _pSink->AddBezier(
@@ -247,22 +257,27 @@ HRESULT CDataLineGraph::_draw_lines(bool /*redraw*/)
 
     if (SUCCEEDED(hr)) {
    	    COLORALPHA   clr = _artist->GetSCBrush()->GetColor();
-        _color = BGR(255, 255, 0);
-	    _artist->GetSCBrush()->SetColor(D2D1::ColorF(_color));
+	    _artist->GetSCBrush()->SetColor(D2D1::ColorF(_color, _alpha));
 	    //_artist->DrawLine(_rect.left, _rect.top, _rect.right, _rect.bottom);
         //SetTransform(_referframe->GetTransform());
 
         //D2D1::Matrix3x2F m = D2D1::Matrix3x2F::Identity(); 
         //_artist->SetTransform(&m);
 
-        if (_pathg)
+        if (_pathg) {
 	        _artist->DrawGeometry(_pathg, _artist->GetSCBrush(), _stroke_width, _artist->GetStrokeStyle());
+        }
+
         _artist->GetSCBrush()->SetColor(clr);
 
         _artist->GetUsingRT()->SetAntialiasMode(am);
         _artist->SetTransform(&rect_trans);
         _artist->PopLayer();
         _artist->SetTransform(&_backup_trans);
+
+        TCHAR name[MAX_PATH];
+        CChineseCodeLib::Gb2312ToUnicode(name, MAX_PATH, _name);
+        //MYTRACE(L"d-line resotre trans\n", name);
     }
     return S_OK;
 }
@@ -291,6 +306,7 @@ HRESULT CDataLineGraph::DrawGraph(bool redraw/* = false*/)
 	    //_artist->DrawLine(_rect.left, _rect.top, _rect.right, _rect.bottom);
         //SetTransform(_referframe->GetTransform());
 
+        MATRIX_2D       _backup_trans;
         _artist->GetTransform(&_backup_trans);
         _artist->SetTransform(_referframe->GetTransform());
         //D2D1::Matrix3x2F m = D2D1::Matrix3x2F::Identity(); 
@@ -442,13 +458,13 @@ void CDataLineGraph::RedrawGraph()
 
         eArtist* _back_artist = _artist;
         _artist = _myown_artist;
+        MATRIX_2D       _backup_trans;
 
         _artist->BeginBmpDraw();
     	_artist->GetSCBrush()->SetColor(D2D1::ColorF(_color));
 	    if (_referframe) {
     		_artist->GetTransform(&_backup_trans);
-            MATRIX_2D* m = _referframe->GetTransform();
-            _artist->SetTransform(m);
+            _artist->SetTransform(_referframe->GetTransform());
         }
 
         if (_pathg) {
@@ -559,6 +575,7 @@ void CDataLineGraph::MoveBitmapToLeft()
 
     _artist->BeginBmpDraw(true);
 
+    MATRIX_2D _backup_trans;
     _artist->GetTransform(&_backup_trans);
     MATRIX_2D id = D2D1::Matrix3x2F::Identity();
     _artist->SetTransform(&id);

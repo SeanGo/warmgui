@@ -21,9 +21,12 @@ HRESULT CZITGraph::DrawGraph(bool /*redraw*/)
 {
     if (!_zit_data || _zit_data->data_ds != _down_sample) return S_OK;
 
+    TCHAR name[MAX_PATH];
+    CChineseCodeLib::Gb2312ToUnicode(name, MAX_PATH, _name);
     MATRIX_2D backtrans;
     _artist->GetTransform(&backtrans);
 
+    //MYTRACE(L"zit graph backup trans %s\n", name);
 	//MYTRACE(L"backup %.02f %.02f %.02f %.02f %.02f %.02f\n", 
 	//    backtrans._11, backtrans._12, backtrans._21, backtrans._22, backtrans._31, backtrans._32);
 
@@ -58,9 +61,17 @@ HRESULT CZITGraph::DrawGraph(bool /*redraw*/)
         //    Time2Index(g_ctpsec, _zit_data->extCentral.extremum[0].ftime),
         //    Time2Index(g_ctpsec, _zit_data->extCentral.extremum[_zit_data->extCentral.nAllNum - 1].ftime));
 
-    	_artist->SetSolidColorBrush(D2D1::ColorF(BGR(0, 255, 0), 1.0f));
+    	_artist->SetSolidColorBrush(D2D1::ColorF(BGR(0, 255, 0), 0.5f));
         for (int i = 0; i < _zit_data->extCentral.nAllNum; i++) {
-            DrawPoint(_zit_data->extCentral.extremum[i].ftime, _zit_data->extCentral.extremum[i].fOrngValue);
+            DrawPoint(_zit_data->extCentral.extremum[i].ftime,
+                      _zit_data->extCentral.extremum[i].fOrngValue,
+                      _zit_data->extCentral.extremum[i].nType);
+            //MYTRACE(L"ext %d %d %.02f %.02f %.02f\n",
+            //    _zit_data->extCentral.extremum[i].nIndex,
+            //    _zit_data->extCentral.extremum[i].nType,
+            //    _zit_data->extCentral.extremum[i].fOrngValue,
+            //    _zit_data->extCentral.extremum[i].fValue,
+            //    _zit_data->extCentral.extremum[i].fMagenitude);
         }
     }
 
@@ -75,7 +86,7 @@ HRESULT CZITGraph::DrawGraph(bool /*redraw*/)
 
     if (_zit_data->inflBest.nNum) {
 
-    	_artist->SetSolidColorBrush(D2D1::ColorF(BGR(0, 0, 255), 1.0f));
+    	_artist->SetSolidColorBrush(D2D1::ColorF(BGR(0, 255, 255), 0.5f));
 
         for (int i = 0; i < _zit_data->inflBest.nNum; i++) {
             //MYTRACE(L"inf %d: %.02f %.02f %.02f - %.02f %.02f %.02f\n",
@@ -96,7 +107,7 @@ HRESULT CZITGraph::DrawGraph(bool /*redraw*/)
         //MYTRACE(L"\n");
     }
 
-    /*if (_zit_data->central.nNum) {
+    if (_zit_data->central.nNum) {
         //MYTRACE(L"cnt %.02f %.02f %.02f - %.02f %.02f %.02f\n",
         //    Time2Index(g_ctpsec, _zit_data->central.central[0].fstime),
         //    _zit_data->central.central[0].fstime,
@@ -106,7 +117,7 @@ HRESULT CZITGraph::DrawGraph(bool /*redraw*/)
         //    _zit_data->lha.lha[_zit_data->lha.nNum - 1].fArea);
         //MYTRACE(L"\n");
 
-        _artist->SetSolidColorBrush(D2D1::ColorF(BGR(0, 255, 255), 1.0f));
+        _artist->SetSolidColorBrush(D2D1::ColorF(BGR(128, 0, 128), 1.0f));
 
         for (int i = 0; i < _zit_data->central.nNum; i++) {
             _artist->DrawRectangle(
@@ -114,13 +125,18 @@ HRESULT CZITGraph::DrawGraph(bool /*redraw*/)
                 _zit_data->central.central[i].stat.fMin,
                 Time2Index(g_ctpsec, _zit_data->central.central[i].fetime),
                 _zit_data->central.central[i].stat.fMax,
-                0.01f);
+                0.02f);
+
+            //MYTRACE(L"Central %.02f, %.02f\n",
+            //    Time2Index(g_ctpsec, _zit_data->central.central[i].fetime) - Time2Index(g_ctpsec, _zit_data->central.central[i].fstime),
+            //    _zit_data->central.central[i].stat.fMax - _zit_data->central.central[i].stat.fMin);
         }
-    }*/
+    }
     _artist->GetUsingRT()->SetAntialiasMode(am);
     _artist->SetTransform(&rect_trans);
     _artist->PopLayer();
     _artist->SetTransform(&backtrans);
+    //MYTRACE(L"zit graph restore trans %s\n", name);
 
     return S_OK;
 }
@@ -133,7 +149,7 @@ GLYPH_CHANGED_TYPE CZITGraph::AppendData(DataObjectPtr dopNewData)
 
 
 
-HRESULT CZITGraph::DrawPoint(double x, float y)
+HRESULT CZITGraph::DrawPoint(double x, float y, int type)
 {
     HRESULT hr = S_OK;
     float xx = Time2Index(g_ctpsec, x);
@@ -147,18 +163,34 @@ HRESULT CZITGraph::DrawPoint(double x, float y)
     if (_referframe) {
         POINT pnt = _referframe->Transform(xx, y);
 
-        _artist->DrawLine(
-            static_cast<float>(pnt.x - 2),
-            static_cast<float>(pnt.y - 2),
-            static_cast<float>(pnt.x + 2),
-            static_cast<float>(pnt.y + 2),
-            0.3f);
-        _artist->DrawLine(
-            static_cast<float>(pnt.x + 2),
-            static_cast<float>(pnt.y - 2),
-            static_cast<float>(pnt.x - 2),
-            static_cast<float>(pnt.y + 2),
-            0.3f);
+        if (type > 0) {
+            _artist->DrawLine(
+                static_cast<float>(pnt.x - 2),
+                static_cast<float>(pnt.y - 2),
+                static_cast<float>(pnt.x + 2),
+                static_cast<float>(pnt.y + 2),
+                1.0f);
+            _artist->DrawLine(
+                static_cast<float>(pnt.x + 2),
+                static_cast<float>(pnt.y - 2),
+                static_cast<float>(pnt.x - 2),
+                static_cast<float>(pnt.y + 2),
+                1.0f);
+        } else {
+            _artist->DrawLine(
+                static_cast<float>(pnt.x - 2),
+                static_cast<float>(pnt.y),
+                static_cast<float>(pnt.x + 2),
+                static_cast<float>(pnt.y),
+                1.0f);
+            _artist->DrawLine(
+                static_cast<float>(pnt.x),
+                static_cast<float>(pnt.y - 2),
+                static_cast<float>(pnt.x),
+                static_cast<float>(pnt.y + 2),
+                1.0f);
+        }
+
 
         //MYTRACE(L"%.02f (%.02f) %.02f => %d %d\n", x, xx, y, pnt.x, pnt.y);
     }
