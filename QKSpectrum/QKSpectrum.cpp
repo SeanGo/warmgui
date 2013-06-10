@@ -3,10 +3,7 @@
 
 #include "stdafx.h"
 #include "qks_incs.h"
-#include "network_inc.h"
 
-#include "TickDataView.h"
-#include "EuclidView.h"
 
 #include "resource.h"
 

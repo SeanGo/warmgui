@@ -34,7 +34,7 @@ private:
 	RECT                _rectClient;
 	CWarmguiConfig*         _config;
     CDispatchers*      _dispatchers;
-    CQksGuiFactory    _ecld_factory;
+    CQksGuiFactory     _qks_factory;
     CEuclidAtelier*        _atelier;
     //CNetClient            _netcli;
     CalculatorArray*   _calculators;

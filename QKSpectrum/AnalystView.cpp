@@ -39,14 +39,14 @@ int CAnalystView::ReceiveData()
 int CAnalystView::OnCreate(LPCREATESTRUCT /*cs*/)
 {
     //atelier-euclid in xml
-    bool result = _ecld_factory.CreateGui(_config, "euclid", _hwnd);
+    bool result = _qks_factory.CreateGui(_config, "euclid", _hwnd);
     if (!result)
         return (-1);
 
     _dispatchers = the_app.getDispatchers();
     _calculators = the_app.GetCalculators();
 
-    _atelier = (CEuclidAtelier*)_ecld_factory.GetAtelier();
+    _atelier = (CEuclidAtelier*)_qks_factory.GetAtelier();
 
     SetWindowLong(_hwnd, GWL_STYLE, WS_VISIBLE | WS_CLIPCHILDREN | WS_OVERLAPPEDWINDOW);
 

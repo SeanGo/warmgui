@@ -46,14 +46,14 @@ int CTickDataView::ReceiveData()
 
 int CTickDataView::OnCreate(LPCREATESTRUCT /*cs*/)
 {
-    bool result = _zit_factory.CreateGui(_config, "realtime-ctpdata", _hwnd);
+    bool result = _qks_factory.CreateGui(_config, "realtime-ctpdata", _hwnd);
     if (!result)
         return (-1);
 
     _dispatchers = the_app.getDispatchers();
     _calculators = the_app.GetCalculators();
 
-    _atelier = (CZITAtelier*)_zit_factory.GetAtelier();
+    _atelier = (CTickDataAtelier*)_qks_factory.GetAtelier();
 	SetWindowLong(_hwnd, GWL_STYLE, WS_VISIBLE | WS_CLIPCHILDREN | WS_OVERLAPPEDWINDOW);
 
 	int cx = (int)(GetSystemMetrics(SM_CXSCREEN) * .6f);

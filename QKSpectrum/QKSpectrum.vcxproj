@@ -102,27 +102,25 @@
     <ClInclude Include="network_inc.h" />
     <ClInclude Include="PredictorCalculator.h" />
     <ClInclude Include="PVI_Canvas.h" />
+    <ClInclude Include="qksapp.h" />
+    <ClInclude Include="QksFactories.h" />
+    <ClInclude Include="QKSpectrum.h" />
+    <ClInclude Include="qks_incs.h" />
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="targetver.h" />
     <ClInclude Include="TickDataView.h" />
     <ClInclude Include="TickdataCanvas.h" />
     <ClInclude Include="TickDataChart.h" />
-    <ClInclude Include="qksapp.h" />
     <ClInclude Include="QksDataDispatcher.h" />
     <ClInclude Include="CtpmmdContainer.h" />
-    <ClInclude Include="QKSpectrum.h" />
-    <ClInclude Include="qks_incs.h" />
-    <ClInclude Include="Resource.h" />
-    <ClInclude Include="CtpRtFilters.h" />
-    <ClInclude Include="stdafx.h" />
-    <ClInclude Include="targetver.h" />
-    <ClInclude Include="Test4.h" />
     <ClInclude Include="TestDialog.h" />
-    <ClInclude Include="QksFactories.h" />
     <ClInclude Include="TickDataGridCtrl.h" />
-    <ClInclude Include="ZITAtelier.h" />
+    <ClInclude Include="TickDataAtelier.h" />
     <ClInclude Include="ZitCanvas.h" />
     <ClInclude Include="ZitContainer.h" />
     <ClInclude Include="ZITGraph.h" />
-    <ClInclude Include="ZITLayout.h" />
+    <ClInclude Include="TickDataLayout.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AnalystView.cpp" />
@@ -136,27 +134,22 @@
     <ClCompile Include="LoginDlg.cpp" />
     <ClCompile Include="PredictorCalculator.cpp" />
     <ClCompile Include="PVI_Canvas.cpp" />
+    <ClCompile Include="qksapp.cpp" />
+    <ClCompile Include="QksFactories.cpp" />
+    <ClCompile Include="QKSpectrum.cpp" />
+    <ClCompile Include="stdafx.cpp" />
     <ClCompile Include="TickDataView.cpp" />
     <ClCompile Include="TickdataCanvas.cpp" />
     <ClCompile Include="TickDataChart.cpp" />
-    <ClCompile Include="qksapp.cpp" />
     <ClCompile Include="QksDataDispatcher.cpp" />
     <ClCompile Include="CtpmmdContainer.cpp" />
-    <ClCompile Include="QKSpectrum.cpp" />
-    <ClCompile Include="CtpRtFilters.cpp" />
-    <ClCompile Include="stdafx.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="Test4.cpp" />
     <ClCompile Include="TestDialog.cpp" />
-    <ClCompile Include="QksFactories.cpp" />
     <ClCompile Include="TickDataGridCtrl.cpp" />
-    <ClCompile Include="ZITAtelier.cpp" />
+    <ClCompile Include="TickDataAtelier.cpp" />
     <ClCompile Include="ZitCanvas.cpp" />
     <ClCompile Include="ZitContainer.cpp" />
     <ClCompile Include="ZITGraph.cpp" />
-    <ClCompile Include="ZITLayout.cpp" />
+    <ClCompile Include="TickDataLayout.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="QKSpectrum.rc" />

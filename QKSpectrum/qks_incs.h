@@ -9,6 +9,7 @@
 #include "ChineseCodeLib.h"
 #include "MemShareFile.h"
 
+#include "network_inc.h"
 #include "clicomm.h"
 
 
@@ -19,7 +20,6 @@
 #include "wavelet1d.h"
 #include "DspFilter.h"
 #include "MarketDataFilter.h"
-#include "CtpRtFilters.h"
 
 #include "euclid.h"
 #include "Extremum.h"
@@ -35,6 +35,8 @@
 #include "CalCentral.h"
 #include "DoublePredict.h"
 #endif
+
+
 
 #include "warmgui.h"
 using namespace WARMGUI;
@@ -123,26 +125,24 @@ typedef struct ZitData {
 #include "PredictorCalculator.h"
 #include "QksFactories.h"
 
+
 #include "TickDataChart.h"
-
-#include "ZITGraph.h"
-
 #include "PVI_Canvas.h"
-
 #include "TickDataGridCtrl.h"
 #include "TickdataCanvas.h"
+#include "TickDataLayout.h"
+#include "TickDataAtelier.h"
 
+#include "ZITGraph.h"
 #include "ZitCanvas.h"
-
-#include "ZITLayout.h"
-#include "ZITAtelier.h"
-
 #include "EuclidCanvas.h"
 #include "EuclidLayout.h"
 #include "EuclidAtelier.h"
 
 
 #include "AnalystView.h"
+#include "TickDataView.h"
+#include "EuclidView.h"
 
 #include "qksapp.h"
 extern qksapp the_app;

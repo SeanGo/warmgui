@@ -43,7 +43,7 @@ const bool CQksGuiFactory::CreateLayout(const char* atelier_conf)
        	_layout = new CZenInTwiningLayout();
         if (!_layout) return false;
     } else if (!strcmp(_config->getString(temp).c_str(), "ZITLayout")) {
-       	_layout = new CZITLayout();
+       	_layout = new CTickDataLayout();
         if (!_layout) return false;
     }
     return true;
@@ -189,7 +189,7 @@ IAtelier* CQksAtelierCreator::CreateAtelier(const char* conf_pos)
 
     IAtelier* atelier = (0);
     if (!strcmp(_config->getString(temp).c_str(), "ZITAtelier")) {
-	    atelier = new CZITAtelier("zen-in-twining");
+	    atelier = new CTickDataAtelier("zen-in-twining");
 	    if (atelier) atelier->SetConfigFile(_config, conf_pos);
     } else if (!strcmp(_config->getString(temp).c_str(), "EuclidAtelier")) {
 	    atelier = new CEuclidAtelier("eulid-atelier");
@@ -212,7 +212,7 @@ ILayout* CQksLayoutCreator::CreateLayout(const char* layout_config)
 
         ILayout* layout = (0);
         if (!strcmp(_config->getString(temp).c_str(), "ZITLayout")) {
-	        layout = new CZITLayout();
+	        layout = new CTickDataLayout();
 	        if (layout) layout->SetConfig(_config, layout_config);
         } else if (!strcmp(_config->getString(temp).c_str(), "EuclidLayout")) {
 	        layout = new CEuclidLayout();

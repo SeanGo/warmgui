@@ -40,9 +40,9 @@ private:
 	RECT                _rectClient;
 	CWarmguiConfig*         _config;
     CDispatchers*      _dispatchers;
-    CQksGuiFactory     _zit_factory;
-    CZITAtelier*           _atelier;
-    CZITLayout*             _layout;
+    CQksGuiFactory     _qks_factory;
+    CTickDataAtelier*      _atelier;
+    CTickDataLayout*        _layout;
     CNetClient              _netcli;
     CalculatorArray*   _calculators;
     bool               _b_gui_ready;
