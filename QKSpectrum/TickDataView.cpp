@@ -128,7 +128,7 @@ void CTickDataView::OnDestroy()
 void CTickDataView::OnLButtonUp(UINT uFlag, int x, int y)
 {
     _atelier->OnLButtonUp(x, y);
-    MYTRACE(L"POINT is %d %d\n", x, y);
+    MYTRACE(L"CTickDataView POINT is %d %d\n", x, y);
 }
 
 void CTickDataView::OnRButtonUp(UINT, int , int)
@@ -170,6 +170,8 @@ int CTickDataView::OnCommand(WORD nCmdId, WORD /*nSource*/, HWND /*hwnd*/)
         break;
     case ID_SHOW_EUCLID_VIEW:
         ShowEuclidView(this);
+    case ID_SHOW_ANALYST_VIEW:
+        ShowAnalystView(this);
         break;
 	}
 

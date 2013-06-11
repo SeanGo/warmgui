@@ -116,7 +116,6 @@ void CEuclidCanvas::SetGlyphRect()
         _prc_chart->SetRect(_rect);
 
     {
-
         RULER_WIDTH& rw = (_prc_chart->getCoordFrame())->getRulerWidth();
         RECT rect = _rect;
         rect.left += rw.left, rect.right -= rw.right, rect.top += rw.top, rect.bottom -= rw.bottom;

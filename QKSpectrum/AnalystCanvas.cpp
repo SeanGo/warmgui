@@ -2,10 +2,10 @@
 #include "qks_incs.h"
 
 
-CZitCanvas::CZitCanvas(const char* name)
+CAnalystCanvas::CAnalystCanvas(const char* name)
     : IDataCanvas(name)
     , _prc_chart(0)
-    , _zit_graph(0)
+    //, _zit_graph(0)
     //, _short_prdt(0)
     //, _long_prdt(0)
     , _data_cont(0)
@@ -15,12 +15,11 @@ CZitCanvas::CZitCanvas(const char* name)
 }
 
 
-CZitCanvas::~CZitCanvas(void)
+CAnalystCanvas::~CAnalystCanvas(void)
 {
 }
 
-
-const HRESULT CZitCanvas::Init(const char* name/* = 0*/)
+const HRESULT CAnalystCanvas::Init(const char* name/* = 0*/)
 {
     char temp[MAX_PATH];
     _snprintf_s(temp, MAX_PATH, _TRUNCATE, "%s.blind", _strconf);
@@ -28,7 +27,7 @@ const HRESULT CZitCanvas::Init(const char* name/* = 0*/)
 
     IGlyph* g = 0;
     if (_bHasBackground) {
-        _blind = new CBlind(_name, BGR(0, 0, 0), 0.8);
+        _blind = new CBlind(_name, BGR(0, 0, 0), 0.8f);
         g = AppendChild(_gt.begin(), _blind);
     }
 
@@ -46,34 +45,6 @@ const HRESULT CZitCanvas::Init(const char* name/* = 0*/)
         else
             g = InsertNext(g->GetGlyphTreeIter(), _prc_chart);
         _prc_chart->AddGraphs();
-
-        _zit_graph = new CZITGraph("zit-graph");
-        _zit_graph->setWorld(_prc_chart->getCoordWorld());
-        g = InsertNext(g->GetGlyphTreeIter(), _zit_graph);
-
-        /*
-        _first_appx = new CDataLineGraph("_first_appx", CDataLineGraph::GEOMETRY_PATH_TYPE_LINE, false, true, false);
-        _first_appx->setWorld(_prc_chart->getCoordWorld());
-        _first_appx->GetGraphData()->SetSize(200);
-        _first_appx->SetStrokeWidth(.02f);
-        g = InsertNext(g->GetGlyphTreeIter(), _first_appx);
-        */
-
-        /*
-        _short_prdt = new CDataLineGraph("short-prdt", CDataLineGraph::GEOMETRY_PATH_TYPE_LINE, false, true, false);
-        _short_prdt->setWorld(_prc_chart->getCoordWorld());
-        _short_prdt->SetLineColor(BGR(255, 0, 0), 1.0f);
-        _short_prdt->SetStrokeWidth(.02f);
-        _short_prdt->GetGraphData()->SetSize(180);
-        g = InsertNext(g->GetGlyphTreeIter(), _short_prdt);
-
-        _long_prdt = new CDataLineGraph("long-prdt", CDataLineGraph::GEOMETRY_PATH_TYPE_LINE, false, true, false);
-        _long_prdt->setWorld(_prc_chart->getCoordWorld());
-        _long_prdt->SetLineColor(BGR(255, 0, 0), 1.0f);
-        _long_prdt->SetStrokeWidth(.02f);
-        _long_prdt->GetGraphData()->SetSize(180);
-        g = InsertNext(g->GetGlyphTreeIter(), _long_prdt);
-        */
     } catch(...) {
         return (-1);
     }
@@ -81,7 +52,7 @@ const HRESULT CZitCanvas::Init(const char* name/* = 0*/)
     return S_OK;
 }
 
-void CZitCanvas::SetGlyphRect()
+void CAnalystCanvas::SetGlyphRect()
 {
 	if (_blind)
 		_blind->SetRect(_rect);
@@ -92,12 +63,7 @@ void CZitCanvas::SetGlyphRect()
         RULER_WIDTH& rw = (_prc_chart->getCoordFrame())->getRulerWidth();
         RECT rect = _rect;
         rect.left += rw.left, rect.right -= rw.right, rect.top += rw.top, rect.bottom -= rw.bottom;
-        if (_zit_graph)   _zit_graph->SetRect(rect);
-
-        //if (_first_appx) _first_appx->SetRect(rect);
-        
-        //if (_short_prdt) _short_prdt->SetRect(rect);
-        //if (_long_prdt)  _long_prdt ->SetRect(rect);
+        //if (_zit_graph)   _zit_graph->SetRect(rect);
     }
 
     if (_data_cont) {
@@ -106,35 +72,36 @@ void CZitCanvas::SetGlyphRect()
     }
 }
 
-void CZitCanvas::setDataOffset(int pxo, int pyo)
+void CAnalystCanvas::setDataOffset(int pxo, int pyo)
 {
 }
 
-GLYPH_CHANGED_TYPE CZitCanvas::NewData(DataObjectPtr data)
+GLYPH_CHANGED_TYPE CAnalystCanvas::NewData(DataObjectPtr data)
 {
     GLYPH_CHANGED_TYPE changed = GLYPH_CHANGED_TYPE_NONE;
     return changed;
 }
 
 
-GLYPH_CHANGED_TYPE CZitCanvas::NewData(dataptr data, size_t datalen, DataObject::MARKET_DATA_TYPE datatype)
+GLYPH_CHANGED_TYPE CAnalystCanvas::NewData(dataptr data, size_t datalen, DataObject::MARKET_DATA_TYPE datatype)
 {
     GLYPH_CHANGED_TYPE changed = GLYPH_CHANGED_TYPE_NONE;
     if (datatype == DataObject::MARKET_DATA_TYPE_ZITDATA) {
 #       ifdef _DEBUG
         //ZitData* zit = (ZitData*)data;
-        //MYTRACE(L"CZitCanvas::NewData extremum %d, infl %d, central %d, area %d\n",
+        //MYTRACE(L"CAnalystCanvas::NewData extremum %d, infl %d, central %d, area %d\n",
             //zit->extCentral.nAllNum, 
             //zit->inflBest.nNum,
             //zit->central.nNum,
             //zit->lha.nNum);
 #       endif //_DEBUG
 
+        /*
         if (_zit_graph) {
             changed = (GLYPH_CHANGED_TYPE)((int)(changed) | (int)(_zit_graph->NewData(data)));
             //MYTRACE(L" changed 0x%x\n", changed);
         }
-
+        */
         {/* fist approximate
         if (_first_appx && ((ZitData*)data)->extCentral.nAllNum) {
             _first_appx->GetGraphData()->Reset();
@@ -186,11 +153,11 @@ GLYPH_CHANGED_TYPE CZitCanvas::NewData(dataptr data, size_t datalen, DataObject:
     return changed;
 }
 
-GLYPH_CHANGED_TYPE CZitCanvas::NewData(IDataContainer* data_cont, DataObject::MARKET_DATA_TYPE datatype)
+GLYPH_CHANGED_TYPE CAnalystCanvas::NewData(IDataContainer* data_cont, DataObject::MARKET_DATA_TYPE datatype)
 {
     _data_cont = (CCtpmmdContainer*)data_cont;
     //return GLYPH_CHANGED_TYPE_NONE;
-    //MYTRACE(L"CZitCanvas::NewData\n");
+    //MYTRACE(L"CAnalystCanvas::NewData\n");
     _changed_type = GLYPH_CHANGED_TYPE_NONE;
     if (datatype == DataObject::MARKET_DATA_TYPE_CTPMMD) {
 #       ifdef _DEBUG
@@ -263,7 +230,7 @@ GLYPH_CHANGED_TYPE CZitCanvas::NewData(IDataContainer* data_cont, DataObject::MA
 }
 
 
-GLYPH_CHANGED_TYPE CZitCanvas::NewDataForCtpmmd(CCtpmmdContainer* czc, DataObject::MARKET_DATA_TYPE datatype)
+GLYPH_CHANGED_TYPE CAnalystCanvas::NewDataForCtpmmd(CCtpmmdContainer* czc, DataObject::MARKET_DATA_TYPE datatype)
 {
     GLYPH_CHANGED_TYPE changed = GLYPH_CHANGED_TYPE_NONE;
     _prc_chart->BeginSetData((dataptr)(czc->getCurrentData()));

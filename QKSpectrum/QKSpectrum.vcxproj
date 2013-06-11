@@ -90,6 +90,9 @@
     <None Include="small.ico" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AnalystAtelier.h" />
+    <ClInclude Include="AnalystCanvas.h" />
+    <ClInclude Include="AnalystLayout.h" />
     <ClInclude Include="AnalystView.h" />
     <ClInclude Include="CtpDispatcher.h" />
     <ClInclude Include="Dxut9Dialog.h" />
@@ -98,6 +101,7 @@
     <ClInclude Include="EuclidCanvas.h" />
     <ClInclude Include="EuclidLayout.h" />
     <ClInclude Include="EuclidView.h" />
+    <ClInclude Include="HistoryDataContainer.h" />
     <ClInclude Include="LoginDlg.h" />
     <ClInclude Include="network_inc.h" />
     <ClInclude Include="PredictorCalculator.h" />
@@ -123,6 +127,9 @@
     <ClInclude Include="TickDataLayout.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AnalystAtelier.cpp" />
+    <ClCompile Include="AnalystCanvas.cpp" />
+    <ClCompile Include="AnalystLayout.cpp" />
     <ClCompile Include="AnalystView.cpp" />
     <ClCompile Include="CtpDispatcher.cpp" />
     <ClCompile Include="Dxut9Dialog.cpp" />
@@ -131,6 +138,7 @@
     <ClCompile Include="EuclidCanvas.cpp" />
     <ClCompile Include="EuclidLayout.cpp" />
     <ClCompile Include="EuclidView.cpp" />
+    <ClCompile Include="HistoryDataContainer.cpp" />
     <ClCompile Include="LoginDlg.cpp" />
     <ClCompile Include="PredictorCalculator.cpp" />
     <ClCompile Include="PVI_Canvas.cpp" />

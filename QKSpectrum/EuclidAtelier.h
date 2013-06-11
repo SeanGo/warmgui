@@ -1,6 +1,8 @@
 #ifndef __euclid_atelier_h__
 #define __euclid_atelier_h__
 
+
+class CAnalystLayout;
 class CEuclidAtelier : public WARMGUI::IAtelier
 {
 public:
@@ -14,8 +16,6 @@ public:
     inline virtual bool  GetAllCanvas();
 
 protected:
-    CEuclidLayout*             _layout;
-
     ///canvases
     WARMGUI::CBkgCanvas* _canvas_imgbkg;
 

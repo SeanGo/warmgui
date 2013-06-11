@@ -1,21 +1,23 @@
 #include "StdAfx.h"
 #include "qks_incs.h"
-#include "resource.h"
 
-//////////////////////////////////////////////////////////////////////////////////////////
-// class CTickDataAtelier
-
-CTickDataAtelier::CTickDataAtelier(const char* name)
-    :   _canvasImgbkg(0)
-    ,      _pvicanvas(0)
-	,        _toolbar(0)
-    ,_tickdata_canvas(0)
+CAnalystAtelier::CAnalystAtelier(const char* name)
+    : _canvas_imgbkg(0)
+    ,    _rt_analyst(0)
+    ,    _1m_analyst(0)
+    ,    _5m_analyst(0)
+    ,   _15m_analyst(0)
+    ,       _toolbar(0)
 {
-    strcpy_s(_name, MAX_WARMGUI_NAME_LEN, name);
     setClass();
 }
 
-HRESULT CTickDataAtelier::InitAtelier(HWND hwnd, WARMGUI::CWarmguiConfig* config)
+
+CAnalystAtelier::~CAnalystAtelier(void)
+{
+}
+
+HRESULT CAnalystAtelier::InitAtelier(HWND hwnd, WARMGUI::CWarmguiConfig* config)
 {
 	HRESULT hr = IAtelier::InitAtelier(hwnd, config);
     if (SUCCEEDED(hr))
@@ -32,10 +34,9 @@ HRESULT CTickDataAtelier::InitAtelier(HWND hwnd, WARMGUI::CWarmguiConfig* config
 	return hr;
 }
 
-
-void CTickDataAtelier::ToggleToolbar()
+void CAnalystAtelier::ToggleToolbar()
 {
-	if (_toolbar->IsVisible())
+ 	if (_toolbar->IsVisible())
 		_toolbar->SetVisible(false);
 	else
 		_toolbar->SetVisible(true);
@@ -48,15 +49,15 @@ void CTickDataAtelier::ToggleToolbar()
 	InvalidateRect(_hwnd, 0, FALSE);
 }
 
-bool CTickDataAtelier::GetAllCanvas()
+inline bool CAnalystAtelier::GetAllCanvas()
 {
     CanvasIter iter = _canvasses.begin();
-    _canvasImgbkg   = (WARMGUI::CBkgCanvas* ) (*iter); ++iter;
-    _pvicanvas      = (CPVI_Canvas*)          (*iter); ++iter;
-    _tickdata_canvas= (CTickdataCanvas*)      (*iter); ++iter;
-	_toolbar        = (WARMGUI::CToolbar*   ) (*iter);
-
-
+    _canvas_imgbkg  = (WARMGUI::CBkgCanvas *) (*iter); ++iter;
+    _rt_analyst     = (CAnalystCanvas*)(*iter); ++iter;
+    _1m_analyst     = (CAnalystCanvas*)(*iter); ++iter;
+    _5m_analyst     = (CAnalystCanvas*)(*iter); ++iter;
+    _15m_analyst    = (CAnalystCanvas*)(*iter); ++iter;
+    _toolbar        = (WARMGUI::CToolbar*)(*iter);;
 
     //it is a data-canvas, register to container
     for(CanvasIter canvas_iter = _canvasses.begin(); canvas_iter != _canvasses.end(); canvas_iter++) {
@@ -71,7 +72,6 @@ bool CTickDataAtelier::GetAllCanvas()
                 if ((*iter)->isme(((IDataCanvas*) (*canvas_iter))->getContainerName()))
                     (*iter)->RegisterCanvas((IDataCanvas*)(*canvas_iter));
             }
-
         }
     }
 
@@ -86,5 +86,7 @@ bool CTickDataAtelier::GetAllCanvas()
             (*iter)->register_hwnd(_hwnd);
     }
 
-    return (true);
+    return true;
 }
+
+

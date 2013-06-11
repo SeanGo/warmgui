@@ -123,6 +123,7 @@ typedef struct ZitData {
 
 #include "EuclidCalculator.h"
 #include "PredictorCalculator.h"
+#include "HistoryDataContainer.h"
 #include "QksFactories.h"
 
 
@@ -139,10 +140,14 @@ typedef struct ZitData {
 #include "EuclidLayout.h"
 #include "EuclidAtelier.h"
 
+#include "AnalystCanvas.h"
+#include "AnalystLayout.h"
+#include "AnalystAtelier.h"
 
 #include "AnalystView.h"
 #include "TickDataView.h"
 #include "EuclidView.h"
+
 
 #include "qksapp.h"
 extern qksapp the_app;

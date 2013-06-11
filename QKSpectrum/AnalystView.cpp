@@ -22,6 +22,7 @@ CAnalystView::CAnalystView(void)
     , _dispatchers(0)
     , _calculators(0)
     , _b_gui_ready(false)
+    , _command_state(COMMAND_STATE_MOUSE_OVER)
 {
     _rectClient.left =  _rectClient.top = _rectClient.right = _rectClient.bottom = 0;
 }
@@ -39,14 +40,14 @@ int CAnalystView::ReceiveData()
 int CAnalystView::OnCreate(LPCREATESTRUCT /*cs*/)
 {
     //atelier-euclid in xml
-    bool result = _qks_factory.CreateGui(_config, "euclid", _hwnd);
+    bool result = _qks_factory.CreateGui(_config, "analyst", _hwnd);
     if (!result)
         return (-1);
 
     _dispatchers = the_app.getDispatchers();
     _calculators = the_app.GetCalculators();
 
-    _atelier = (CEuclidAtelier*)_qks_factory.GetAtelier();
+    _atelier = (CAnalystAtelier*)_qks_factory.GetAtelier();
 
     SetWindowLong(_hwnd, GWL_STYLE, WS_VISIBLE | WS_CLIPCHILDREN | WS_OVERLAPPEDWINDOW);
 
@@ -99,7 +100,7 @@ int  CAnalystView::OnEraseBkgnd(HDC)
 
 void CAnalystView::OnDestroy()
 {
-    MYTRACE(L"Euclid OnDestroy\n");
+    MYTRACE(L"CAnalystView OnDestroy\n");
     ShowWindow(_hwnd, SW_HIDE);
     SafeDelete(_atelier);
     _hwnd = 0;
@@ -107,12 +108,12 @@ void CAnalystView::OnDestroy()
 
 void CAnalystView::OnLButtonUp(UINT uFlag, int x, int y)
 {
-    MYTRACE(L"Left Button POINT is %d %d\n", x, y);
+    _atelier->OnLButtonUp(x, y);
+    MYTRACE(L"CAnalystView POINT is %d %d\n", x, y);
 }
 
 void CAnalystView::OnRButtonUp(UINT, int x, int y)
 {
-    MYTRACE(L"Right Button POINT is %d %d\n", x, y);
 }
 
 void CAnalystView::ReDraw()
@@ -127,7 +128,30 @@ void CAnalystView::OnMouseMove(UINT /*nFlags*/, int x, int y)
 
 int CAnalystView::OnCommand(WORD nCmdId, WORD /*nSource*/, HWND /*hwnd*/)
 {
-	return (0);
+	switch(nCmdId) {
+	case ID_VIEW_TOOLBAR:
+		_atelier->ToggleToolbar();
+		break;
+    case ID_OPEN_HISTORY_DATA:
+        break;
+    case ID_ZOOM_IN:
+        break;
+    case ID_ZOOM_OUT:
+        break;
+    case ID_ZOOM_FREE:
+        if (_command_state == COMMAND_STATE_ZOOM)
+            _command_state = COMMAND_STATE_MOUSE_OVER;
+        else if (_command_state == COMMAND_STATE_MOUSE_OVER)
+            _command_state = COMMAND_STATE_ZOOM;
+        break;
+    case ID_PREDICTOR:
+        if (_command_state == COMMAND_STATE_PREDICTOR)
+            _command_state = COMMAND_STATE_MOUSE_OVER;
+        else if (_command_state == COMMAND_STATE_MOUSE_OVER)
+            _command_state = COMMAND_STATE_PREDICTOR;
+        break;
+	}
+    return (0);
 }
 
 //static int lllk = 0;

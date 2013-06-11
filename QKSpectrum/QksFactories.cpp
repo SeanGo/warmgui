@@ -108,6 +108,8 @@ ICanvas* CQksCanvasCreator::CreateCanvas(const char* canvas_config)
                 canvas = new CTickdataCanvas(name);
             } else if (!strcmp(type, "euclid")) {
                 canvas = new CEuclidCanvas(name);
+            } else if (!strcmp(type, "analyst-canvas")) {
+                canvas = new CAnalystCanvas(name);
             }
 
             return canvas;
@@ -138,7 +140,14 @@ IDataContainer* CQksDataContainerCreator::CreateContainer(const char* conf_pos)
             const char* name = strname.c_str();
             container = new CCtpmmdContainer(name);
             container->SetConfig(_config, conf_pos);
+        } else if (!strcmp(type, "history")) {
+            _snprintf_s(temp, MAX_PATH, _TRUNCATE, "%s.name", conf_pos);
+            const std::string strname = _config->getString(temp);
+            const char* name = strname.c_str();
+            container = new CHistoryDataContainer(name);
+            container->SetConfig(_config, conf_pos);
         }
+
         return container;
     }catch(...){
         MYTRACE(L"CQksDataContainerCreator::CreateContainer\n");
@@ -194,6 +203,9 @@ IAtelier* CQksAtelierCreator::CreateAtelier(const char* conf_pos)
     } else if (!strcmp(_config->getString(temp).c_str(), "EuclidAtelier")) {
 	    atelier = new CEuclidAtelier("eulid-atelier");
 	    if (atelier) atelier->SetConfigFile(_config, conf_pos);
+    } else if (!strcmp(_config->getString(temp).c_str(), "analyst-atelier")) {
+	    atelier = new CAnalystAtelier("analyst-atelier");
+	    if (atelier) atelier->SetConfigFile(_config, conf_pos);
     }
     return atelier;
 }
@@ -216,6 +228,9 @@ ILayout* CQksLayoutCreator::CreateLayout(const char* layout_config)
 	        if (layout) layout->SetConfig(_config, layout_config);
         } else if (!strcmp(_config->getString(temp).c_str(), "EuclidLayout")) {
 	        layout = new CEuclidLayout();
+	        if (layout) layout->SetConfig(_config, layout_config);
+        } else if (!strcmp(_config->getString(temp).c_str(), "analyst-layout")) {
+	        layout = new CAnalystLayout();
 	        if (layout) layout->SetConfig(_config, layout_config);
         }
         return layout;

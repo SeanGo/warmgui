@@ -45,6 +45,7 @@ protected:
     CalculatorArray                  _calculators;
 };
 
-extern int ShowEuclidView(CWindow* parent_window);
+extern int ShowEuclidView (CWindow* parent_window);
+extern int ShowAnalystView(CWindow* parent_window);
 
 #endif //__qiankun_spectrum_application_h__

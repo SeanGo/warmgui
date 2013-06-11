@@ -16,8 +16,6 @@ public:
     inline virtual bool  GetAllCanvas();
 
 protected:
-    CTickDataLayout*    _layoutOne;
-
     ///canvases
     WARMGUI::CBkgCanvas* _canvasImgbkg;
 	WARMGUI::CToolbar*        _toolbar;

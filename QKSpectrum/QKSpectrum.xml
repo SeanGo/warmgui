@@ -13,17 +13,17 @@
 			<type>america-network</type>
 			<name>america-qks</name>
 			<network -->
-				<!-- configure for ssl -->
-				<!--Client-Key>e:/projects/bin/ca/client.key</Client-Key>
+		<!-- configure for ssl -->
+		<!--Client-Key>e:/projects/bin/ca/client.key</Client-Key>
 				<Client-CRT>e:/projects/bin/ca/client.crt</Client-CRT>
 				<CA-CRT>e:/projects/bin/ca/ca.crt</CA-CRT -->
 
-				<!-- network connection -->
-				<!--ctpmmd-server-address>qiankunpu.com:34567</ctpmmd-server-address>
+		<!-- network connection -->
+		<!--ctpmmd-server-address>qiankunpu.com:34567</ctpmmd-server-address>
 				<rtcalc-server-address>qiankunpu.com:34568</rtcalc-server-address-->
-				<!--rtcalc-server-address>192.168.0.102:34568</rtcalc-server-address-->
+		<!--rtcalc-server-address>192.168.0.102:34568</rtcalc-server-address-->
 
-				<!--username>guoyaoqiang</username>
+		<!--username>guoyaoqiang</username>
 				<password>123456</password>
 			</network>
 		</dispatcher-1 -->
@@ -35,7 +35,7 @@
 	</data-dispatcher>
 
 	<data-container>
-		<num>1</num>
+		<num>2</num>
 		<data-container-1>
 			<data-length>32400</data-length>
 			<type>ctpmmd-zit</type>
@@ -43,14 +43,16 @@
 			<dispatchers>ctpmmd</dispatchers>
 			<down-sampler>0</down-sampler>
 		</data-container-1>
-		<!-- data-container-2>
-			<data-length>512</data-length>
-			<type>ctpmmd-zit-filter</type>
-			<dispatchers>ctpmmd</dispatchers>
-			<down-sampler>0</down-sampler>
-		</data-container-2 !-->
+		<data-container-2>
+			<type>history</type>
+			<name>history-data</name>
+			<rt-path>E:\datas-old\ctpdata\ctpmmd</rt-path>
+			<m1-path>E:\datas-old\ctpdata\1mdata.dat</m1-path>
+			<m5-path>E:\datas-old\ctpdata\5mdata.dat</m5-path>
+			<m15-path>E:\datas-old\ctpdata\15mdata.dat</m15-path>
+		</data-container-2>
 	</data-container>
-	
+
 	<calculators>
 		<num>2</num>
 		<calculator-1>
@@ -158,7 +160,7 @@
 						</world>>
 					</coord-grid>
 				</interest-chart>
-		    </canvas-2>
+			</canvas-2>
 			<canvas-3>
 				<canvas-type>gridctrl</canvas-type>
 				<canvas-name>txt-tickdata</canvas-name>
@@ -202,7 +204,7 @@
 				<button-size>64, 64</button-size>
 				<!-- must be zero now (forever ? heihei) -->
 				<interval>0</interval>
-				<toolbar-materials-rect>0, 1080, 320, 1144</toolbar-materials-rect>
+				<toolbar-materials-rect>0, 1080, 384, 1144</toolbar-materials-rect>
 			</canvas-4>
 		</canvases>
 		<dispatchers>ctpmmd</dispatchers>
@@ -221,7 +223,7 @@
 			<type>EuclidLayout</type>
 		</layout>
 		<canvases>
-			<canvas-num>8</canvas-num>
+			<canvas-num>3</canvas-num>
 			<!-- background canvas -->
 			<canvas-1>
 				<canvas-type>background-canvas</canvas-type>
@@ -374,6 +376,143 @@
 		<dispatchers>ctpmmd</dispatchers>
 		<calculators>euclid, predictor</calculators>
 	</atelier-euclid>
+
+
+	<atelier-analyst>
+		<bitmap_materials>e:/projects/bin/qks/media/qks-analyst.png</bitmap_materials>
+		<mainwindow-bkgimg-rect>0, 0, 1920, 1080</mainwindow-bkgimg-rect>
+
+		<!-- atelier type -->
+		<atelier-type>analyst-atelier</atelier-type>
+
+		<!-- here is the configure of layout -->
+		<layout>
+			<type>analyst-layout</type>
+		</layout>
+		<canvases>
+			<canvas-num>6</canvas-num>
+			<!-- background canvas -->
+			<canvas-1>
+				<canvas-type>background-canvas</canvas-type>
+				<canvas-name>mainwindow-bkgimg</canvas-name>
+				<blind>false</blind>
+				<rect>0, 0, 1920, 1080</rect>
+			</canvas-1>
+			<canvas-2>
+				<canvas-type>analyst-canvas</canvas-type>
+				<canvas-name>realtime</canvas-name>
+				<blind>true</blind>
+				<containers></containers>
+				<price-chart>
+					<name>zit-prc-chart</name>
+					<stroke-width>0.05</stroke-width>
+					<coord-grid>
+						<name>price-coord-grid</name>
+						<!-- RULER_LEFT, RULER_RIGHT, RULER_TOP,RULER_BOTTOM -->
+						<ruler-size>50, 20, 50,  5</ruler-size>
+						<!-- B, G, R, alpah -->
+						<ruler-color-alpha>255, 0, 0, 1.0</ruler-color-alpha>
+						<font>Verdana, 10</font>
+						<world>
+							<name>price</name>
+							<!-- x0,y0, xn, yn, minpos, miny, maxpos, maxy -->
+							<!-- 872 = max ctpdata is 512, but plus 180 * 2 predict data -->
+							<world>0, 3000, 32759, 3000, 0, 2985,32759, 3015</world>
+							<increase>10, 10, DATA_BREADTH_TYPE_VALUE, 32400</increase>
+						</world>
+					</coord-grid>
+				</price-chart>
+			</canvas-2>
+			<canvas-3>
+				<canvas-type>analyst-canvas</canvas-type>
+				<canvas-name>realtime</canvas-name>
+				<blind>true</blind>
+				<containers></containers>
+				<price-chart>
+					<name>zit-prc-chart</name>
+					<stroke-width>0.05</stroke-width>
+					<coord-grid>
+						<name>price-coord-grid</name>
+						<!-- RULER_LEFT, RULER_RIGHT, RULER_TOP,RULER_BOTTOM -->
+						<ruler-size>50, 20, 50,  5</ruler-size>
+						<!-- B, G, R, alpah -->
+						<ruler-color-alpha>255, 0, 0, 1.0</ruler-color-alpha>
+						<font>Verdana, 10</font>
+						<world>
+							<name>price</name>
+							<!-- x0,y0, xn, yn, minpos, miny, maxpos, maxy -->
+							<!-- 872 = max ctpdata is 512, but plus 180 * 2 predict data -->
+							<world>0, 3000, 32759, 3000, 0, 2985,32759, 3015</world>
+							<increase>10, 10, DATA_BREADTH_TYPE_VALUE, 32400</increase>
+						</world>
+					</coord-grid>
+				</price-chart>
+			</canvas-3>
+			<canvas-4>
+				<canvas-type>analyst-canvas</canvas-type>
+				<canvas-name>realtime</canvas-name>
+				<blind>true</blind>
+				<containers></containers>
+				<price-chart>
+					<name>zit-prc-chart</name>
+					<stroke-width>0.05</stroke-width>
+					<coord-grid>
+						<name>price-coord-grid</name>
+						<!-- RULER_LEFT, RULER_RIGHT, RULER_TOP,RULER_BOTTOM -->
+						<ruler-size>50, 20, 50,  5</ruler-size>
+						<!-- B, G, R, alpah -->
+						<ruler-color-alpha>255, 0, 0, 1.0</ruler-color-alpha>
+						<font>Verdana, 10</font>
+						<world>
+							<name>price</name>
+							<!-- x0,y0, xn, yn, minpos, miny, maxpos, maxy -->
+							<!-- 872 = max ctpdata is 512, but plus 180 * 2 predict data -->
+							<world>0, 3000, 32759, 3000, 0, 2985,32759, 3015</world>
+							<increase>10, 10, DATA_BREADTH_TYPE_VALUE, 32400</increase>
+						</world>
+					</coord-grid>
+				</price-chart>
+			</canvas-4>
+			<canvas-5>
+				<canvas-type>analyst-canvas</canvas-type>
+				<canvas-name>realtime</canvas-name>
+				<blind>true</blind>
+				<containers></containers>
+				<price-chart>
+					<name>zit-prc-chart</name>
+					<stroke-width>0.05</stroke-width>
+					<coord-grid>
+						<name>price-coord-grid</name>
+						<!-- RULER_LEFT, RULER_RIGHT, RULER_TOP,RULER_BOTTOM -->
+						<ruler-size>50, 20, 50,  5</ruler-size>
+						<!-- B, G, R, alpah -->
+						<ruler-color-alpha>255, 0, 0, 1.0</ruler-color-alpha>
+						<font>Verdana, 10</font>
+						<world>
+							<name>price</name>
+							<!-- x0,y0, xn, yn, minpos, miny, maxpos, maxy -->
+							<!-- 872 = max ctpdata is 512, but plus 180 * 2 predict data -->
+							<world>0, 3000, 32759, 3000, 0, 2985,32759, 3015</world>
+							<increase>10, 10, DATA_BREADTH_TYPE_VALUE, 32400</increase>
+						</world>
+					</coord-grid>
+				</price-chart>
+			</canvas-5>
+			<canvas-6>
+				<canvas-type>toolbar</canvas-type>
+				<canvas-name>toolbar</canvas-name>
+				<!-- top, left, right, bottom -->
+				<first-command>32777</first-command>
+				<position>top</position>
+				<button-size>64, 64</button-size>
+				<!-- must be zero now (forever ? heihei) -->
+				<interval>0</interval>
+				<toolbar-materials-rect>0, 1080, 320, 1144</toolbar-materials-rect>
+			</canvas-6>
+		</canvases>
+		<dispatchers></dispatchers>
+		<calculators></calculators>
+	</atelier-analyst>
 </config>
 
 
