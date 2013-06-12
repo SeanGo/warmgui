@@ -95,12 +95,11 @@ int IDxut9Dialog::ShowDialog(const TCHAR* szTitle,
 	_SampleUI.SetFont( 1, L"Comic Sans MS", _nFontSize1, FW_NORMAL );
     _SampleUI.SetFont( 2, L"Courier New",   _nFontSize2, FW_NORMAL );
 
-	InitDialog();
-
 	DXUTInit( true, true ); // Parse the command line and show msgboxes
     DXUTSetHotkeyHandling( true, true, true );
     DXUTCreateWindow( szTitle, hInstance, hicon, hmenu, cx, cy );
 	_hwnd = DXUTGetHWND();
+	InitDialog();
 	DXUTCreateDevice (D3D_FEATURE_LEVEL_9_2, true, cx, cy );
     DXUTMainLoop();
 

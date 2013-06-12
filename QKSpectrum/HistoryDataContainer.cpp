@@ -19,6 +19,10 @@ void CHistoryDataContainer::SetConfig(CWarmguiConfig* config, const char* cnf_po
     CChineseCodeLib::Gb2312ToUnicode(_15m_path, MAX_PATH, _config->getString(temp).c_str());
 }
 
+int CHistoryDataContainer::OpenTickData(const TCHAR* filepath)
+{
+    return (int)_rtdata.open_data(filepath, 0);
+}
 
 int CHistoryDataContainer::OpenTickData(const TCHAR* code, const TCHAR* date)
 {

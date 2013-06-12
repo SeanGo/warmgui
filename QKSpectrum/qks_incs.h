@@ -140,9 +140,11 @@ typedef struct ZitData {
 #include "EuclidLayout.h"
 #include "EuclidAtelier.h"
 
+#include "PVIAnalysisCanvas.h"
 #include "AnalystCanvas.h"
 #include "AnalystLayout.h"
 #include "AnalystAtelier.h"
+
 
 #include "AnalystView.h"
 #include "TickDataView.h"

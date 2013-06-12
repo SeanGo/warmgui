@@ -155,7 +155,7 @@ int CTickDataView::OnCommand(WORD nCmdId, WORD /*nSource*/, HWND /*hwnd*/)
         {
 	        CLoginDlg* dlg = new CLoginDlg();
 	        dlg->ShowDialog(L"Test Dialog", 0, 0, 0, 320, 240);
-	        if (dlg->GetDialogValue() == 1) {
+	        if (dlg->GetResultValue() == 1) {
                 _atelier->Draw();
                 Login(dlg->_username, dlg->_password);
 	        }

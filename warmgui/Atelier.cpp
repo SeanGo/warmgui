@@ -13,6 +13,7 @@ IAtelier::IAtelier(void)
 	, _pHwndRT(0)
 	, _sizing(false)
     , _drawing(false)
+    , _selected_canvas(0)
 {
     _iterCanvasSlct = _canvasses.end();
     _common_artist  = new eArtist();
@@ -308,20 +309,40 @@ inline int IAtelier::OnMouseMove(int x, int y)
 
 inline int IAtelier::OnLButtonUp(int x, int y)
 {
-	for (CCanvasArray::reverse_iterator riter = _canvasses.rbegin(); riter != _canvasses.rend(); riter++)
-        if ((*riter)->OnLButtonUp(x, y))
-			return (1);
+    GLYPH_CHANGED_TYPE changed = GLYPH_CHANGED_TYPE_NONE;
+    if (_selected_canvas)
+        changed = _selected_canvas->unselected();
 
-	return (0);
+	for (CCanvasArray::reverse_iterator riter = _canvasses.rbegin(); riter != _canvasses.rend(); riter++)
+        if ((*riter)->OnLButtonUp(x, y)) {
+			_selected_canvas = *riter;
+            break;
+        }
+
+
+    if (_selected_canvas) {
+        changed = (GLYPH_CHANGED_TYPE)((int)changed | (int)_selected_canvas->selected());
+        return ::SendMessage(_hwnd, WM_RENEW_WINDOW, (WPARAM)changed, 0);
+    }
+    return (0);
 }
 
 inline int IAtelier::OnRButtonUp(int x, int y)
 {
-	for (CCanvasArray::reverse_iterator riter = _canvasses.rbegin(); riter != _canvasses.rend(); riter++)
-		if ((*riter)->OnRButtonUp(x, y))
-			return (1);
+    GLYPH_CHANGED_TYPE changed = GLYPH_CHANGED_TYPE_NONE;
+    if (_selected_canvas)
+        changed = _selected_canvas->unselected();
 
-	return (0);
+	for (CCanvasArray::reverse_iterator riter = _canvasses.rbegin(); riter != _canvasses.rend(); riter++)
+        if ((*riter)->OnLButtonUp(x, y)) {
+			_selected_canvas = *riter;
+            break;
+        }
+    if (_selected_canvas) {
+        changed = (GLYPH_CHANGED_TYPE)((int)changed | (int)_selected_canvas->selected());
+        return ::SendMessage(_hwnd, WM_RENEW_WINDOW, (WPARAM)changed, 0);
+    }
+    return (0);
 }
 
 

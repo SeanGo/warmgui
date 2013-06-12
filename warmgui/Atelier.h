@@ -97,8 +97,10 @@ protected:
     RECT       _winrect_in_material;    ///the window-rect in material-bitmap
     char        _str_conf[MAX_PATH];    ///config string of atelier
 
-    char _calculators[MAX_PATH];
-    char _dispatchers[MAX_PATH];
+    char     _calculators[MAX_PATH];
+    char     _dispatchers[MAX_PATH];
+
+    ICanvas*       _selected_canvas;
 };
 
 

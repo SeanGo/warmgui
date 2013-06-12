@@ -2,7 +2,7 @@
 #include "qks_incs.h"
 
 
-CPVI_Canvas::CPVI_Canvas(const char* name)
+CPVIAnalysisCanvas::CPVIAnalysisCanvas(const char* name)
     :  IDataCanvas(name)
     , _prc_chart(0)
     , _vol_chart(0)
@@ -15,11 +15,11 @@ CPVI_Canvas::CPVI_Canvas(const char* name)
     setClass();
 }
 
-CPVI_Canvas::~CPVI_Canvas(void)
+CPVIAnalysisCanvas::~CPVIAnalysisCanvas(void)
 {
 }
 
-const HRESULT CPVI_Canvas::Init(const char* name/*=0*/)
+const HRESULT CPVIAnalysisCanvas::Init(const char* name/*=0*/)
 {
     char temp[MAX_PATH];
     _snprintf_s(temp, MAX_PATH, _TRUNCATE, "%s.blind", _strconf);
@@ -45,7 +45,7 @@ const HRESULT CPVI_Canvas::Init(const char* name/*=0*/)
 
         _snprintf_s(temp, MAX_PATH, _TRUNCATE, "%s.chart-interval", _strconf);
         _chart_interval = _config->getInt(temp);
-        _prc_chart = new CPriceTickChart("price-chart");
+        _prc_chart = new CPriceAnalysChart("price-chart");
         _snprintf_s(temp, MAX_PATH, "%s.price-chart", _strconf);
         _prc_chart->setConfig(_config, temp);
         if (!g)
@@ -73,7 +73,7 @@ const HRESULT CPVI_Canvas::Init(const char* name/*=0*/)
 }
 
 
-void CPVI_Canvas::SetGlyphRect()
+void CPVIAnalysisCanvas::SetGlyphRect()
 {
 	if (_blind)
 		_blind->SetRect(_rect);
@@ -88,7 +88,6 @@ void CPVI_Canvas::SetGlyphRect()
     rect.top = rect.bottom, rect.bottom = _rect.bottom;
     if (_itr_chart) _itr_chart->SetRect(rect);
 
-
     if (_data_cont) {
         _prc_graph_changed = _vol_graph_changed = _itr_graph_changed = GLYPH_CHANGED_TYPE_COORDFRAME;
        NewDataForCtpmmd(_data_cont, DataObject::MARKET_DATA_TYPE_CTPMMD);
@@ -96,14 +95,14 @@ void CPVI_Canvas::SetGlyphRect()
     }
 }
 
-GLYPH_CHANGED_TYPE CPVI_Canvas::NewData(DataObjectPtr dop)
+GLYPH_CHANGED_TYPE CPVIAnalysisCanvas::NewData(DataObjectPtr dop)
 {
     GLYPH_CHANGED_TYPE changed = GLYPH_CHANGED_TYPE_NONE;
     return changed;
 }
 
 
-GLYPH_CHANGED_TYPE CPVI_Canvas::NewData(dataptr data, size_t datalen, DataObject::MARKET_DATA_TYPE datatype)
+GLYPH_CHANGED_TYPE CPVIAnalysisCanvas::NewData(dataptr data, size_t datalen, DataObject::MARKET_DATA_TYPE datatype)
 {
     GLYPH_CHANGED_TYPE changed = GLYPH_CHANGED_TYPE_NONE;
     if (datatype == DataObject::MARKET_DATA_TYPE_ZITDATA) {
@@ -119,13 +118,13 @@ GLYPH_CHANGED_TYPE CPVI_Canvas::NewData(dataptr data, size_t datalen, DataObject
     return changed;
 }
 
-void CPVI_Canvas::SetGeometryData(dataptr pdata, int count, int datasize)
+void CPVIAnalysisCanvas::SetGeometryData(dataptr pdata, int count, int datasize)
 {
 }
 
 
 
-GLYPH_CHANGED_TYPE CPVI_Canvas::NewData(IDataContainer* data_cont, DataObject::MARKET_DATA_TYPE datatype)
+GLYPH_CHANGED_TYPE CPVIAnalysisCanvas::NewData(IDataContainer* data_cont, DataObject::MARKET_DATA_TYPE datatype)
 {
     //return GLYPH_CHANGED_TYPE_NONE ;
     _changed_type = _prc_graph_changed = _prc_graph_changed = _prc_graph_changed = GLYPH_CHANGED_TYPE_NONE;
@@ -178,7 +177,7 @@ GLYPH_CHANGED_TYPE CPVI_Canvas::NewData(IDataContainer* data_cont, DataObject::M
 }
 
 
-GLYPH_CHANGED_TYPE CPVI_Canvas::NewDataForCtpmmd(CCtpmmdContainer* czc, DataObject::MARKET_DATA_TYPE datatype)
+GLYPH_CHANGED_TYPE CPVIAnalysisCanvas::NewDataForCtpmmd(CCtpmmdContainer* czc, DataObject::MARKET_DATA_TYPE datatype)
 {
     //FUTURE_DATA_RANGE& fdr = czc->getDataRange();
     /*

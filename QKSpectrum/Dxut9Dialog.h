@@ -32,7 +32,7 @@ public:
 
 	void SetFontSize(UINT nSize1, UINT nSize2) { _nFontSize1 = nSize1, _nFontSize2 = nSize2; }
 	void ShowHelper(bool bShow = true) { _show_helper = bShow; }
-	UINT GetDialogValue() { return _btn_value; }
+	UINT GetResultValue() { return _btn_value; }
 
 protected:
 	// calback /////////////////////////////////////////

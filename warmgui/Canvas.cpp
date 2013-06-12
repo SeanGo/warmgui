@@ -100,6 +100,7 @@ HRESULT ICanvas::Draw(bool redraw/* = false*/)
 
 HRESULT ICanvas::_DrawBkg(bool drawbuf/* = false*/)
 {
+
     //!!!
     //the backgound canvas has one image only, so do not need draw _material bitmap
     if (!drawbuf) {
@@ -126,6 +127,18 @@ HRESULT ICanvas::_DrawBkg(bool drawbuf/* = false*/)
 #           endif //_DEBUG
             (*iter)->Draw(drawbuf);
         }
+    }
+
+    if (_glyph_state & (int)GLYPH_STATE_SELECTED) {
+        D2D1_COLOR_F clr = _common_artist->GetSCBrush()->GetColor();
+        MATRIX_2D m;
+        _common_artist->GetTransform(&m);
+        MATRIX_2D idt = D2D1::IdentityMatrix();
+        _common_artist->SetTransform(&idt);
+        _common_artist->SetSolidColorBrush(D2D1::ColorF(BGR(128, 128, 128), 1.0f));
+        _common_artist->DrawRectangle(_rect.left + 1, _rect.top + 1, _rect.right - 1, _rect.bottom - 1, 0.8f);
+        _common_artist->SetSolidColorBrush(clr);
+        _common_artist->SetTransform(&m);
     }
 
     return S_OK;
@@ -445,6 +458,22 @@ const HRESULT CBkgCanvas::Init(const char* name/* = 0*/)
 
 	return (r) ? S_OK : (-1);
 }
+
+int CBkgCanvas::OnMouseMove(int x, int y)
+{
+    return (0);
+}
+
+int CBkgCanvas::OnLButtonUp(int x, int y)
+{
+    return (0);
+}
+
+int CBkgCanvas::OnRButtonUp(int x, int y)
+{
+    return (0);
+}
+
 
 
 }//namespace WARMGUI

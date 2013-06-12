@@ -82,8 +82,8 @@ public:
     inline virtual bool Intersect(int x, int y);            //for IRectPosition
     inline virtual EDGE_POSITION_TYPE IsEdge(int x, int y); ///the point(x,y) of screen is edge of graph
 
-    GLYPH_STATE_TYPE    GetGlyphState() {return _glyph_state;}
-    void                SetGlyphState(GLYPH_STATE_TYPE glyph_state) {glyph_state = _glyph_state;}
+    GLYPH_STATE_TYPE    GetGlyphState() {return (GLYPH_STATE_TYPE)_glyph_state;}
+    void                SetGlyphState(GLYPH_STATE_TYPE glyph_state) {glyph_state = (GLYPH_STATE_TYPE)_glyph_state;}
 
     virtual void        SetCommonArtist(eArtist* artist) {_common_artist = artist;}
     eArtist*            GetCommonArtist() { return _common_artist; }
@@ -103,13 +103,38 @@ public:
     virtual int         OnClose        (WPARAM wParam, LPARAM lParam);
     virtual int         OnErasebkgnd   (WPARAM wParam, LPARAM lParam);
 
+    virtual GLYPH_CHANGED_TYPE unselected()
+                               {
+                                   _glyph_state = (GLYPH_CHANGED_TYPE)((int)_glyph_state & ~((int)GLYPH_STATE_SELECTED));
+#                                  ifdef _DEBUG
+                                   TCHAR name[MAX_PATH];
+                                   CChineseCodeLib::Gb2312ToUnicode(name, MAX_PATH, _name);
+                                   MYTRACE(L"unselected %s\n", name);
+#                                  endif
+
+                                   _changed_type = (GLYPH_CHANGED_TYPE)((int)_changed_type | (int)GLYPH_CHANGED_TYPE_CANVAS_BKG);
+                                   return GLYPH_CHANGED_TYPE_CANVAS_BKG;
+                               }
+    virtual GLYPH_CHANGED_TYPE selected()
+                               {
+                                   _glyph_state = (int)_glyph_state | (int)GLYPH_STATE_SELECTED;
+#                                  ifdef _DEBUG
+                                   TCHAR name[MAX_PATH];
+                                   CChineseCodeLib::Gb2312ToUnicode(name, MAX_PATH, _name);
+                                   MYTRACE(L"selected %s\n", name);
+#                                  endif
+
+                                   _changed_type = (GLYPH_CHANGED_TYPE)((int)_changed_type | (int)GLYPH_CHANGED_TYPE_CANVAS_BKG);
+                                   return GLYPH_CHANGED_TYPE_CANVAS_BKG;
+                               }
+
 public:
     char  _name[MAX_WARMGUI_NAME_LEN];  ///graph name
 protected:
     RECT                        _rect;  ///every glyph has an rectagle region to draw, redraw or animate
     uint32_t                    _myid;  ///graph unique id
 
-    GLYPH_STATE_TYPE     _glyph_state;   ///indicate the glyph state, selected, moving, etc.
+    int                  _glyph_state;   ///indicate the glyph state, selected, moving, etc.
     GLYPH_CHANGED_TYPE  _changed_type;   ///the glyph has changed, so need redraw it
     eArtist*           _common_artist;
     bool                     _visible;      ///is visible or not

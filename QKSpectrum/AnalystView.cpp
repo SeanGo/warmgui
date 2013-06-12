@@ -1,13 +1,8 @@
 #include "StdAfx.h"
 #include "qks_incs.h"
-
-#include "qks_incs.h"
-#include "network_inc.h"
-
 #include "Dxut9Dialog.h"
-#include "EuclidView.h"
-#include "LoginDlg.h"
 #include "resource.h"
+#include "OpenHistoryDataDlg.h"
 
 #define __TRACE_INFO__ 0
 #if (__TRACE_INFO__)
@@ -23,6 +18,7 @@ CAnalystView::CAnalystView(void)
     , _calculators(0)
     , _b_gui_ready(false)
     , _command_state(COMMAND_STATE_MOUSE_OVER)
+    , _history_dc(0)
 {
     _rectClient.left =  _rectClient.top = _rectClient.right = _rectClient.bottom = 0;
 }
@@ -57,6 +53,7 @@ int CAnalystView::OnCreate(LPCREATESTRUCT /*cs*/)
 	MoveWindow(_hwnd, cx, cy, cx, cy, true);
 	SetFocus(_hwnd);
 
+    _history_dc = (CHistoryDataContainer*)the_app.getDataContainer("history-data");
 	return 0;
 }
 
@@ -109,10 +106,19 @@ void CAnalystView::OnDestroy()
 void CAnalystView::OnLButtonUp(UINT uFlag, int x, int y)
 {
     _atelier->OnLButtonUp(x, y);
-    MYTRACE(L"CAnalystView POINT is %d %d\n", x, y);
+    MYTRACE(L"CAnalystView OnLButtonUp POINT is %d %d\n", x, y);
 }
 
 void CAnalystView::OnRButtonUp(UINT, int x, int y)
+{
+}
+
+void CAnalystView::OnLButtonDown(UINT uFlag, int x, int y)
+{
+    MYTRACE(L"CAnalystView OnLButtonDown POINT is %d %d\n", x, y);
+}
+
+void CAnalystView::OnRButtonDown(UINT, int x, int y)
 {
 }
 
@@ -133,8 +139,9 @@ int CAnalystView::OnCommand(WORD nCmdId, WORD /*nSource*/, HWND /*hwnd*/)
 		_atelier->ToggleToolbar();
 		break;
     case ID_OPEN_HISTORY_DATA:
-        break;
+        return open_history_data();
     case ID_ZOOM_IN:
+        _atelier->GetSelectedCanvas();
         break;
     case ID_ZOOM_OUT:
         break;
@@ -172,6 +179,24 @@ int CAnalystView::OnMessage(UINT message, WPARAM wParam, LPARAM lParam)
             ReDraw();
         }
         break;
+    }
+
+    return (0);
+}
+
+int CAnalystView::open_history_data()
+{
+    COpenHistoryDataDlg* dlgtest = new COpenHistoryDataDlg();
+    dlgtest->set_data_path(_history_dc->get_history_data_path());
+    int open_result = 0;
+    dlgtest->ShowDialog(L"Open History Data", 0, 0, 0, 320, 240);
+    if (dlgtest->GetResultValue()) {
+        open_result = _history_dc->OpenTickData(dlgtest->filepath);
+    }
+    delete dlgtest;
+
+    if (open_result > 0) {
+        MYTRACE(L"get %d datas\n", open_result);
     }
 
     return (0);

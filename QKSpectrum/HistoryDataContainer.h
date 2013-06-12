@@ -21,8 +21,10 @@ public:
     virtual bool NewData(DataObjectPtr dop){return true;}
 
     int OpenTickData(const TCHAR* code, const TCHAR* date);
+    int OpenTickData(const TCHAR* filepath);
     int OpenHistoryData(int down_sample_level);
 
+    TCHAR* get_history_data_path() { return _rt_path; }
 protected:
     History_Ctpmmd_Data  _rtdata;
     History_Ctpmmd_Data  _1mdata;

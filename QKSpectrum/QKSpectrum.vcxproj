@@ -104,7 +104,9 @@
     <ClInclude Include="HistoryDataContainer.h" />
     <ClInclude Include="LoginDlg.h" />
     <ClInclude Include="network_inc.h" />
+    <ClInclude Include="OpenHistoryDataDlg.h" />
     <ClInclude Include="PredictorCalculator.h" />
+    <ClInclude Include="PVIAnalysisCanvas.h" />
     <ClInclude Include="PVI_Canvas.h" />
     <ClInclude Include="qksapp.h" />
     <ClInclude Include="QksFactories.h" />
@@ -140,7 +142,9 @@
     <ClCompile Include="EuclidView.cpp" />
     <ClCompile Include="HistoryDataContainer.cpp" />
     <ClCompile Include="LoginDlg.cpp" />
+    <ClCompile Include="OpenHistoryDataDlg.cpp" />
     <ClCompile Include="PredictorCalculator.cpp" />
+    <ClCompile Include="PVIAnalysisCanvas.cpp" />
     <ClCompile Include="PVI_Canvas.cpp" />
     <ClCompile Include="qksapp.cpp" />
     <ClCompile Include="QksFactories.cpp" />

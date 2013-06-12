@@ -2,8 +2,6 @@
 #define __qiankun_spectrum_application_h__
 
 
-#define WM_RENEW_WINDOW WM_USER + 7000
-
 class qksapp : public CDxWinApp
 {
 public:
@@ -13,9 +11,16 @@ public:
 	virtual int InitialApp(HINSTANCE hInstance, int nCmdShow);
 	virtual void CleanupApp();
 
-    CDispatchers*              getDispatchers() {return &_dispatchers;}
-    CalculatorArray*           GetCalculators() {return &_calculators;}
-    DCArray*                   getDataContainers() {return &_data_containers;}
+    CDispatchers*    getDispatchers() {return &_dispatchers;}
+    CalculatorArray* GetCalculators() {return &_calculators;}
+    DCArray*         getDataContainers() {return &_data_containers;}
+    IDataContainer*  getDataContainer(const char* name)
+                     {
+                        for (DCConstIter iter = _data_containers.begin(); iter != _data_containers.end(); iter++)
+                            if ((*iter)->isme(name))
+                                return (*iter);
+                        return (0);
+                     }
 
     const bool CreateCalculator();
     const bool CreateDispatcher();

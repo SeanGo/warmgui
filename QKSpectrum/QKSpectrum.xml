@@ -399,13 +399,20 @@
 				<rect>0, 0, 1920, 1080</rect>
 			</canvas-1>
 			<canvas-2>
-				<canvas-type>analyst-canvas</canvas-type>
+				<canvas-type>pvi-analyst-canvas</canvas-type>
 				<canvas-name>realtime</canvas-name>
-				<blind>true</blind>
 				<containers></containers>
+				<blind>true</blind>
+				<!-- rect percentage of each graph and coord-frame -->
+				<rect-percentage>0.618, 0.191, 0.191</rect-percentage>
+				<!-- margin of all chart -->
+				<margin>0, 0, 0, 0</margin>
+				<!-- interval of each chart -->
+				<chart-interval>5</chart-interval>
+				<!-- worlds setting -->
 				<price-chart>
-					<name>zit-prc-chart</name>
-					<stroke-width>0.05</stroke-width>
+					<name>pvi-p-chart</name>
+					<stroke-width>0.3</stroke-width>
 					<coord-grid>
 						<name>price-coord-grid</name>
 						<!-- RULER_LEFT, RULER_RIGHT, RULER_TOP,RULER_BOTTOM -->
@@ -416,21 +423,66 @@
 						<world>
 							<name>price</name>
 							<!-- x0,y0, xn, yn, minpos, miny, maxpos, maxy -->
-							<!-- 872 = max ctpdata is 512, but plus 180 * 2 predict data -->
+							<!-- max ctpdata is 32400, but plus 180 * 2 predict data -->
 							<world>0, 3000, 32759, 3000, 0, 2985,32759, 3015</world>
-							<increase>10, 10, DATA_BREADTH_TYPE_VALUE, 32400</increase>
+							<increase>10, 10, DATA_BREADTH_TYPE_VALUE, 32759</increase>
 						</world>
 					</coord-grid>
 				</price-chart>
+				<volume-chart>
+					<name>pvi-v-chart</name>
+					<stroke-width>3</stroke-width>
+					<coord-grid>
+						<name>volume-coord-grid</name>
+						<!-- RULER_LEFT, RULER_RIGHT, RULER_TOP,RULER_BOTTOM -->
+						<ruler-size>50, 20, 50,  5</ruler-size>
+						<!-- B, G, R, alpah -->
+						<ruler-color-alpha>255, 0, 0, 1.0</ruler-color-alpha>
+						<font>Verdana, 10</font>
+						<world>
+							<name>volume</name>
+							<!-- x0,y0, xn, yn, minpos, miny, maxpos, maxy -->
+							<!-- max ctpdata is 32400, but plus 180 * 2 predict data -->
+							<world>0, 0, 32759, 0, 0, 0,32759, 100</world>
+							<increase>0.0, 10.0, DATA_BREADTH_TYPE_VALUE, 32759</increase>
+						</world>>
+					</coord-grid>
+				</volume-chart>
+				<interest-chart>
+					<name>pvi-i-chart</name>
+					<stroke-width>5</stroke-width>
+					<!-- x0,y0, xn, yn, minpos, miny, maxpos, maxy -->
+					<!-- max ctpdata is 32400, but plus 180 * 2 predict data -->
+					<coord-grid>
+						<name>interest-coord-grid</name>
+						<!-- RULER_LEFT, RULER_RIGHT, RULER_TOP,RULER_BOTTOM -->
+						<ruler-size>50, 20, 50,  5</ruler-size>
+						<!-- B, G, R, alpah -->
+						<ruler-color-alpha>255, 0, 0, 1.0</ruler-color-alpha>
+						<font>Verdana, 10</font>
+						<world>
+							<name>interest</name>
+							<world>0, 0, 32759, 0, 0, 0,32759, 100</world>
+							<increase>100.0, 100.0, DATA_BREADTH_TYPE_VALUE, 32759</increase>
+						</world>>
+					</coord-grid>
+				</interest-chart>
 			</canvas-2>
 			<canvas-3>
-				<canvas-type>analyst-canvas</canvas-type>
-				<canvas-name>realtime</canvas-name>
-				<blind>true</blind>
+				<canvas-type>pvi-analyst-canvas</canvas-type>
+				<canvas-name>1m-pvi-analyst</canvas-name>
 				<containers></containers>
+				<blind>true</blind>
+				<!-- rect percentage of each graph and coord-frame -->
+				<rect-percentage>0.618, 0.191, 0.191</rect-percentage>
+				<!-- margin of all chart -->
+				<margin>0, 0, 0, 0</margin>
+				<!-- interval of each chart -->
+				<chart-interval>5</chart-interval>
+				<!-- worlds setting -->
 				<price-chart>
-					<name>zit-prc-chart</name>
-					<stroke-width>0.05</stroke-width>
+					<name>pvi-p-chart</name>
+					<stroke-width>0.3</stroke-width>
 					<coord-grid>
 						<name>price-coord-grid</name>
 						<!-- RULER_LEFT, RULER_RIGHT, RULER_TOP,RULER_BOTTOM -->
@@ -441,21 +493,66 @@
 						<world>
 							<name>price</name>
 							<!-- x0,y0, xn, yn, minpos, miny, maxpos, maxy -->
-							<!-- 872 = max ctpdata is 512, but plus 180 * 2 predict data -->
+							<!-- max ctpdata is 32400, but plus 180 * 2 predict data -->
 							<world>0, 3000, 32759, 3000, 0, 2985,32759, 3015</world>
-							<increase>10, 10, DATA_BREADTH_TYPE_VALUE, 32400</increase>
+							<increase>10, 10, DATA_BREADTH_TYPE_VALUE, 32759</increase>
 						</world>
 					</coord-grid>
 				</price-chart>
+				<volume-chart>
+					<name>pvi-v-chart</name>
+					<stroke-width>3</stroke-width>
+					<coord-grid>
+						<name>volume-coord-grid</name>
+						<!-- RULER_LEFT, RULER_RIGHT, RULER_TOP,RULER_BOTTOM -->
+						<ruler-size>50, 20, 50,  5</ruler-size>
+						<!-- B, G, R, alpah -->
+						<ruler-color-alpha>255, 0, 0, 1.0</ruler-color-alpha>
+						<font>Verdana, 10</font>
+						<world>
+							<name>volume</name>
+							<!-- x0,y0, xn, yn, minpos, miny, maxpos, maxy -->
+							<!-- max ctpdata is 32400, but plus 180 * 2 predict data -->
+							<world>0, 0, 32759, 0, 0, 0,32759, 100</world>
+							<increase>0.0, 10.0, DATA_BREADTH_TYPE_VALUE, 32759</increase>
+						</world>>
+					</coord-grid>
+				</volume-chart>
+				<interest-chart>
+					<name>pvi-i-chart</name>
+					<stroke-width>5</stroke-width>
+					<!-- x0,y0, xn, yn, minpos, miny, maxpos, maxy -->
+					<!-- max ctpdata is 32400, but plus 180 * 2 predict data -->
+					<coord-grid>
+						<name>interest-coord-grid</name>
+						<!-- RULER_LEFT, RULER_RIGHT, RULER_TOP,RULER_BOTTOM -->
+						<ruler-size>50, 20, 50,  5</ruler-size>
+						<!-- B, G, R, alpah -->
+						<ruler-color-alpha>255, 0, 0, 1.0</ruler-color-alpha>
+						<font>Verdana, 10</font>
+						<world>
+							<name>interest</name>
+							<world>0, 0, 32759, 0, 0, 0,32759, 100</world>
+							<increase>100.0, 100.0, DATA_BREADTH_TYPE_VALUE, 32759</increase>
+						</world>>
+					</coord-grid>
+				</interest-chart>
 			</canvas-3>
 			<canvas-4>
-				<canvas-type>analyst-canvas</canvas-type>
-				<canvas-name>realtime</canvas-name>
-				<blind>true</blind>
+				<canvas-type>pvi-analyst-canvas</canvas-type>
+				<canvas-name>5m-pvi-analyst</canvas-name>
 				<containers></containers>
+				<blind>true</blind>
+				<!-- rect percentage of each graph and coord-frame -->
+				<rect-percentage>0.618, 0.191, 0.191</rect-percentage>
+				<!-- margin of all chart -->
+				<margin>0, 0, 0, 0</margin>
+				<!-- interval of each chart -->
+				<chart-interval>5</chart-interval>
+				<!-- worlds setting -->
 				<price-chart>
-					<name>zit-prc-chart</name>
-					<stroke-width>0.05</stroke-width>
+					<name>pvi-p-chart</name>
+					<stroke-width>0.3</stroke-width>
 					<coord-grid>
 						<name>price-coord-grid</name>
 						<!-- RULER_LEFT, RULER_RIGHT, RULER_TOP,RULER_BOTTOM -->
@@ -466,21 +563,66 @@
 						<world>
 							<name>price</name>
 							<!-- x0,y0, xn, yn, minpos, miny, maxpos, maxy -->
-							<!-- 872 = max ctpdata is 512, but plus 180 * 2 predict data -->
+							<!-- max ctpdata is 32400, but plus 180 * 2 predict data -->
 							<world>0, 3000, 32759, 3000, 0, 2985,32759, 3015</world>
-							<increase>10, 10, DATA_BREADTH_TYPE_VALUE, 32400</increase>
+							<increase>10, 10, DATA_BREADTH_TYPE_VALUE, 32759</increase>
 						</world>
 					</coord-grid>
 				</price-chart>
+				<volume-chart>
+					<name>pvi-v-chart</name>
+					<stroke-width>3</stroke-width>
+					<coord-grid>
+						<name>volume-coord-grid</name>
+						<!-- RULER_LEFT, RULER_RIGHT, RULER_TOP,RULER_BOTTOM -->
+						<ruler-size>50, 20, 50,  5</ruler-size>
+						<!-- B, G, R, alpah -->
+						<ruler-color-alpha>255, 0, 0, 1.0</ruler-color-alpha>
+						<font>Verdana, 10</font>
+						<world>
+							<name>volume</name>
+							<!-- x0,y0, xn, yn, minpos, miny, maxpos, maxy -->
+							<!-- max ctpdata is 32400, but plus 180 * 2 predict data -->
+							<world>0, 0, 32759, 0, 0, 0,32759, 100</world>
+							<increase>0.0, 10.0, DATA_BREADTH_TYPE_VALUE, 32759</increase>
+						</world>>
+					</coord-grid>
+				</volume-chart>
+				<interest-chart>
+					<name>pvi-i-chart</name>
+					<stroke-width>5</stroke-width>
+					<!-- x0,y0, xn, yn, minpos, miny, maxpos, maxy -->
+					<!-- max ctpdata is 32400, but plus 180 * 2 predict data -->
+					<coord-grid>
+						<name>interest-coord-grid</name>
+						<!-- RULER_LEFT, RULER_RIGHT, RULER_TOP,RULER_BOTTOM -->
+						<ruler-size>50, 20, 50,  5</ruler-size>
+						<!-- B, G, R, alpah -->
+						<ruler-color-alpha>255, 0, 0, 1.0</ruler-color-alpha>
+						<font>Verdana, 10</font>
+						<world>
+							<name>interest</name>
+							<world>0, 0, 32759, 0, 0, 0,32759, 100</world>
+							<increase>100.0, 100.0, DATA_BREADTH_TYPE_VALUE, 32759</increase>
+						</world>>
+					</coord-grid>
+				</interest-chart>
 			</canvas-4>
 			<canvas-5>
-				<canvas-type>analyst-canvas</canvas-type>
-				<canvas-name>realtime</canvas-name>
-				<blind>true</blind>
+				<canvas-type>pvi-analyst-canvas</canvas-type>
+				<canvas-name>15m-pvi-analyst</canvas-name>
 				<containers></containers>
+				<blind>true</blind>
+				<!-- rect percentage of each graph and coord-frame -->
+				<rect-percentage>0.618, 0.191, 0.191</rect-percentage>
+				<!-- margin of all chart -->
+				<margin>0, 0, 0, 0</margin>
+				<!-- interval of each chart -->
+				<chart-interval>5</chart-interval>
+				<!-- worlds setting -->
 				<price-chart>
-					<name>zit-prc-chart</name>
-					<stroke-width>0.05</stroke-width>
+					<name>pvi-p-chart</name>
+					<stroke-width>0.3</stroke-width>
 					<coord-grid>
 						<name>price-coord-grid</name>
 						<!-- RULER_LEFT, RULER_RIGHT, RULER_TOP,RULER_BOTTOM -->
@@ -491,12 +633,50 @@
 						<world>
 							<name>price</name>
 							<!-- x0,y0, xn, yn, minpos, miny, maxpos, maxy -->
-							<!-- 872 = max ctpdata is 512, but plus 180 * 2 predict data -->
+							<!-- max ctpdata is 32400, but plus 180 * 2 predict data -->
 							<world>0, 3000, 32759, 3000, 0, 2985,32759, 3015</world>
-							<increase>10, 10, DATA_BREADTH_TYPE_VALUE, 32400</increase>
+							<increase>10, 10, DATA_BREADTH_TYPE_VALUE, 32759</increase>
 						</world>
 					</coord-grid>
 				</price-chart>
+				<volume-chart>
+					<name>pvi-v-chart</name>
+					<stroke-width>3</stroke-width>
+					<coord-grid>
+						<name>volume-coord-grid</name>
+						<!-- RULER_LEFT, RULER_RIGHT, RULER_TOP,RULER_BOTTOM -->
+						<ruler-size>50, 20, 50,  5</ruler-size>
+						<!-- B, G, R, alpah -->
+						<ruler-color-alpha>255, 0, 0, 1.0</ruler-color-alpha>
+						<font>Verdana, 10</font>
+						<world>
+							<name>volume</name>
+							<!-- x0,y0, xn, yn, minpos, miny, maxpos, maxy -->
+							<!-- max ctpdata is 32400, but plus 180 * 2 predict data -->
+							<world>0, 0, 32759, 0, 0, 0,32759, 100</world>
+							<increase>0.0, 10.0, DATA_BREADTH_TYPE_VALUE, 32759</increase>
+						</world>>
+					</coord-grid>
+				</volume-chart>
+				<interest-chart>
+					<name>pvi-i-chart</name>
+					<stroke-width>5</stroke-width>
+					<!-- x0,y0, xn, yn, minpos, miny, maxpos, maxy -->
+					<!-- max ctpdata is 32400, but plus 180 * 2 predict data -->
+					<coord-grid>
+						<name>interest-coord-grid</name>
+						<!-- RULER_LEFT, RULER_RIGHT, RULER_TOP,RULER_BOTTOM -->
+						<ruler-size>50, 20, 50,  5</ruler-size>
+						<!-- B, G, R, alpah -->
+						<ruler-color-alpha>255, 0, 0, 1.0</ruler-color-alpha>
+						<font>Verdana, 10</font>
+						<world>
+							<name>interest</name>
+							<world>0, 0, 32759, 0, 0, 0,32759, 100</world>
+							<increase>100.0, 100.0, DATA_BREADTH_TYPE_VALUE, 32759</increase>
+						</world>>
+					</coord-grid>
+				</interest-chart>
 			</canvas-5>
 			<canvas-6>
 				<canvas-type>toolbar</canvas-type>

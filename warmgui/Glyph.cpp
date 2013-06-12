@@ -50,8 +50,16 @@ inline IGlyphNode::EDGE_POSITION_TYPE IGlyphNode::IsEdge(int /*x*/, int /*y*/)
 }
 
 int  IGlyphNode::OnMouseMove    (int x, int y) {return (0);}
-int  IGlyphNode::OnLButtonUp    (int x, int y) {return (0);}
-int  IGlyphNode::OnRButtonUp    (int x, int y) {return (0);}
+
+int  IGlyphNode::OnLButtonUp    (int x, int y)
+{
+    return IsInRect(_rect, x, y);
+}
+
+int  IGlyphNode::OnRButtonUp    (int x, int y)
+{
+        return IsInRect(_rect, x, y);
+}
 
 void IGlyphNode::OnSize         (UINT, int, int) {}
 int  IGlyphNode::OnSetfocus     (WPARAM, LPARAM) {return (0);}

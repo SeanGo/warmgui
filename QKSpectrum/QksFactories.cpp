@@ -110,6 +110,8 @@ ICanvas* CQksCanvasCreator::CreateCanvas(const char* canvas_config)
                 canvas = new CEuclidCanvas(name);
             } else if (!strcmp(type, "analyst-canvas")) {
                 canvas = new CAnalystCanvas(name);
+            } else if (!strcmp(type, "pvi-analyst-canvas")) {
+                canvas = new CPVIAnalysisCanvas(name);
             }
 
             return canvas;

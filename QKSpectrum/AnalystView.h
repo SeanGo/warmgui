@@ -1,6 +1,40 @@
 #ifndef __analyst_view_h__
 #define __analyst_view_h__
 
+/////////////////////////////////////////////////////////////////////////////////////////////
+// class CMouseState
+class WARMGUI_API CMouseState
+{
+public:
+	enum MOUSE_STATE {
+		MOUSE_STATE_NONE      = 0x000,
+		MOUSE_STATE_MOVE_OVER = 0x001,
+		MOUSE_STATE_LBTN_DOWN = 0x002,
+		MOUSE_STATE_LBTN_UP   = 0x004,
+		MOUSE_STATE_LBTN_DCLK = 0x008,
+		MOUSE_STATE_RBTN_DOWN = 0x010,
+		MOUSE_STATE_RBTN_UP   = 0x020,
+		MOUSE_STATE_RBTN_DCLK = 0x040,
+		MOUSE_STATE_MBTN_DOWN = 0x080,
+		MOUSE_STATE_MBTN_UP   = 0x100,
+		MOUSE_STATE_MBTN_DCLK = 0x200,
+		MOUSE_STATE_WHEEL     = 0x400,
+	};
+
+    CMouseState() : _state(MOUSE_STATE_NONE)
+        {_old_pnt.x = _old_pnt.y = _now_pnt.x = _now_pnt.y = 0;}
+	void SetPoint(POINT pnt) { _old_pnt = _now_pnt, _now_pnt = pnt; }
+    void ChangeState(UINT state) { _state |=  state; }
+    void RemoveState(UINT state) { _state &= ~state; }
+
+	UINT GetState() { return _state; }
+
+protected:
+	UINT    _state;
+	POINT _old_pnt;
+	POINT _now_pnt;
+};
+
 class CAnalystView : public WARMGUI::CWindow
 {
 public:
@@ -14,6 +48,8 @@ public:
 	msgfun  int  OnEraseBkgnd(HDC);
 	msgfun  void OnDestroy();
 
+    msgfun  void OnLButtonDown(UINT, int , int);
+    msgfun  void OnRButtonDown(UINT, int , int);
     msgfun  void OnLButtonUp(UINT, int , int);
     msgfun  void OnRButtonUp(UINT, int , int);
 
@@ -39,6 +75,21 @@ public:
 		COMMAND_STATE_MOVE       = 16,
         COMMAND_STATE_PREDICTOR  = 32,
     };
+
+	typedef struct key_state {
+        enum KEY_STATE {
+		    KEY_STATE_NONE = 0,
+		    KEY_STATE_DOWN = 1,
+		    KEY_STATE_UP   = 2,
+        };
+        KEY_STATE _ks;
+        UINT     _key;
+
+        key_state() : _ks(KEY_STATE_NONE), _key(0) {}
+    };
+
+    int open_history_data();
+
 private:
 	RECT                _rectClient;
 	CWarmguiConfig*         _config;
@@ -51,6 +102,8 @@ private:
 
 
     COMMAND_STATE    _command_state;
+    CMouseState        _mouse_state;
+    CHistoryDataContainer* _history_dc;
 };
 
 #endif //__analyst_view_h__

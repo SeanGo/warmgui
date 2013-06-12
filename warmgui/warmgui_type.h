@@ -462,6 +462,9 @@ extern const COLORALPHA DEFAULT_COLOR_ALPHA;
 
 extern bool operator== (const COLORALPHA& a, const COLORALPHA& b);
 
+#define WM_RENEW_WINDOW WM_USER + 7000
+
+
 namespace WARMGUI {
 
 extern int gettopt(int argc, TCHAR *argv[], TCHAR *opstring);

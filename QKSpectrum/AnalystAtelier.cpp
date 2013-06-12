@@ -53,10 +53,10 @@ inline bool CAnalystAtelier::GetAllCanvas()
 {
     CanvasIter iter = _canvasses.begin();
     _canvas_imgbkg  = (WARMGUI::CBkgCanvas *) (*iter); ++iter;
-    _rt_analyst     = (CAnalystCanvas*)(*iter); ++iter;
-    _1m_analyst     = (CAnalystCanvas*)(*iter); ++iter;
-    _5m_analyst     = (CAnalystCanvas*)(*iter); ++iter;
-    _15m_analyst    = (CAnalystCanvas*)(*iter); ++iter;
+    _rt_analyst     = (CPVIAnalysisCanvas*)(*iter); ++iter;
+    _1m_analyst     = (CPVIAnalysisCanvas*)(*iter); ++iter;
+    _5m_analyst     = (CPVIAnalysisCanvas*)(*iter); ++iter;
+    _15m_analyst    = (CPVIAnalysisCanvas*)(*iter); ++iter;
     _toolbar        = (WARMGUI::CToolbar*)(*iter);;
 
     //it is a data-canvas, register to container

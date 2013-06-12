@@ -40,11 +40,6 @@ private:
     GLYPH_CHANGED_TYPE NewDataForCtpmmd(CCtpmmdContainer* czc, DataObject::MARKET_DATA_TYPE datatype);
 
     /*
-    WARMGUI::CCoordFrame*              _cf_price;
-    WARMGUI::CCoordFrame*             _cf_volume;
-    WARMGUI::CCoordFrame*           _cf_interest;
-
-
     WARMGUI::CDataLineGraph*         _dlg_price;
     WARMGUI::CDataLineGraph*        _dlg_relvol;
     WARMGUI::CDataLineGraph*        _dlg_volume;

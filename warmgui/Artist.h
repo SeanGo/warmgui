@@ -23,7 +23,7 @@ public:
 						FLOAT           dashOffset = 0.0f);
 	inline HRESULT SetStrokeStyle(int argc, TCHAR * argv[]);
 
-	inline HRESULT SetSolidColorBrush(const COLORALPHA   &color, GLYPH_STATE_TYPE scbt = GLYPH_STATE_NORMAL);
+    inline HRESULT SetSolidColorBrush(const COLORALPHA   &color, GLYPH_STATE_TYPE scbt = GLYPH_STATE_NORMAL);
 	inline HRESULT SetSolidColorBrush(int argc, TCHAR * argv[]);
     inline void    SetTextFormat(IDWriteTextFormat* pTextFormat);
     inline void    SetTextLayout(IDWriteTextLayout* pTextLayout);

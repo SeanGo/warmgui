@@ -13,13 +13,32 @@ public:
     GLYPH_CHANGED_TYPE  NewCtpData(CCtpmmdContainer* pdc, bool redraw_cood = false, bool b_first_data = false);
     virtual void        ResetWorldRect(IDataContainer* data_cont);
 private:
-    WARMGUI::CDataLineGraph*         _dlg_price;
-    WARMGUI::CDataLineGraph*    _dlg_lt_prcappr;   ///long  term approx
-    WARMGUI::CDataLineGraph*    _dlg_st_prcappr;   ///short term approx
-    WARMGUI::CDataLineGraph*    _dlg_lt_predict;   ///long term predcit
-    WARMGUI::CDataLineGraph*    _dlg_st_predict;   ///short term predict
+    WARMGUI::CDataLineGraph*             _dlg_price;
 };
 
+
+class CPriceAnalysChart : public WARMGUI::CDataLineChart
+{
+public:
+    CPriceAnalysChart(const char* name, bool world_own_type = false, bool data_own_type  = false, bool own_artist = false);
+    ~CPriceAnalysChart(void);
+
+    virtual HRESULT     AddGraphs();
+    GLYPH_CHANGED_TYPE  NewCtpData(CCtpmmdContainer* pdc, bool redraw_cood = false, bool b_first_data = false);
+    virtual void        ResetWorldRect(IDataContainer* data_cont);
+private:
+    WARMGUI::CDataLineGraph*             _dlg_price;
+
+    WARMGUI::CDataLineGraph*  _short_low_prc_approx;
+    WARMGUI::CDataLineGraph* _short_high_prc_approx;
+    WARMGUI::CDataLineGraph*        _short_low_prdt;
+    WARMGUI::CDataLineGraph*       _short_high_prdt;
+
+    WARMGUI::CDataLineGraph*   _long_low_prc_approx;
+    WARMGUI::CDataLineGraph*  _long_high_prc_approx;
+    WARMGUI::CDataLineGraph*         _long_low_prdt;
+    WARMGUI::CDataLineGraph*        _long_high_prdt;
+};
 
 
 ////////////////////////////////////////////////////////////////////

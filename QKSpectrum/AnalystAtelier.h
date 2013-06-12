@@ -16,10 +16,10 @@ public:
 protected:
     ///canvases
     WARMGUI::CBkgCanvas* _canvas_imgbkg;
-    CAnalystCanvas*         _rt_analyst;
-    CAnalystCanvas*         _1m_analyst;
-    CAnalystCanvas*         _5m_analyst;
-    CAnalystCanvas*        _15m_analyst;
+    CPVIAnalysisCanvas*     _rt_analyst;
+    CPVIAnalysisCanvas*     _1m_analyst;
+    CPVIAnalysisCanvas*     _5m_analyst;
+    CPVIAnalysisCanvas*    _15m_analyst;
     WARMGUI::CToolbar*         _toolbar;
 private:
     //set class name, by IObject

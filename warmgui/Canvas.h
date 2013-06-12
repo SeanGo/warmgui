@@ -105,6 +105,9 @@ public:
 
 	virtual const HRESULT Init(const char* name = 0);
 	virtual void          SetGlyphRect();
+    virtual int           OnMouseMove(int x, int y);  //Message Functions
+    virtual int           OnLButtonUp(int x, int y);
+    virtual int           OnRButtonUp(int x, int y);
 
 protected:
 	CSharedImage* _imgBkg;
