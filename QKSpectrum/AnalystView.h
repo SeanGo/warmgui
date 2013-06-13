@@ -104,6 +104,7 @@ private:
     COMMAND_STATE    _command_state;
     CMouseState        _mouse_state;
     CHistoryDataContainer* _history_dc;
+    CEuclid*           _analyst;
 };
 
 #endif //__analyst_view_h__

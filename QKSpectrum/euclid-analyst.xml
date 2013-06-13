@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<config>
+	<zit>
+		<len>512</len>
+		<down-sample>0</down-sample>
+	</zit>
+	<short-term>
+		<appx>
+			<len>1024</len>
+			<wavelet>SYM</wavelet>
+			<down-sample>0</down-sample>
+			<low-appx>7</low-appx>
+			<high-appx>9</high-appx>
+		</appx>
+		<predict>
+			<feture-len>180</feture-len>
+			<coff-len>40</coff-len>
+		</predict>
+	</short-term>
+	<long-term>
+		<appx>
+			<len>1024</len>
+			<wavelet>SYM</wavelet>
+			<down-sample>2</down-sample>
+			<low-appx>7</low-appx>
+			<high-appx>9</high-appx>
+		</appx>
+		<predict>
+			<feture-len>180</feture-len>
+			<coff-len>40</coff-len>
+		</predict>
+	</long-term>
+	<volume>
+		<wavelet>COI</wavelet>
+		<level>6</level>
+		<min-len>1024</min-len>
+		<max-len>32768</max-len>
+	</volume>
+	<interest>
+		<wavelet>SYM</wavelet>
+		<level>6</level>
+		<min-len>1024</min-len>
+		<max-len>32768</max-len>
+	</interest>
+</config>

@@ -8,6 +8,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "QKSpectrum", "QKSpectrum\QK
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "warmgui", "warmgui\warmgui.vcxproj", "{E014EF4A-C767-4BD2-9FA4-AA1742D50CC6}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mo", "mo\mo.vcxproj", "{D8D4DE21-5234-41A7-BD21-334D4E109274}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -28,6 +30,12 @@ Global
 		{E014EF4A-C767-4BD2-9FA4-AA1742D50CC6}.Release|Win32.ActiveCfg = Release|Win32
 		{E014EF4A-C767-4BD2-9FA4-AA1742D50CC6}.Release|Win32.Build.0 = Release|Win32
 		{E014EF4A-C767-4BD2-9FA4-AA1742D50CC6}.Release|x64.ActiveCfg = Release|Win32
+		{D8D4DE21-5234-41A7-BD21-334D4E109274}.Debug|Win32.ActiveCfg = Debug|Win32
+		{D8D4DE21-5234-41A7-BD21-334D4E109274}.Debug|Win32.Build.0 = Debug|Win32
+		{D8D4DE21-5234-41A7-BD21-334D4E109274}.Debug|x64.ActiveCfg = Debug|Win32
+		{D8D4DE21-5234-41A7-BD21-334D4E109274}.Release|Win32.ActiveCfg = Release|Win32
+		{D8D4DE21-5234-41A7-BD21-334D4E109274}.Release|Win32.Build.0 = Release|Win32
+		{D8D4DE21-5234-41A7-BD21-334D4E109274}.Release|x64.ActiveCfg = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

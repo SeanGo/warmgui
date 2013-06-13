@@ -9,6 +9,7 @@ class WARMGUI_API CWarmguiConfig : public Poco::Util::XMLConfiguration
 {
 public:
 	CWarmguiConfig (void);
+    CWarmguiConfig (const std::string xmlpath) : Poco::Util::XMLConfiguration(xmlpath) {}
 	~CWarmguiConfig (void);
 
 	bool getRect(RECT& rect, const char* config_str);
@@ -22,6 +23,7 @@ public:
     bool getFontSetting(FONT& font, const char* config_str);
     bool getStringVector(StringArray& strs, const char* config_str);
     bool getStringVector(WStringArray& strs, const char* config_str);
+    int  getWaveletType(const char* config_str);
 };
 
 

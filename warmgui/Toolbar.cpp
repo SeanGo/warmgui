@@ -111,7 +111,7 @@ int CToolbar::OnLButtonUp(int x, int y)
 	if (!_visible) return (0);
     
     RECT rect = _rect;
-    rect.left -= _margin, rect.top -= _margin, rect.bottom -= _margin, rect.right -= _margin;
+    rect.left += _margin, rect.top += _margin, rect.bottom -= _margin, rect.right -= _margin;
 	if (pt_in_rect(rect, x, y)) {
         SendMessage(
             _atelier->GetHwnd(),

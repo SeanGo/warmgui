@@ -1,3 +1,6 @@
+#ifndef __warmgui_poco_include_h__
+#define __warmgui_poco_include_h__
+
 #include <Poco/Net/SocketAddress.h>
 #include <Poco/Net/NetSSL.h>
 #include <Poco/Net/X509Certificate.h>
@@ -29,3 +32,6 @@
 #include <Poco/Observer.h>
 #include <Poco/Event.h>
 #include <Poco/Net/NetException.h>
+
+
+#endif //__warmgui_poco_include_h__

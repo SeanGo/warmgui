@@ -55,12 +55,14 @@ typedef struct _GV_ITEM {
 // will usually have acces to them in other ways, and they are an extra 8 bytes per
 // cell that is probably unnecessary.
 
-#ifdef WARMGUI_EXPORTS
-#define WARMGUI_API __declspec(dllexport)
-#else
-//#define WARMGUI_API __declspec(dllimport)
-#define WARMGUI_API 
-#endif
+#ifndef WARMGUI_API
+#   ifdef WARMGUI_EXPORTS
+#       define WARMGUI_API __declspec(dllexport)
+#   else
+//#     define WARMGUI_API __declspec(dllimport)
+#       define WARMGUI_API
+#   endif //WARMGUI_EXPORTS
+#endif //WARMGUI_API
 
 namespace WARMGUI {
 

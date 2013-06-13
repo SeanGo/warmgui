@@ -170,6 +170,7 @@ int CTickDataView::OnCommand(WORD nCmdId, WORD /*nSource*/, HWND /*hwnd*/)
         break;
     case ID_SHOW_EUCLID_VIEW:
         ShowEuclidView(this);
+        break;
     case ID_SHOW_ANALYST_VIEW:
         ShowAnalystView(this);
         break;

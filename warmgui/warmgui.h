@@ -7,12 +7,14 @@
 // that uses this DLL. This way any other project whose source files include this file see 
 // WARMGUI_API functions as being imported from a DLL, whereas this DLL sees symbols
 // defined with this macro as being exported.
-#ifdef WARMGUI_EXPORTS
-#define WARMGUI_API __declspec(dllexport)
-#else
-//#define WARMGUI_API __declspec(dllimport)
-#define WARMGUI_API 
-#endif
+#ifndef WARMGUI_API
+#   ifdef WARMGUI_EXPORTS
+#       define WARMGUI_API __declspec(dllexport)
+#   else
+//#     define WARMGUI_API __declspec(dllimport)
+#       define WARMGUI_API
+#   endif //WARMGUI_EXPORTS
+#endif //WARMGUI_API
 
 #ifdef _WINDOWS
 #	pragma warning (disable : 4251)

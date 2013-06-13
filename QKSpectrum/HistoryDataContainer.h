@@ -26,10 +26,10 @@ public:
 
     TCHAR* get_history_data_path() { return _rt_path; }
 protected:
-    History_Ctpmmd_Data  _rtdata;
-    History_Ctpmmd_Data  _1mdata;
-    History_Ctpmmd_Data  _5mdata;
-    History_Ctpmmd_Data _15mdata;
+    CTPMMD_DATA  _rtdata;
+    CTPMMD_DATA  _1mdata;
+    CTPMMD_DATA  _5mdata;
+    CTPMMD_DATA _15mdata;
     TCHAR     _rt_path[MAX_PATH];
     TCHAR     _1m_path[MAX_PATH];
     TCHAR     _5m_path[MAX_PATH];

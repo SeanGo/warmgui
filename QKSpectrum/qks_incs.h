@@ -22,25 +22,14 @@
 #include "MarketDataFilter.h"
 
 #include "euclid.h"
-#include "Extremum.h"
-#include "VolumeTurn.h"
-#include "Inflexion.h"
-
-#include "sas.h"
-#include "nr.h"
-#include "Predict.h"
-#include "Central.h"
-#include "caluc_in_time.h"
-#include "RealtimeCalc.h"
-#include "CalCentral.h"
-#include "DoublePredict.h"
+#include "euclid_incs.h"
 #endif
 
 
 
 #include "warmgui.h"
 using namespace WARMGUI;
-
+/*
 typedef struct ZitData {
    	EXTRINFO    extCentral;
 	INFLGRP       inflBest;
@@ -113,8 +102,7 @@ typedef struct ZitData {
 
     bool AppendData(dataptr zitdata, size_t length);
 } ZitData;
-
-
+*/
 
 #include "CtpmmdContainer.h"
 #include "ZitContainer.h"
@@ -145,7 +133,7 @@ typedef struct ZitData {
 #include "AnalystLayout.h"
 #include "AnalystAtelier.h"
 
-
+#include "EuclidAnalyst.h"
 #include "AnalystView.h"
 #include "TickDataView.h"
 #include "EuclidView.h"

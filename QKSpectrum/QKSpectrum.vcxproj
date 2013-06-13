@@ -56,7 +56,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>../lib;C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Samples\C++\DXUT11\Core\Debug;C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Samples\C++\DXUT11\Optional\Debug;E:\projects\America\Lib\Debug</AdditionalLibraryDirectories>
-      <AdditionalDependencies>nrlib.lib;euclid.lib;utility.lib;filter.lib;clicomm.lib;dxut.lib;dxutopt.lib;ctpmdif.lib;dxerr.lib;d3dcompiler.lib;d3dx11.lib;d3dx9.lib;imm32.lib;dxut.lib;dxutopt.lib;utility.lib;warmgui.lib;user32.lib;gdi32.lib;comdlg32.lib;ole32.lib;comctl32.lib;shell32.lib;version.lib;advapi32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>nrlib.lib;euclid.lib;utility.lib;filter.lib;clicomm.lib;dxut.lib;dxutopt.lib;ctpmdif.lib;dxerr.lib;d3dcompiler.lib;d3dx11.lib;d3dx9.lib;imm32.lib;dxut.lib;dxutopt.lib;warmgui.lib;user32.lib;gdi32.lib;comdlg32.lib;ole32.lib;comctl32.lib;shell32.lib;version.lib;advapi32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ProgramDatabaseFile>$(IntDir)$(TargetName).pdb</ProgramDatabaseFile>
     </Link>
   </ItemDefinitionGroup>
@@ -81,6 +81,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <None Include="euclid-analyst.xml" />
     <None Include="QKSpectrum-zit.xml" />
     <None Include="QKSpectrum.ico" />
     <None Include="QKSpectrum.xml">
@@ -96,6 +97,7 @@
     <ClInclude Include="AnalystView.h" />
     <ClInclude Include="CtpDispatcher.h" />
     <ClInclude Include="Dxut9Dialog.h" />
+    <ClInclude Include="EuclidAnalyst.h" />
     <ClInclude Include="EuclidAtelier.h" />
     <ClInclude Include="EuclidCalculator.h" />
     <ClInclude Include="EuclidCanvas.h" />
@@ -135,6 +137,7 @@
     <ClCompile Include="AnalystView.cpp" />
     <ClCompile Include="CtpDispatcher.cpp" />
     <ClCompile Include="Dxut9Dialog.cpp" />
+    <ClCompile Include="EuclidAnalyst.cpp" />
     <ClCompile Include="EuclidAtelier.cpp" />
     <ClCompile Include="EuclidCalculator.cpp" />
     <ClCompile Include="EuclidCanvas.cpp" />

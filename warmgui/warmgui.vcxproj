@@ -54,7 +54,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>utility.lib;d3dcompiler.lib;d3dx11.lib;utility.lib;imm32.lib;d2d1.lib;dwrite.lib;windowscodecs.lib;user32.lib;Comctl32.lib;gdi32.lib;shell32.lib;Ole32.lib;D3dx9.lib;Winmm.lib;D3DX10.lib;Version.lib;Advapi32.lib;Dsound.lib;dxerr.lib;oleaut32.lib;Comdlg32.lib</AdditionalDependencies>
+      <AdditionalDependencies>utility.lib;d3dcompiler.lib;d3dx11.lib;imm32.lib;d2d1.lib;dwrite.lib;windowscodecs.lib;user32.lib;Comctl32.lib;gdi32.lib;shell32.lib;Ole32.lib;D3dx9.lib;Winmm.lib;D3DX10.lib;Version.lib;Advapi32.lib;Dsound.lib;dxerr.lib;oleaut32.lib;Comdlg32.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>../lib;E:\projects\America\Lib\Debug</AdditionalLibraryDirectories>
       <ImportLibrary>../Lib/$(TargetName).lib</ImportLibrary>
       <ProgramDatabaseFile>$(IntDir)$(TargetName).pdb</ProgramDatabaseFile>

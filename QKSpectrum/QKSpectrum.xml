@@ -7,6 +7,8 @@
 		<using-ctpmdif-simulator>false</using-ctpmdif-simulator>
 	</ctp-market>
 
+	<euclid-analyst-params-file>e:\projects\bin\euclid-analyst.xml</euclid-analyst-params-file>
+
 	<data-dispatcher>
 		<num>1</num>
 		<!-- dispatcher-1>

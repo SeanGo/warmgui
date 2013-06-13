@@ -91,6 +91,7 @@ bool CEuclidCalculator::init()
 
 
 
+/*
 #define move_to_next_data(l) \
 {\
     len -= (l);\
@@ -215,7 +216,7 @@ bool ZitData::AppendData(dataptr zitdata, size_t length)
 
     return (true);
 }
-
+*/
 
 
 

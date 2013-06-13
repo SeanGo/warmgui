@@ -376,5 +376,23 @@ bool CWarmguiConfig::getStringVector(WStringArray& strs, const char* config_str)
     return r;
 }
 
+
+int CWarmguiConfig::getWaveletType(const char* config_str)
+{
+    int type = 0;
+	try {
+		std::string str = getString(config_str);
+        if (str == "SYM") {
+            type = 1;
+        } else if (str == "COI") {
+            type = 2;
+        }
+	} catch(Poco::NotFoundException&) {
+        MYTRACE(L"CWarmguiConfig::getWaveletType\n");
+		type = 0;
+	}
+	return type;
+}
+
 }
 

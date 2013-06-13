@@ -3,6 +3,7 @@
 #include "Dxut9Dialog.h"
 #include "resource.h"
 #include "OpenHistoryDataDlg.h"
+#include "LoginDlg.h"
 
 #define __TRACE_INFO__ 0
 #if (__TRACE_INFO__)
@@ -19,6 +20,7 @@ CAnalystView::CAnalystView(void)
     , _b_gui_ready(false)
     , _command_state(COMMAND_STATE_MOUSE_OVER)
     , _history_dc(0)
+    , _analyst(0)
 {
     _rectClient.left =  _rectClient.top = _rectClient.right = _rectClient.bottom = 0;
 }
@@ -26,6 +28,7 @@ CAnalystView::CAnalystView(void)
 
 CAnalystView::~CAnalystView(void)
 {
+    SafeDelete(_analyst);
 }
 
 int CAnalystView::ReceiveData()
@@ -196,7 +199,12 @@ int CAnalystView::open_history_data()
     delete dlgtest;
 
     if (open_result > 0) {
-        MYTRACE(L"get %d datas\n", open_result);
+        //calculate something
+        if (!_analyst) {
+            _analyst = new CEuclid();
+            if (_analyst->set_config()) {
+            }
+        }
     }
 
     return (0);

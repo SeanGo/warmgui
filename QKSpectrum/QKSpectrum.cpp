@@ -97,8 +97,8 @@ int ShowEuclidView(CWindow* parent_window)
     if (!wnd_euclid->GetSafeHwnd()) {
         wnd_euclid->LoadAccelerators(IDC_QKSPECTRUM);
         wnd_euclid->Create(
-            L"EuclidWindowClass",
-            L"EuclidView",
+            L"WARMGUIWNDCLASS",
+            L"Euclid",
             WS_VISIBLE | WS_CLIPCHILDREN,
             rect,
             parent_window);
@@ -119,8 +119,8 @@ int ShowAnalystView(CWindow* parent_window)
     if (!wnd_analyst->GetSafeHwnd()) {
         wnd_analyst->LoadAccelerators(IDC_QKSPECTRUM);
         wnd_analyst->Create(
-            L"EuclidWindowClass",
-            L"EuclidView",
+            L"WARMGUIWNDCLASS",
+            L"Analyst",
             WS_VISIBLE | WS_CLIPCHILDREN,
             rect,
             parent_window);
