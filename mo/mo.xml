@@ -9,6 +9,12 @@
 	<zit>
 		<len>512</len>
 		<down-sample>0</down-sample>
+		<wavelet-level>1</wavelet-level>
+		<hilvl-filter-type>2</hilvl-filter-type>
+		<low-filter-level>5</low-filter-level>
+		<hi-filter-level>10</hi-filter-level>
+		<extr-len>5</extr-len>
+		<price-slope-scaling>38.0</price-slope-scaling>
 	</zit>
 	<short-term>
 		<appx>
@@ -17,6 +23,8 @@
 			<down-sample>0</down-sample>
 			<low-appx>7</low-appx>
 			<high-appx>9</high-appx>
+			<extr-len>5</extr-len>
+			<price-slope-scaling>38.0</price-slope-scaling>
 		</appx>
 		<predict>
 			<feture-len>180</feture-len>
@@ -30,6 +38,8 @@
 			<down-sample>2</down-sample>
 			<low-appx>7</low-appx>
 			<high-appx>9</high-appx>
+			<extr-len>5</extr-len>
+			<price-slope-scaling>38.0</price-slope-scaling>
 		</appx>
 		<predict>
 			<feture-len>180</feture-len>
@@ -41,11 +51,15 @@
 		<level>6</level>
 		<min-len>1024</min-len>
 		<max-len>32768</max-len>
+		<extr-len>5</extr-len>
+		<price-slope-scaling>38.0</price-slope-scaling>
 	</volume>
 	<interest>
 		<wavelet>SYM</wavelet>
 		<level>6</level>
 		<min-len>1024</min-len>
 		<max-len>32768</max-len>
+		<extr-len>5</extr-len>
+		<price-slope-scaling>38.0</price-slope-scaling>
 	</interest>
 </config>

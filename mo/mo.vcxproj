@@ -39,6 +39,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
+    <IncludePath>C:\Program Files (x86)\20121018_stock_ctpapi;C:\Program Files (x86)\20120530_future_ctpapi;e:\poco-1.4.5\include;C:\openssl\include;$(VCInstallDir)include;$(VCInstallDir)atlmfc\include;$(WindowsSdkDir)include;$(FrameworkSDKDir)\include;C:\Program Files\R\R-2.15.2\include</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -78,7 +79,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <None Include="mo.xml" />
+    <None Include="mo.xml">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
