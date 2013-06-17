@@ -16,6 +16,8 @@ public:
     virtual GLYPH_CHANGED_TYPE NewData(IDataContainer* data_cont, DataObject::MARKET_DATA_TYPE datatype);
 
     virtual void               SetGeometryData(dataptr pdata, int count, int datasize);
+    void                       set_analyst(EUCLID::CEuclidAnalyst* analyst);
+    HRESULT                    draw_data();
 
 private:
     //set class name, by IObject
@@ -33,10 +35,14 @@ private:
     GLYPH_CHANGED_TYPE  _vol_graph_changed;
     GLYPH_CHANGED_TYPE  _itr_graph_changed;
 
-    CZITGraph*                           _zit_graph;
+    CZITGraph*                  _zit_graph;
 
     CCtpmmdContainer*           _data_cont;
     GLYPH_CHANGED_TYPE NewDataForCtpmmd(CCtpmmdContainer* czc, DataObject::MARKET_DATA_TYPE datatype);
+
+    EUCLID::CEuclidAnalyst*    _analyst;
+    int                  _n_down_sample;
+    CTPMMD_DATA*               _ctpdata;
 };
 
 

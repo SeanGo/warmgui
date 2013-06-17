@@ -18,6 +18,7 @@ public:
     void                   StartDrawing() { CriticalLock::Scoped scope(_lockDrawing); _drawing = true; }
     void                   StopDrawing()  { CriticalLock::Scoped scope(_lockDrawing); _drawing = false; }
     bool                   IsBusy()       { CriticalLock::Scoped scope(_lockDrawing); return _drawing = false; }
+    void                   redraw_window(){ ::InvalidateRect(_hwnd, 0, TRUE); }
 
 protected:
     HRESULT                RealDraw(bool redraw = false);

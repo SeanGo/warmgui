@@ -37,7 +37,7 @@ public:
 
 protected:
     CCoordFrame*         _coord;
-    GlyphTreeIter _iter__lines;
+    GlyphTreeIter  _iter__lines;
     float         _stroke_width;
 
 private:

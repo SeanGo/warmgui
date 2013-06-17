@@ -87,8 +87,10 @@ public:
 
         key_state() : _ks(KEY_STATE_NONE), _key(0) {}
     };
+protected:
 
     int open_history_data();
+    int get_param_config();
 
 private:
 	RECT                _rectClient;
@@ -103,8 +105,7 @@ private:
 
     COMMAND_STATE    _command_state;
     CMouseState        _mouse_state;
-    CHistoryDataContainer* _history_dc;
-    CEuclid*           _analyst;
+    EUCLID::CEuclidAnalyst _analyst;
 };
 
 #endif //__analyst_view_h__

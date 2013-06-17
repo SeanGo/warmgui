@@ -232,7 +232,7 @@ GLYPH_CHANGED_TYPE CZitCanvas::NewData(IDataContainer* data_cont, DataObject::MA
             &&
             (((CCtpmmdContainer*)data_cont)->getCurrentData()->fIndex
                  >=
-                 (_prc_chart->getCoordWorld()->GetWorldRect().x0 + _prc_chart->getCoordWorld()->_vi._left_shirft)))
+                 (_prc_chart->getCoordWorld()->GetWorldRect().x0 + _prc_chart->getCoordWorld()->_vi._init_width)))
         {
             //MYTRACE(L"My world is %.02f %.02f %.02f %.02f %.02f %.02f %.02f %.02f uuu %.02f %.02f %.02f\n",
             //    _prc_chart->getCoordWorld()->GetWorldRect().x0,

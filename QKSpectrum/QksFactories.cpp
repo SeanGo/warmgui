@@ -108,8 +108,6 @@ ICanvas* CQksCanvasCreator::CreateCanvas(const char* canvas_config)
                 canvas = new CTickdataCanvas(name);
             } else if (!strcmp(type, "euclid")) {
                 canvas = new CEuclidCanvas(name);
-            } else if (!strcmp(type, "analyst-canvas")) {
-                canvas = new CAnalystCanvas(name);
             } else if (!strcmp(type, "pvi-analyst-canvas")) {
                 canvas = new CPVIAnalysisCanvas(name);
             }
@@ -142,13 +140,13 @@ IDataContainer* CQksDataContainerCreator::CreateContainer(const char* conf_pos)
             const char* name = strname.c_str();
             container = new CCtpmmdContainer(name);
             container->SetConfig(_config, conf_pos);
-        } else if (!strcmp(type, "history")) {
+        }/* else if (!strcmp(type, "history")) {
             _snprintf_s(temp, MAX_PATH, _TRUNCATE, "%s.name", conf_pos);
             const std::string strname = _config->getString(temp);
             const char* name = strname.c_str();
             container = new CHistoryDataContainer(name);
             container->SetConfig(_config, conf_pos);
-        }
+        }*/
 
         return container;
     }catch(...){

@@ -7,7 +7,8 @@ public:
     COpenHistoryDataDlg(void);
     ~COpenHistoryDataDlg(void);
 
-    void  set_data_path(const TCHAR* datapath);
+    void            set_data_path(const TCHAR* datapath);
+    void            set_data_path(const char* datapath);
 
 protected:
 	virtual void    InitDialog();
@@ -31,6 +32,9 @@ protected:
 
 public:
 	TCHAR  filepath[MAX_PATH];
+    TCHAR  code[MAX_PATH];
+    TCHAR  date[MAX_PATH];
+
 protected:
     TCHAR _datapath[MAX_PATH];
     MARGIN _margin;

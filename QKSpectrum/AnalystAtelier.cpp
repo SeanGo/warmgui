@@ -8,6 +8,7 @@ CAnalystAtelier::CAnalystAtelier(const char* name)
     ,    _5m_analyst(0)
     ,   _15m_analyst(0)
     ,       _toolbar(0)
+    ,       _analyst(0)
 {
     setClass();
 }
@@ -89,4 +90,22 @@ inline bool CAnalystAtelier::GetAllCanvas()
     return true;
 }
 
+void CAnalystAtelier::set_analyst(EUCLID::CEuclidAnalyst* analyst)
+{
+    _analyst = analyst;
+    _rt_analyst->set_analyst(_analyst);
+    _1m_analyst->set_analyst(_analyst);
+    _5m_analyst->set_analyst(_analyst);
+    _15m_analyst->set_analyst(_analyst);
+}
 
+HRESULT CAnalystAtelier::draw_data()
+{
+    _rt_analyst->draw_data();
+    _1m_analyst->draw_data();
+    _5m_analyst->draw_data();
+    _15m_analyst->draw_data();
+
+    redraw_window();
+    return S_OK;
+}

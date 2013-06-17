@@ -71,11 +71,11 @@ void CDataLineChart::SetRect(RECT& rect)
                 g->SetRect(rect);
             else {
                 //TCHAR name[MAX_PATH];
-                //CChineseCodeLib::Gb2312ToUnicode(name, MAX_PATH, _name);
-                //MYTRACE(L"%s\n", name);
+                //CChineseCodeLib::Gb2312ToUnicode(name, MAX_PATH, g->_name);
+                //MYTRACE(L"%s reset rect\n", name);
 
                 g->SetRect(rect_graph);
-                g->Changed(GLYPH_CHANGED_TYPE_COORDFRAME);
+                g->Changed((GLYPH_CHANGED_TYPE)((int)GLYPH_CHANGED_TYPE_CHANGED | (int)GLYPH_CHANGED_TYPE_GLYPH_RESIZE | (int)GLYPH_CHANGED_TYPE_COORDFRAME));
             }
         }
     }

@@ -90,6 +90,22 @@ inline void CWorld::RenewYLimit(float x, float y)
 	SetScale();
 }
 
+inline void CWorld::fresh_y_limit(float x, float y)
+{
+    bool changed = false;
+    if (y > _real_world.maxy)
+        _real_world.maxpos = x, _real_world.maxy = y, changed = true;
+    if (y < _real_world.miny)
+        _real_world.minpos = x, _real_world.miny = y, changed = true;
+    if (!_vi._b_fix_width && _real_world.xn < x)
+        _real_world.xn = x, _real_world.yn = y, changed = true;
+
+    if (changed) {
+        real_world_to_screen();
+        _bak_world = _real_world;
+	    SetScale();
+    }
+}
 
 inline void CWorld::ChangeYlimit(float miny, float maxy, float y0)
 {
@@ -222,6 +238,21 @@ inline void CWorld::RenewByRealWorld()
     _bak_world = _real_world;
     real_world_to_screen();
     SetScale();
+}
+
+
+inline void CWorld::reset_zeor_world(float x0, float y0)
+{
+    if (_vi._b_fix_width)
+        _real_world.x0 = _real_world.minpos = _zero_world.x0,
+            _real_world.maxpos = _real_world.xn = _zero_world.xn;
+    else
+        _real_world.x0 = _real_world.xn = _real_world.minpos = _real_world.maxpos = x0;
+
+    _real_world.y0 = _real_world.yn = _real_world.maxy = _real_world.miny = y0;
+
+    real_world_to_screen();
+    _bak_world = _real_world;
 }
 
 } //namespace WARMGUI

@@ -35,7 +35,15 @@ static char* get_one_float(char* buf, char p, float* value)
 	return (0);
 }
 
+static bool atob(const char* str)
+{
+    if (strstr(str, "true"))
+        return true;
+    else if (strstr(str, "false"))
+        return false;
 
+    return false;
+}
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -174,16 +182,21 @@ bool CWarmguiConfig::getValueIncrease(ValueIncrease& increase, const char* confi
                     goto will_exit;
                 }
 get_fixed_type:
-                {//get fix type
+                {
                     t = strchr(tmp, ',');
                     if (t) {
-                        t++;
-                        increase._left_shirft = (float)atof(t);
-                        r = true;
-                        //if (strstr(t, "left"))
-                        //    increase._fixtype = COORD_FRAME_FIX_TYPE_LEFT , r = true;
-                        //else if (strstr(t, "right"))
-                        //    increase._fixtype = COORD_FRAME_FIX_TYPE_RIGHT, r = true;
+                        tmp = t + 1;
+                        float value;
+                        tmp = get_one_float(tmp, ',', &value);
+                        increase._init_width = value;
+                        if (tmp) {
+                            tmp = get_one_float(tmp + 1, ',', &value);
+                            increase._hold_right_space = value;
+                            if (tmp) {
+                                increase._b_fix_width = atob(tmp + 1);
+                                r = true;
+                            }
+                        }
                     }
                 }
 

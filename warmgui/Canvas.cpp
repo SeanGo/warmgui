@@ -70,7 +70,7 @@ HRESULT ICanvas::Draw(bool redraw/* = false*/)
 #ifdef _DEBUG
     //TCHAR name[MAX_PATH];
     //CChineseCodeLib::Gb2312ToUnicode(name, MAX_PATH, _name);
-    //MYTRACE(L"canvas %s draw\n", name);
+    //MYTRACE(L"canvas %s draw ", name);
 #endif //_DEBUG
 
     m._31 = (float)(_rect.left + _margin.left), m._32 = (float)(_rect.top + _margin.top);
@@ -81,7 +81,7 @@ HRESULT ICanvas::Draw(bool redraw/* = false*/)
 #           ifdef _DEBUG
             //TCHAR myname[MAX_PATH];
             //CChineseCodeLib::Gb2312ToUnicode(myname, MAX_PATH, (*iter)->_name);
-            //MYTRACE(L"%s draw graph\n", myname);
+            //MYTRACE(L"%s draw graph, ", myname);
             //if ((*iter)->isClass("CCoordFrame"))
             //{
             //    int kkk = 0;
@@ -91,6 +91,7 @@ HRESULT ICanvas::Draw(bool redraw/* = false*/)
 		    (*iter)->Draw(redraw);
         }
 	}
+    //MYTRACE(L"\n");
     _common_artist->SetTransform(&backup);
     
     ClearChanged();

@@ -111,7 +111,6 @@ typedef struct ZitData {
 
 #include "EuclidCalculator.h"
 #include "PredictorCalculator.h"
-#include "HistoryDataContainer.h"
 #include "QksFactories.h"
 
 
@@ -129,7 +128,6 @@ typedef struct ZitData {
 #include "EuclidAtelier.h"
 
 #include "PVIAnalysisCanvas.h"
-#include "AnalystCanvas.h"
 #include "AnalystLayout.h"
 #include "AnalystAtelier.h"
 

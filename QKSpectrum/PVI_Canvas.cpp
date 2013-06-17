@@ -151,7 +151,7 @@ GLYPH_CHANGED_TYPE CPVI_Canvas::NewData(IDataContainer* data_cont, DataObject::M
             (
                 _data_cont->getCount()
                 >
-                (_prc_chart->getCoordWorld()->GetWorldRect().x0 + _prc_chart->getCoordWorld()->_vi._left_shirft)
+                (_prc_chart->getCoordWorld()->GetWorldRect().x0 + _prc_chart->getCoordWorld()->_vi._init_width)
             )
            )
         {

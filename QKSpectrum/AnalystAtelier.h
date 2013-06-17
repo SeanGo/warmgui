@@ -12,6 +12,8 @@ public:
     virtual HRESULT      InitAtelier(HWND hwnd, WARMGUI::CWarmguiConfig* config);
 	void                 ToggleToolbar();
     inline virtual bool  GetAllCanvas();
+    void                 set_analyst(EUCLID::CEuclidAnalyst* analyst);
+    HRESULT              draw_data();
 
 protected:
     ///canvases
@@ -21,6 +23,8 @@ protected:
     CPVIAnalysisCanvas*     _5m_analyst;
     CPVIAnalysisCanvas*    _15m_analyst;
     WARMGUI::CToolbar*         _toolbar;
+
+    EUCLID::CEuclidAnalyst*    _analyst;
 private:
     //set class name, by IObject
     virtual void setClass() { SetMyClass("CAnalystAtelier"); }

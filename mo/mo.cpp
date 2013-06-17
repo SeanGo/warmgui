@@ -161,6 +161,11 @@ int mo(XMLConfig* config, const char* code, const char* date)
 #ifdef _DEBUG
     if (SUCCEEDED(hr))
         hr = test_analyse(&euclid);
+    EUCLID::CEuclidAnalyst::AnalystData* ad = euclid.get_ctpdata();
+    for (int i = 0; i < ad->rtdata._length; i++) {
+        hr = euclid.analysis(i);
+        print_result(i, hr, euclid.get_analysis_result());
+    }
 #endif
 
     return (hr);

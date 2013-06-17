@@ -353,15 +353,17 @@ typedef struct ValueIncrease {
 	float           _min_decres_mag;
 	float           _max_incres_mag;
 	DATA_BREADTH_TYPE _breadth_type;
-    //COORD_FRAME_FIX_TYPE   _fixtype;
-    float              _left_shirft;
+    float               _init_width;    //the width of world
+    float         _hold_right_space;
+    bool               _b_fix_width;
 
     ValueIncrease()
         : _min_decres_mag(0)
         , _max_incres_mag(0)
         , _breadth_type(DATA_BREADTH_TYPE_VALUE)
-        //, _fixtype(COORD_FRAME_FIX_TYPE_LEFT)
-        , _left_shirft(0)
+        , _b_fix_width(false)
+        , _init_width(0)
+        , _hold_right_space(0)
     { }
 } ValueIncrease;
 

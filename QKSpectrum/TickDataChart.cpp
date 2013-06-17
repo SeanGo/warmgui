@@ -78,12 +78,12 @@ void CPriceTickChart::ResetWorldRect(IDataContainer* data_cont)
 
     */
 
-    CTPMMD* x0data = curdata - (int)(getCoordWorld()->_vi._left_shirft) + 1;
+    CTPMMD* x0data = curdata - (int)(getCoordWorld()->_vi._init_width) + 1;
     if (x0data < dataptr)
         x0data = dataptr;
-    wr.xn = curdata->fIndex + (getCoordWorld()->_zero_world.width() - getCoordWorld()->_vi._left_shirft),
+    wr.xn = curdata->fIndex + (getCoordWorld()->_zero_world.width() - getCoordWorld()->_vi._init_width),
         wr.yn = curdata->LastPrice,
-        wr.x0 = curdata->fIndex - getCoordWorld()->_vi._left_shirft + 1, wr.y0 = x0data->LastPrice;
+        wr.x0 = curdata->fIndex - getCoordWorld()->_vi._init_width + 1, wr.y0 = x0data->LastPrice;
     //MYTRACE(L"%.02f %.02f\n", wr.x0, wr.xn);
     //lu yi bian
     for (CTPMMD* ctpmmd = (CTPMMD*)curdata; ctpmmd >= x0data; --ctpmmd)
@@ -353,12 +353,12 @@ void CPriceAnalysChart::ResetWorldRect(IDataContainer* data_cont)
 
     */
 
-    CTPMMD* x0data = curdata - (int)(getCoordWorld()->_vi._left_shirft) + 1;
+    CTPMMD* x0data = curdata - (int)(getCoordWorld()->_vi._init_width) + 1;
     if (x0data < dataptr)
         x0data = dataptr;
-    wr.xn = curdata->fIndex + (getCoordWorld()->_zero_world.width() - getCoordWorld()->_vi._left_shirft),
+    wr.xn = curdata->fIndex + (getCoordWorld()->_zero_world.width() - getCoordWorld()->_vi._init_width),
         wr.yn = curdata->LastPrice,
-        wr.x0 = curdata->fIndex - getCoordWorld()->_vi._left_shirft + 1, wr.y0 = x0data->LastPrice;
+        wr.x0 = curdata->fIndex - getCoordWorld()->_vi._init_width + 1, wr.y0 = x0data->LastPrice;
     //MYTRACE(L"%.02f %.02f\n", wr.x0, wr.xn);
     //lu yi bian
     for (CTPMMD* ctpmmd = (CTPMMD*)curdata; ctpmmd >= x0data; --ctpmmd)

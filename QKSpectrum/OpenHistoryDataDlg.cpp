@@ -44,6 +44,8 @@ void COpenHistoryDataDlg::InitDialog()
 
 
     _SampleUI.GetEditBox( IDC_EDIT_DATA_PATH )->SetText(_datapath);
+    _SampleUI.GetEditBox( IDC_EDIT_CODE )->SetText(L"IF1207");
+    _SampleUI.GetEditBox( IDC_EDIT_DATE )->SetText(L"20120713");
 }
 
 int COpenHistoryDataDlg::DestroyDialog()
@@ -149,4 +151,11 @@ void COpenHistoryDataDlg::OnGUIEvent( UINT nEvent, int nControlID, CDXUTControl*
 void COpenHistoryDataDlg::set_data_path(const TCHAR* datapath)
 {
     _tcscpy_s(_datapath, MAX_PATH, datapath);
+}
+
+void COpenHistoryDataDlg::set_data_path(const char* datapath)
+{
+    TCHAR dp[MAX_PATH];
+    CChineseCodeLib::Gb2312ToUnicode(dp, MAX_PATH, datapath);
+    _tcscpy_s(_datapath, MAX_PATH, dp);
 }

@@ -23,7 +23,7 @@ int CEuclidCalculator::calculate(MSG msg)
             return (-1);
 
 #   ifdef _DEBUG
-        //const CTPMMD* pctpmmd = cc->getCurrentData();
+        const CTPMMD* pctpmmd = cc->getCurrentData();
         //MYTRACE(L"euclid: %.02f %.02f %.02f %.02f %.02f %.02f %.02f\n",
         //    pctpmmd->fIndex,
         //    pctpmmd->m_time,

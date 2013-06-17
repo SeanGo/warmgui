@@ -484,7 +484,10 @@ void CDataLineGraph::RedrawGraph()
 void CDataLineGraph::SetRect(RECT& rect)
 {
     IGlyph::SetRect(rect);
-    //RedrawGraph();
+    if (_myown_artist) {
+        //Renew();
+        RedrawGraph();
+    }
 }
 
 inline void CDataLineGraph::BeginSetData(dataptr new_data)
@@ -504,7 +507,7 @@ inline void CDataLineGraph::BeginSetData(dataptr new_data)
             D2D1_FIGURE_BEGIN_HOLLOW);
 
         psForSetData._pntNew.x = *(float*)((char*)(new_data) + _data_x_offset), psForSetData._pntNew.y = *(float*)((char*)(new_data) + _data_y_offset);
-        psForSetData._count = 1;
+        psForSetData._count = psForNew._count = 1;
     }
 }
 
@@ -545,6 +548,7 @@ inline void CDataLineGraph::AddDataToPathGeometry(dataptr new_data)
     }
     psForSetData._pntNew.x = *(float*)((char*)(new_data) + _data_x_offset), psForSetData._pntNew.y = *(float*)((char*)(new_data) + _data_y_offset);
     psForSetData._count++;
+    psForNew._count++;
 }
 
 inline void CDataLineGraph::EndSetData()
@@ -588,5 +592,6 @@ void CDataLineGraph::MoveBitmapToLeft()
 
     _artist = _back_artist;
 }
+
 
 } //namespace WARMGUI

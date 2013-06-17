@@ -55,7 +55,8 @@ public:
     void                RenewByRealWorld();
 
     inline void         RenewYLimit(float x, float y);
-
+    inline void         reset_zeor_world(float x0, float y0);
+    inline void         fresh_y_limit(float x, float y);
 protected:
 	inline virtual void SetScale();
 
