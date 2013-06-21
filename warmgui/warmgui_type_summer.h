@@ -173,5 +173,36 @@ WARMGUI_API void WINAPI _MyTraceA( LPCSTR strMsg, ... );
 #define MYTRACE _MyTraceA
 #endif
 
+#define IsInRect(rect, x, y) (((x) >= (rect).left) && ((x) <= (rect).right) && ((y) >= (rect).top) && ((y )<= (rect).bottom))
+#define RectWidth(rect) ((rect).right  - (rect).left)
+#define RectHeight(rect) ((rect).bottom - (rect).top)
+#define DeflateRect(rect, l,r) ((rect).left += (l), (rect).right -= (r))
+#define fRectWidth(rect) (static_cast<float>((rect).right  - (rect).left))
+#define fRectHeight(rect) (static_cast<float>((rect).bottom - (rect).top))
+
+#define RectEqulas(rect1, rect2) (!(memcmp(&(rect1), &(rect2), sizeof(RECT))))
+
+#define Rect2Frect(rect) \
+D2D1::RectF(static_cast<float>((rect).left),\
+            static_cast<float>((rect).top),\
+            static_cast<float>((rect).right),\
+            static_cast<float>((rect).bottom))
+
+#define Rect2Urect(rect) \
+D2D1::RectU((rect).left,\
+            (rect).top,\
+            (rect).right,\
+            (rect).bottom)
+
+typedef int GLYPH_CHANGED_TYPE;
+
+const int GLYPH_CHANGED_NONE           = 0x000;  ///the glyph did not changed
+const int GLYPH_CHANGED_ATELIER_RESIZE = 0x001;  ///the size of atelier was changed
+const int GLYPH_CHANGED_CANVAS_RESIZE  = 0x002;  ///the size of canvas  was changed
+const int GLYPH_CHANGED_ATELIER_BKG    = 0x004;  ///the background of atelier was changed
+const int GLYPH_CHANGED_CANVAS_BKG     = 0x008;  ///the background of canvas  was changed
+const int GLYPH_CHANGED_GLYPH_BKG      = 0x010;  ///the background of glyph   was changed
+const int GLYPH_CHANGED_CHANGED        = 0x020;  ///the glyph was changed, N/A for atelier and canvas
+
 
 #endif //__warmgui_type_summer_h__

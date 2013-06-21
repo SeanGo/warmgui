@@ -5,6 +5,8 @@ namespace WARMGUI {
 IAtelier_summer::IAtelier_summer(void)
     : _hwnd(0)
     , _pHwndRT(0)
+    , _layout(0)
+    , _sizing(false)
 {
 }
 
@@ -12,6 +14,8 @@ IAtelier_summer::IAtelier_summer(const char* name)
     : IGlyph_summer(name)
     , _hwnd(0)
     , _pHwndRT(0)
+    , _layout(0)
+    , _sizing(false)
 {
 }
 
@@ -24,6 +28,7 @@ IAtelier_summer::~IAtelier_summer(void)
         SafeDelete(*iter);
 
     SafeDelete(_glyph_tree);
+    SafeDelete(_layout);
 }
 
 inline HRESULT IAtelier_summer::init(HWND hwnd)
@@ -59,5 +64,77 @@ IGlyph_summer* IAtelier_summer::find_glyph(const char* name)
 
     return (0);
 }
+
+inline HRESULT IAtelier_summer::Draw()
+{
+    HRESULT hr = S_OK;
+    {
+        CriticalLock::Scoped scope(_lockChange);
+        if (_changed & GLYPH_CHANGED_ATELIER_BKG
+            || _changed & GLYPH_CHANGED_CANVAS_BKG
+            || _changed & GLYPH_CHANGED_GLYPH_BKG
+            || _changed & GLYPH_CHANGED_ATELIER_RESIZE
+            || _changed & GLYPH_CHANGED_CANVAS_RESIZE)
+        {
+            hr = draw_graph(IGlyph_summer::GLYPH_TYPE_BKG);
+            if (SUCCEEDED(hr))
+                hr = copy_bkg_to_bitmap();
+        } else
+            hr = draw_bkg_bitmap();
+    }
+
+    if (SUCCEEDED(hr)) {
+        CriticalLock::Scoped scope(_lockChange);
+        if (_changed & GLYPH_CHANGED_CHANGED
+            || _changed & GLYPH_CHANGED_ATELIER_RESIZE
+            || _changed & GLYPH_CHANGED_CANVAS_RESIZE)
+        {
+            hr = draw_graph();
+            if (SUCCEEDED(hr))
+                hr = copy_screen_to_bitmap();
+        } else
+            hr = draw_screen_bitmap();
+    }
+
+    set_change(GLYPH_CHANGED_NONE);
+    return hr;
+}
+
+inline HRESULT IAtelier_summer::copy_bkg_to_bitmap()
+{
+    HRESULT hr = S_OK;
+#ifdef _DEBUG
+    MYTRACE(L"IAtelier_summer::copy_bkg_to_bitmap\n");
+#endif 
+    return hr;
+}
+
+inline HRESULT IAtelier_summer::draw_bkg_bitmap()
+{
+    HRESULT hr = S_OK;
+#ifdef _DEBUG
+    MYTRACE(L"IAtelier_summer::draw_bkg_bitmap\n");
+#endif 
+    return hr;
+}
+
+inline HRESULT IAtelier_summer::copy_screen_to_bitmap()
+{
+    HRESULT hr = S_OK;
+#ifdef _DEBUG
+    MYTRACE(L"IAtelier_summer::copy_screen_to_bitmap\n");
+#endif 
+    return hr;
+}
+
+inline HRESULT IAtelier_summer::draw_screen_bitmap()
+{
+    HRESULT hr = S_OK;
+#ifdef _DEBUG
+    MYTRACE(L"IAtelier_summer::draw_screen_bitmap\n");
+#endif 
+    return hr;
+}
+
 
 } //namespace WARMGUI

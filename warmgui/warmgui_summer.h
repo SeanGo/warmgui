@@ -39,6 +39,7 @@
 
 #include "Glyph_summer.h"
 #include "Canvas_summer.h"
+#include "Lyout_summer.h"
 #include "Atelier_summer.h"
 
 

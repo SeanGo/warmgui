@@ -6,12 +6,13 @@ IGlyph_summer::IGlyph_summer(void)
     : _own_artist(GLYPH_OWN_ARTIST_TYPE_OUTSIDE)
     , _artist(0)
     //, _my_artist(0)
-    , _own_world(GLYPH_OWN_WORLD_TYPE_OUTSIDE)
-    , _world(0)
-    , _my_world(0)
     , _glyph_tree(0)
     , _tree_iter(0)
     , _config(0)
+    , _changed(0)
+    , _atelier(0)
+    , _canvas(0)
+    , _mytype(GLYPH_TYPE_GLYPH)
 {
     memset(&_rect, 0 , sizeof(RECT));
     _abs_rect = _rect;
@@ -22,11 +23,12 @@ IGlyph_summer::IGlyph_summer(const char* name)
     : _own_artist(GLYPH_OWN_ARTIST_TYPE_OUTSIDE)
     , _artist(0)
     //, _my_artist(0)
-    , _own_world(GLYPH_OWN_WORLD_TYPE_OUTSIDE)
-    , _world(0)
-    , _my_world(0)
     , _glyph_tree(0)
     , _tree_iter(0)
+    , _changed(0)
+    , _atelier(0)
+    , _canvas(0)
+    , _mytype(GLYPH_TYPE_GLYPH)
 {
     memset(&_rect, 0 , sizeof(RECT));
     _abs_rect = _rect;
@@ -69,12 +71,11 @@ inline HRESULT IGlyph_summer::push_layer()
     CChineseCodeLib::Gb2312ToUnicode(name, MAX_PATH, _name);
     MYTRACE(L"Graph::PUSH layer %s %d, %d, %d, %d\n", name, _abs_rect.left, _abs_rect.top, _abs_rect.right, _abs_rect.bottom);
 #endif //_DEBUG
-    /*
     _artist->GetTransform(&_back_trans);
     MATRIX_2D I = D2D1::IdentityMatrix();
     I._31 = (float)_abs_rect.left, I._32 = (float)_abs_rect.top;
     _artist->SetTransform(&I);
-    */
+    _artist->PushLayer(_rect);
     return S_OK;
 }
 
@@ -85,12 +86,13 @@ inline HRESULT IGlyph_summer::pop_layer()
     CChineseCodeLib::Gb2312ToUnicode(name, MAX_PATH, _name);
     MYTRACE(L"Graph::POP layer %s\n", name);
 #endif //_DEBUG
-    //_artist->SetTransform(&_back_trans);
+    _artist->PopLayer();
+    _artist->SetTransform(&_back_trans);
     return S_OK;
 }
 
-inline HRESULT pop_layer();
-HRESULT IGlyph_summer::draw_graph()
+
+HRESULT IGlyph_summer::draw_graph(GLYPH_TYPE glyph_type /*=IGlyph_summer::GLYPH_TYPE_GLYPH*/)
 {
     HRESULT hr = S_OK;
 
@@ -104,7 +106,7 @@ HRESULT IGlyph_summer::draw_graph()
                 for (int i = 0; i < num_of_children; i++) {
                     //draw all 
                     GlyphTreeIter_summer it = _glyph_tree->child(_tree_iter, (unsigned int)i);
-                    hr = (*it)->draw_graph();
+                    hr = (*it)->draw_graph(glyph_type);
                     if (FAILED(hr))
                         break;
                 }
@@ -113,43 +115,27 @@ HRESULT IGlyph_summer::draw_graph()
             if (SUCCEEDED(hr) && _tree_iter != _glyph_tree->begin())
                 hr = pop_layer();
         } else {
-            hr = draw();
-        }
+            //set transform
+            if (this->_mytype == glyph_type) {
+                _artist->GetTransform(&_back_trans);
+                MATRIX_2D I = D2D1::IdentityMatrix();
+                I._31 = (float)_abs_rect.left, I._32 = (float)_abs_rect.top;
+                _artist->SetTransform(&I);
 
-        return hr;
-    }
+                hr = draw();
 
-    return ERROR_GLYPH_TREE;
-}
-
-/*
-HRESULT IGlyph_summer::draw_graph()
-{
-    HRESULT hr = S_OK;
-    if (_artist && _glyph_tree && (*_tree_iter)) {
-        if (
-            _tree_iter != _glyph_tree->begin()   //is not the head of the tree
-            && _tree_iter.node->prev_sibling     //is not first node in the branch or subtree
-            )
-        {
-            hr = draw_myself();
-        } else {//draw all brach in the same deepth
-            hr = draw_myself();
-
-            if (SUCCEEDED(hr)) {//draw all next sibling
-                for (int i = 1; i < _glyph_tree->number_of_siblings(_tree_iter); i++) {
-                    GlyphTreeIter_summer it = _glyph_tree->sibling(_tree_iter, (unsigned int)i);
-                    hr = (*it)->draw_graph();
-                    if (FAILED(hr))
-                        break;
-                }
+                //get back for transform
+                _artist->SetTransform(&_back_trans);
+                set_change(GLYPH_CHANGED_NONE);
             }
         }
+
         return hr;
     }
+
     return ERROR_GLYPH_TREE;
 }
-*/
+
 
 inline void IGlyph_summer::append_glyph(IGlyph_summer* glyph)
 {
@@ -157,18 +143,29 @@ inline void IGlyph_summer::append_glyph(IGlyph_summer* glyph)
     glyph->inherit(_atelier, _glyph_tree, _canvas, glyph_iter, _artist, _config);
 }
 
+inline void IGlyph_summer::set_rect(RECT& rect)
+{
+    _abs_rect = rect;
+    _rect.left = _rect.top = 0, _rect.right = RectWidth(_rect), _rect.bottom = RectHeight(_rect);
+    set_children_rect();
+}
 
+inline void IGlyph_summer::set_children_rect()
+{
+    for (int i = 0; i < _glyph_tree->number_of_children(_tree_iter); i++) {
+        //draw all 
+        GlyphTreeIter_summer it = _glyph_tree->child(_tree_iter, (unsigned int)i);
+        (*it)->set_rect(_abs_rect);
+    }
+}
+
+inline void IGlyph_summer::change(GLYPH_CHANGED_TYPE     changed)
+{
+    CriticalLock::Scoped scope(_lockChange);
+    _changed |= changed ;
+    
+    if (_atelier) _atelier->change(changed);
+    if (_canvas)   _canvas->change(changed);
+}
 
 } //namespace WARMGUI
-
-/*
-eArtist* back_artist = _artist;
-        D2D1_RECT_F dest = {0, 0, fRectWidth(_rect), fRectHeight(_rect)};
-        D2D1_RECT_F src  = {0, 0, fRectWidth(_rect), fRectHeight(_rect)};
-
-        MATRIX_2D backmatrix, m;
-        _artist->GetTransform(&backmatrix);
-        m = backmatrix;
-        m._31 = (float)_rect.left, m._32 = (float)_rect.top;
-        _artist->SetTransform(&m);
-*/

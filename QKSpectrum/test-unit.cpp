@@ -54,7 +54,7 @@ int test_generate_glyph_tree(HWND hwnd)
                             old_glyph->get_name(),
                             k);
                         WARMGUI::IGlyph_summer* glyph = new WARMGUI::IGlyph_summer(glyph_name);
-                        
+                        if (!k) glyph->set_glyph_type(WARMGUI::IGlyph_summer::GLYPH_TYPE_BKG);
                         old_glyph->append_glyph(glyph);
                     }
                 }
@@ -62,8 +62,31 @@ int test_generate_glyph_tree(HWND hwnd)
         }
     }
 
+    summer->change(GLYPH_CHANGED_ATELIER_RESIZE);
+    summer->Draw();
+    MYTRACE(L"\n\n");
+    
+    //do not changed anything
+    summer->Draw();
+    MYTRACE(L"\n\n");
 
-    summer->draw_graph();
+    //change the bkg
+    WARMGUI::IGlyph_summer* glyph = summer->find_glyph("canvas 2-glyph 3-subglyph 0");
+    if (glyph)
+        glyph->change(GLYPH_CHANGED_GLYPH_BKG);
+    summer->Draw();
+    MYTRACE(L"\n\n");
+
+    //change the graph
+    glyph = summer->find_glyph("canvas 2-glyph 2-subglyph 2");
+    if (glyph)
+        glyph->change(GLYPH_CHANGED_CHANGED);
+    summer->Draw();
+    MYTRACE(L"\n\n");
+
+    //do not changed anything
+    summer->Draw();
+    MYTRACE(L"\n\n");
 
     SafeDelete(summer);
     return (0);
