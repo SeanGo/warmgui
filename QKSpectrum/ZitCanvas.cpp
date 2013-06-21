@@ -266,7 +266,7 @@ GLYPH_CHANGED_TYPE CZitCanvas::NewData(IDataContainer* data_cont, DataObject::MA
 GLYPH_CHANGED_TYPE CZitCanvas::NewDataForCtpmmd(CCtpmmdContainer* czc, DataObject::MARKET_DATA_TYPE datatype)
 {
     GLYPH_CHANGED_TYPE changed = GLYPH_CHANGED_TYPE_NONE;
-    _prc_chart->BeginSetData((dataptr)(czc->getCurrentData()));
+    _prc_chart->BeginSetData(czc->getCurrentData()->fIndex, czc->getCurrentData()->LastPrice);
     //set data
     CTPMMD* curdata = (CTPMMD*)czc->getCurrentData();
     CTPMMD* dataptr = czc->getDataPtr();
@@ -291,7 +291,7 @@ GLYPH_CHANGED_TYPE CZitCanvas::NewDataForCtpmmd(CCtpmmdContainer* czc, DataObjec
             (ctpmmmd + i)->relInterest);
         */
 #endif //_DEBUG
-        _prc_chart->AddDataToPathGeometry(ctpmmd);
+        _prc_chart->AddDataToPathGeometry(ctpmmd->fIndex, ctpmmd->LastPrice);
     }
 
     _prc_chart->EndSetData();

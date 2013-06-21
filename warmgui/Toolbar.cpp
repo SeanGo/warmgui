@@ -7,6 +7,7 @@ CToolbar::CToolbar(void)
 	: _imgToolbar(0)
     , _first_cmd(0)
     , _margin(10)
+    , _blind(0)
 {
 	_visible = false;
     setClass();
@@ -17,6 +18,7 @@ CToolbar::CToolbar(const char* name)
 	, _imgToolbar(0)
     , _first_cmd(0)
     , _margin(10)
+    , _blind(0)
 {
 	_visible = false;
     setClass();
@@ -27,6 +29,7 @@ CToolbar::CToolbar(const char* name, UINT nFirstCommand)
 	, _imgToolbar(0)
     , _first_cmd(nFirstCommand)
     , _margin(10)
+    , _blind(0)
 {
 	_visible = false;
     setClass();
@@ -40,7 +43,6 @@ void CToolbar::SetRect(RECT& rect)
 {
     RECT myrect = rect;
     myrect.left -= _margin, myrect.top -= _margin, myrect.right += _margin, myrect.bottom += _margin;
-
     ICanvas::SetRect(myrect);
 }
 
@@ -51,8 +53,8 @@ const HRESULT CToolbar::Init(const char* name/* = 0*/)
 
 	char temp[MAX_PATH];
 	_snprintf_s(temp, MAX_PATH, _TRUNCATE, "blind-%s", _name);
-	CBlind* blind = new CBlind(temp, BGR(0, 0, 0), 0.5, false);
-	AppendChild(_gt.begin(), blind);
+	_blind = new CBlind(temp, BGR(0, 0, 0), 0.5, false);
+	AppendChild(_gt.begin(), _blind);
     
 	bool r = true;
 	try {

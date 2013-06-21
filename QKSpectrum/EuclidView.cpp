@@ -107,12 +107,12 @@ void CEuclidView::OnDestroy()
 
 void CEuclidView::OnLButtonUp(UINT uFlag, int x, int y)
 {
-    MYTRACE(L"Left Button POINT is %d %d\n", x, y);
+    _atelier->OnLButtonUp(x, y);
 }
 
 void CEuclidView::OnRButtonUp(UINT, int x, int y)
 {
-    MYTRACE(L"Right Button POINT is %d %d\n", x, y);
+    _atelier->OnRButtonUp(x, y);
 }
 
 void CEuclidView::ReDraw()

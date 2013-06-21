@@ -35,9 +35,8 @@ HRESULT CZITGraph::DrawGraph(bool /*redraw*/)
     _artist->SetTransform(&rect_trans);
 	//MYTRACE(L"rect_trans %.02f %.02f %.02f %.02f %.02f %.02f\n", 
 	//    rect_trans._11, rect_trans._12, rect_trans._21, rect_trans._22, rect_trans._31, rect_trans._32);
-    _artist->PushLayer(.0f, .0f, fRectWidth(_rect), fRectHeight(_rect));
+    _artist->PushLayer(1.0f, 1.0f, fRectWidth(_rect) - 2.0f, fRectHeight(_rect) - 2.0f);
 
-    //_artist->GetUsingRT()->PushLayer(
     D2D1_ANTIALIAS_MODE am = _artist->GetHwndRT()->GetAntialiasMode();
 	_artist->GetUsingRT()->SetAntialiasMode(D2D1_ANTIALIAS_MODE_ALIASED);
 

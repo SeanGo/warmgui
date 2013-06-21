@@ -4,8 +4,8 @@
 
 ////////////////////////////////////////////////////////////////////
 // class CPriceTickChart
-CPriceTickChart::CPriceTickChart(const char* name, bool world_own_type/* = true*/, bool data_own_type/*  = false*/, bool own_artist/* = false*/)
-    : CDataLineChart(name, world_own_type, data_own_type, own_artist)
+CPriceTickChart::CPriceTickChart(const char* name, bool world_own_type/* = true*/, bool own_artist/* = false*/)
+    : CDataLineChart(name, world_own_type, own_artist)
     ,             _dlg_price(0)
 {
 }
@@ -28,7 +28,7 @@ HRESULT CPriceTickChart::AddGraphs()
 
     IGlyph* g = _canvas->AppendChild(_iter, _coord);
 
-    _dlg_price      = new WARMGUI::CDataLineGraph("price_tick", CDataLineGraph::GEOMETRY_PATH_TYPE_LINE, false, false, true); g = _canvas->InsertNext(g->GetGlyphTreeIter(), _dlg_price     );
+    _dlg_price      = new WARMGUI::CDataLineGraph("price_tick", CDataLineGraph::GEOMETRY_PATH_TYPE_LINE, false, true); g = _canvas->InsertNext(g->GetGlyphTreeIter(), _dlg_price     );
     /*
     _dlg_lt_prcappr = new WARMGUI::CDataLineGraph("prc-lt-app", false); g = _canvas->InsertNext(g->GetGlyphTreeIter(), _dlg_lt_prcappr);
     _dlg_st_prcappr = new WARMGUI::CDataLineGraph("prc-st-app", false); g = _canvas->InsertNext(g->GetGlyphTreeIter(), _dlg_st_prcappr);
@@ -38,6 +38,8 @@ HRESULT CPriceTickChart::AddGraphs()
 
     _dlg_price->setWorld(_coord->getWorld());
     _dlg_price->SetStrokeWidth(_stroke_width);
+    _dlg_price->SetLineColor(BGR(0, 0, 255), 1.0f);
+    _dlg_price->set_data_buffer(_coord->getWorld()->_real_world.xn - _coord->getWorld()->_real_world.x0);
 
     /*
     _dlg_lt_prcappr->SetWorld(_coord->getWorld());
@@ -46,19 +48,22 @@ HRESULT CPriceTickChart::AddGraphs()
     _dlg_st_predict->SetWorld(_coord->getWorld());
     */
 
-    CTPMMD ctpmmd;
-    _dlg_price->SetDataOffset((int)&ctpmmd.fIndex - (int)&ctpmmd, (int)&ctpmmd.LastPrice - (int)&ctpmmd);
+    //CTPMMD ctpmmd;
+    //_dlg_price->SetDataOffset((int)&ctpmmd.fIndex - (int)&ctpmmd, (int)&ctpmmd.LastPrice - (int)&ctpmmd);
     return S_OK;
 }
+
 
 GLYPH_CHANGED_TYPE CPriceTickChart::NewCtpData(CCtpmmdContainer* pdc, bool redraw_cood/* = false*/, bool b_first_data/* = false*/)
 {
     GLYPH_CHANGED_TYPE change = GLYPH_CHANGED_TYPE_NONE;
     const CTPMMD* ctpmmd = pdc->getCurrentData();
+    //_dlg_price->set_data_ptr(pdc->getDataPtr(), sizeof(CTPMMD));
+
     change = _coord->renew_world(ctpmmd->fIndex, ctpmmd->LastPrice, redraw_cood, b_first_data);
 
     _dlg_price->Changed(change);
-    change = (GLYPH_CHANGED_TYPE)((int)change | (int)_dlg_price->NewData((dataptr)pdc->getCurrentData()));
+    change = (GLYPH_CHANGED_TYPE)((int)change | (int)_dlg_price->NewData(pdc->getCurrentData()->fIndex, pdc->getCurrentData()->LastPrice));
     return change;
 }
 
@@ -100,8 +105,8 @@ void CPriceTickChart::ResetWorldRect(IDataContainer* data_cont)
 
 ////////////////////////////////////////////////////////////////////
 // class CVolumeTickChart
-CVolumeTickChart::CVolumeTickChart(const char* name, bool world_own_type/* = true*/, bool data_own_type/*  = false*/, bool own_artist/* = false*/)
-	: CDataLineChart(name, world_own_type, data_own_type, own_artist)
+CVolumeTickChart::CVolumeTickChart(const char* name, bool world_own_type/* = true*/, bool own_artist/* = false*/)
+	: CDataLineChart(name, world_own_type, own_artist)
     ,     _dlg_relvol(0)
     ,     _dlg_volume(0)
     , _dlg_vol_approx(0)
@@ -126,18 +131,21 @@ HRESULT CVolumeTickChart::AddGraphs()
 
     IGlyph* g = _canvas->AppendChild(_iter, _coord);
 
-    _dlg_relvol     = new WARMGUI::CDataLineGraph("volrel_tick", CDataLineGraph::GEOMETRY_PATH_TYPE_LINE, false, false, true); g = _canvas->InsertNext(g->GetGlyphTreeIter(), _dlg_relvol    );
+    _dlg_relvol     = new WARMGUI::CDataLineGraph("volrel_tick", CDataLineGraph::GEOMETRY_PATH_TYPE_LINE, false, true); g = _canvas->InsertNext(g->GetGlyphTreeIter(), _dlg_relvol    );
     //_dlg_volume     = new WARMGUI::CDataLineGraph("vol_tickdata", false); g = _canvas->InsertNext(g->GetGlyphTreeIter(), _dlg_volume    );
     //_dlg_vol_approx = new WARMGUI::CDataLineGraph("vol_approx"  , false); g = _canvas->InsertNext(g->GetGlyphTreeIter(), _dlg_vol_approx);
 
 
     _dlg_relvol->setWorld(_coord->getWorld());
     _dlg_relvol->SetStrokeWidth(_stroke_width);
+    _dlg_relvol->set_data_buffer(_coord->getWorld()->_real_world.xn - _coord->getWorld()->_real_world.x0);
+    _dlg_relvol->SetLineColor(BGR(0, 0, 255), 1.0f);
+
     //_dlg_volume    ->SetWorld(_coord->getWorld());
     //_dlg_vol_approx->SetWorld(_coord->getWorld());
 
-    CTPMMD ctpmmd;
-    _dlg_relvol->SetDataOffset((int)&ctpmmd.fIndex - (int)&ctpmmd, (int)&ctpmmd.relVolume - (int)&ctpmmd);
+    //CTPMMD ctpmmd;
+    //_dlg_relvol->SetDataOffset((int)&ctpmmd.fIndex - (int)&ctpmmd, (int)&ctpmmd.relVolume - (int)&ctpmmd);
     //_dlg_volume->SetDataOffset((int)&ctpmmd.fIndex - (int)&ctpmmd, (int)&ctpmmd.Volume - (int)&ctpmmd);
     return S_OK;
 }
@@ -155,9 +163,10 @@ GLYPH_CHANGED_TYPE CVolumeTickChart::NewCtpData(CCtpmmdContainer* pdc, bool redr
     */
     const CTPMMD* ctpmmd = pdc->getCurrentData();
     change = _coord->renew_world(ctpmmd->fIndex, ctpmmd->relVolume, redraw_cood,  b_first_data);
+    //_dlg_relvol->set_data_ptr(pdc->getDataPtr(), sizeof(CTPMMD));
 
     _dlg_relvol->Changed(change);
-    change = (GLYPH_CHANGED_TYPE)((int)change | (int)_dlg_relvol->NewData((dataptr)pdc->getCurrentData()));
+    change = (GLYPH_CHANGED_TYPE)((int)change | (int)_dlg_relvol->NewData(pdc->getCurrentData()->fIndex, pdc->getCurrentData()->relVolume));
     return change;
 }
 
@@ -188,8 +197,8 @@ void CVolumeTickChart::ResetWorldRect(IDataContainer* data_cont)
 
 ////////////////////////////////////////////////////////////////////
 // class CInterestTickChart
-CInterestTickChart::CInterestTickChart(const char* name, bool world_own_type/* = true*/, bool data_own_type/*  = false*/, bool own_artist/* = false*/)
-	: CDataLineChart(name, world_own_type, data_own_type, own_artist)
+CInterestTickChart::CInterestTickChart(const char* name, bool world_own_type/* = true*/,bool own_artist/* = false*/)
+	: CDataLineChart(name, world_own_type, own_artist)
     ,     _dlg_interest(0)
     , _dlg_rel_interest(0)
     ,   _dlg_ite_approx(0)
@@ -213,19 +222,20 @@ HRESULT CInterestTickChart::AddGraphs()
 
     IGlyph* g = _canvas->AppendChild(_iter, _coord);
 
-    _dlg_interest     = new WARMGUI::CDataLineGraph("interest_tick", CDataLineGraph::GEOMETRY_PATH_TYPE_LINE, false, false, true); g = _canvas->InsertNext(g->GetGlyphTreeIter(), _dlg_interest    );
+    _dlg_interest     = new WARMGUI::CDataLineGraph("interest_tick", CDataLineGraph::GEOMETRY_PATH_TYPE_LINE, false, true); g = _canvas->InsertNext(g->GetGlyphTreeIter(), _dlg_interest    );
     //_dlg_rel_interest = new WARMGUI::CDataLineGraph("ite_tick_rel" , false); g = _canvas->InsertNext(g->GetGlyphTreeIter(), _dlg_rel_interest);
     //_dlg_ite_approx   = new WARMGUI::CDataLineGraph("ite_approx"   , false); g = _canvas->InsertNext(g->GetGlyphTreeIter(), _dlg_ite_approx  );
 
 
     _dlg_interest->setWorld(_coord->getWorld());
     _dlg_interest->SetStrokeWidth(_stroke_width);
-    
+    _dlg_interest->set_data_buffer(_coord->getWorld()->_real_world.xn - _coord->getWorld()->_real_world.x0);
+    _dlg_interest->SetLineColor(BGR(0, 0, 255), 1.0f);
     //_dlg_rel_interest->SetWorld(_coord->getWorld());
     //_dlg_ite_approx  ->SetWorld(_coord->getWorld());
 
-    CTPMMD ctpmmd;
-    _dlg_interest->SetDataOffset((int)&ctpmmd.fIndex - (int)&ctpmmd, (int)&ctpmmd.OpenInterest - (int)&ctpmmd);
+    //CTPMMD ctpmmd;
+    //_dlg_interest->SetDataOffset((int)&ctpmmd.fIndex - (int)&ctpmmd, (int)&ctpmmd.OpenInterest - (int)&ctpmmd);
     //_dlg_rel_interest->SetDataOffset((int)&ctpmmd.fIndex - (int)&ctpmmd, (int)&ctpmmd.relInterest - (int)&ctpmmd);
     return S_OK;
 }
@@ -237,9 +247,10 @@ GLYPH_CHANGED_TYPE CInterestTickChart::NewCtpData(CCtpmmdContainer* pdc, bool re
     GLYPH_CHANGED_TYPE change = GLYPH_CHANGED_TYPE_NONE;
     const CTPMMD* ctpmmd = pdc->getCurrentData();
     change = _coord->renew_world(ctpmmd->fIndex, ctpmmd->OpenInterest, redraw_cood, b_first_data);
+    //_dlg_interest->set_data_ptr(pdc->getDataPtr(), sizeof(CTPMMD));
     
     _dlg_interest->Changed(change);
-    change = (GLYPH_CHANGED_TYPE)((int)change | (int)_dlg_interest->NewData((dataptr)pdc->getCurrentData()));
+    change = (GLYPH_CHANGED_TYPE)((int)change | (int)_dlg_interest->NewData(pdc->getCurrentData()->fIndex, pdc->getCurrentData()->OpenInterest));
     return change;
 }
 
@@ -271,8 +282,8 @@ void CInterestTickChart::ResetWorldRect(IDataContainer* data_cont)
 
 ////////////////////////////////////////////////////////////////////
 // class CPriceAnalysChart
-CPriceAnalysChart::CPriceAnalysChart(const char* name, bool world_own_type/* = true*/, bool data_own_type/*  = false*/, bool own_artist/* = false*/)
-    : CDataLineChart(name, world_own_type, data_own_type, own_artist)
+CPriceAnalysChart::CPriceAnalysChart(const char* name, bool world_own_type/* = true*/, bool own_artist/* = false*/)
+    : CDataLineChart(name, world_own_type, own_artist)
     ,             _dlg_price(0)
     ,  _short_low_prc_approx(0)
     , _short_high_prc_approx(0)
@@ -303,7 +314,7 @@ HRESULT CPriceAnalysChart::AddGraphs()
 
     IGlyph* g = _canvas->AppendChild(_iter, _coord);
 
-    _dlg_price      = new WARMGUI::CDataLineGraph("price_tick", CDataLineGraph::GEOMETRY_PATH_TYPE_LINE, false, false, true); g = _canvas->InsertNext(g->GetGlyphTreeIter(), _dlg_price     );
+    _dlg_price      = new WARMGUI::CDataLineGraph("price_tick", CDataLineGraph::GEOMETRY_PATH_TYPE_LINE, false, true); g = _canvas->InsertNext(g->GetGlyphTreeIter(), _dlg_price     );
     /*
     _dlg_lt_prcappr = new WARMGUI::CDataLineGraph("prc-lt-app", false); g = _canvas->InsertNext(g->GetGlyphTreeIter(), _dlg_lt_prcappr);
     _dlg_st_prcappr = new WARMGUI::CDataLineGraph("prc-st-app", false); g = _canvas->InsertNext(g->GetGlyphTreeIter(), _dlg_st_prcappr);
@@ -313,6 +324,8 @@ HRESULT CPriceAnalysChart::AddGraphs()
 
     _dlg_price->setWorld(_coord->getWorld());
     _dlg_price->SetStrokeWidth(_stroke_width);
+    _dlg_price->set_data_buffer(_coord->getWorld()->_real_world.xn - _coord->getWorld()->_real_world.x0);
+    _dlg_price->SetLineColor(BGR(0, 0, 255), 1.0f);
 
     /*
     _dlg_lt_prcappr->SetWorld(_coord->getWorld());
@@ -321,8 +334,8 @@ HRESULT CPriceAnalysChart::AddGraphs()
     _dlg_st_predict->SetWorld(_coord->getWorld());
     */
 
-    CTPMMD ctpmmd;
-    _dlg_price->SetDataOffset((int)&ctpmmd.fIndex - (int)&ctpmmd, (int)&ctpmmd.LastPrice - (int)&ctpmmd);
+    //CTPMMD ctpmmd;
+    //_dlg_price->SetDataOffset((int)&ctpmmd.fIndex - (int)&ctpmmd, (int)&ctpmmd.LastPrice - (int)&ctpmmd);
     return S_OK;
 }
 
@@ -333,7 +346,7 @@ GLYPH_CHANGED_TYPE CPriceAnalysChart::NewCtpData(CCtpmmdContainer* pdc, bool red
     change = _coord->renew_world(ctpmmd->fIndex, ctpmmd->LastPrice, redraw_cood, b_first_data);
 
     _dlg_price->Changed(change);
-    change = (GLYPH_CHANGED_TYPE)((int)change | (int)_dlg_price->NewData((dataptr)pdc->getCurrentData()));
+    change = (GLYPH_CHANGED_TYPE)((int)change | (int)_dlg_price->NewData(pdc->getCurrentData()->fIndex, pdc->getCurrentData()->LastPrice));
     return change;
 }
 

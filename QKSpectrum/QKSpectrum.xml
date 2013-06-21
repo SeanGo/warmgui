@@ -269,8 +269,8 @@
 							<name>price</name>
 							<!-- x0,y0, xn, yn, minpos, miny, maxpos, maxy -->
 							<!-- 872 = max ctpdata is 2048, but plus 180 * 2 predict data -->
-							<world>0, 3000, 3407, 3000, 0, 2985, 3407, 3015</world>
-							<increase>1, 1, DATA_BREADTH_TYPE_VALUE, 3047, 360, true</increase>
+							<world>0, 3000, 4455, 3000, 0, 2985, 4455, 3015</world>
+							<increase>1, 1, DATA_BREADTH_TYPE_VALUE, 4095, 360, true</increase>
 						</world>
 					</coord-grid>
 				</price-chart>
@@ -680,7 +680,7 @@
 				<canvas-type>toolbar</canvas-type>
 				<canvas-name>toolbar</canvas-name>
 				<!-- top, left, right, bottom -->
-				<first-command>32777</first-command>
+				<first-command>32778</first-command>
 				<position>top</position>
 				<button-size>64, 64</button-size>
 				<!-- must be zero now (forever ? heihei) -->

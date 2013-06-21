@@ -43,9 +43,9 @@ private:
 	void                   DrawGrid();
 	void                   DrawRuler();
 	void                   DrawRulerText(TCHAR * wszText, size_t len, float Y, float y);
-
     void                   redraw();
-        
+    virtual int            is_selected(int x, int y) { return (0); }
+
 private:
 	COLORALPHA            _clr_line;
 	float                 _barWidth;

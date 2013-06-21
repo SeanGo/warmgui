@@ -38,11 +38,9 @@ CDataLineGraph::~CDataLineGraph(void)
     SafeRelease(&_pSink);
 }
 
-CDataLineGraph::CDataLineGraph(const char* name, GEOMETRY_PATH_TYPE path_type/* = GEOMETRY_PATH_TYPE_LINE*/, bool world_own_type/* = false*/, bool data_own_type/*  = false*/, bool own_artist/* = false*/)
-	: IDataGraph(name, world_own_type, data_own_type, own_artist)
+CDataLineGraph::CDataLineGraph(const char* name, GEOMETRY_PATH_TYPE path_type/* = GEOMETRY_PATH_TYPE_LINE*/, bool world_own_type/* = false*/, bool own_artist/* = false*/)
+	: IDataGraph(name, world_own_type, own_artist)
 	, _color(0)
-	, _data_x_offset(0)
-	, _data_y_offset(0)
 	//, _datasize(datasize)
 	, _alpha(1.0f)
 	, _pathg(0)
@@ -100,67 +98,45 @@ HRESULT CDataLineGraph::Renew()
 //static int iiiiiii = 0;
 
 /// if the referframe was changed then return 1
-GLYPH_CHANGED_TYPE CDataLineGraph::NewData(dataptr pdata, bool need_renew/* = true*/)
+GLYPH_CHANGED_TYPE CDataLineGraph::NewData(float x, float y)
 {
 #ifdef _DEBUG
     //TCHAR name[MAX_PATH];
     //CChineseCodeLib::Gb2312ToUnicode(name, MAX_PATH, _name);
     //MYTRACE(
-    //    L"CDataLineGraph %s %d : %.02f, %.02f\n",
-    //    name,
-    //    iiiiiii++,
-    //    *(float*)((char*)(pdata) + _data_x_offset),
-    //    *(float*)((char*)(pdata) + _data_y_offset));
+        //L"CDataLineGraph %s %d : %.02f, %.02f\n",
+        //name,
+        //iiiiiii++,
+        //x,
+        //y);
 #endif //_DEBUG
 
     Changed(GLYPH_CHANGED_TYPE_CHANGED);
     WORLD_RECT limit = _referframe->GetWorldRect();
 
     if (!psForNew._count) {
-        psForNew._pntOld = psForNew._pntNew = FPOINT(
-            *(float*)((char*)(pdata) + _data_x_offset),
-            *(float*)((char*)(pdata) + _data_y_offset));
+        psForNew._pntOld = psForNew._pntNew = FPOINT(x, y);
 	} else {
 		//keep old point
 		psForNew._pntOld = psForNew._pntNew;
 		//Add new point
-        psForNew._pntNew = FPOINT(
-            *(float*)((char*)(pdata) + _data_x_offset),
-            *(float*)((char*)(pdata) + _data_y_offset));
+        psForNew._pntNew = FPOINT(x, y);
         //_stroke_width = abs(limit.maxy - psForNew._pntNew.y) / (limit.maxy - limit.miny);
         //_stroke_width = 1.0f / _referframe->GetYScale();
 	}
 
-    //change the x axis
-    //if (psForNew._pntNew.x >= limit.xn - 1)
-    //    MoveBitmapToLeft();
-
 	++psForNew._count;
-	//_canvas->Changed(_changed_type);
-	//_atelier->Changed(_changed_type);
-
-
-	/** for test redraw-coordinate
-	if (!_tcscmp(_name, L"rtdata-data_ctp_price")) {
-		_changed_type |= GLYPH_CHANGED_TYPE_COORDFRAME;
-		_canvas->Changed(_changed_type);
-		_atelier->Changed(_changed_type);
-	}
-	*/
+    _myown_data.AddData(x, y);
+    //MYTRACE(L"%s %d datas, zero: %.02f, %.02f, new: %.02f, %.02f\n",
+    //    name, _myown_data._count,
+    //    _myown_data._points->x, _myown_data._points->y,
+    //    _myown_data._points[_myown_data._count - 1].x, _myown_data._points[_myown_data._count - 1].y);
 
     Renew();
 
 	return _changed_type;
 }
 
-
-inline void CDataLineGraph::SetDataOffset(int x_offset, int y_offset)
-{
-	_data_x_offset = x_offset,
-		_data_y_offset = y_offset,
-		_color = _default_color[0],
-		_alpha = 1.0f;
-}
 
 HRESULT CDataLineGraph::_draw_lines(bool /*redraw*/)
 {
@@ -190,7 +166,7 @@ HRESULT CDataLineGraph::_draw_lines(bool /*redraw*/)
         MATRIX_2D rect_trans = D2D1::Matrix3x2F::Identity();
         rect_trans._31 = static_cast<float>(_rect.left), rect_trans._32 = static_cast<float>(_rect.top );
         _artist->SetTransform(&rect_trans);
-        _artist->PushLayer(.0f, .0f, fRectWidth(_rect), fRectHeight(_rect));
+        //_artist->PushLayer(.0f, .0f, fRectWidth(_rect), fRectHeight(_rect));
 
 
         MATRIX_2D newtrans = *(_referframe->GetTransform());
@@ -272,7 +248,7 @@ HRESULT CDataLineGraph::_draw_lines(bool /*redraw*/)
 
         _artist->GetUsingRT()->SetAntialiasMode(am);
         _artist->SetTransform(&rect_trans);
-        _artist->PopLayer();
+        //_artist->PopLayer();
         _artist->SetTransform(&_backup_trans);
 
         TCHAR name[MAX_PATH];
@@ -290,16 +266,16 @@ HRESULT CDataLineGraph::DrawGraph(bool redraw/* = false*/)
     //MYTRACE(L"CDataLineGraph::DrawGraph %s\n", name);
 #endif //_DEBUG
 
-    if (_data_own_type) {
+    if (redraw) {
         if (_myown_data._count < 2)
             return S_OK;
         else
             return _draw_lines(redraw);
     } else {
-	    if (psForNew._count < 2) return S_OK;
+	    //if (psForNew._count < 2) return S_OK;
+        if (_myown_data._count < 2) return S_OK;
 
 	    HRESULT hr = S_OK;
-
 
 	    COLORALPHA   clr = _artist->GetSCBrush()->GetColor();
 	    _artist->GetSCBrush()->SetColor(D2D1::ColorF(_color));
@@ -312,9 +288,17 @@ HRESULT CDataLineGraph::DrawGraph(bool redraw/* = false*/)
         //D2D1::Matrix3x2F m = D2D1::Matrix3x2F::Identity(); 
         //_artist->SetTransform(&m);
 
-        if (_pathg)
+        if (_pathg) {
+            MATRIX_2D       _backup_trans, mytrans, *m;
+            _artist->GetTransform(&_backup_trans);
+            m = _referframe->GetTransform();
+            mytrans = *m;
+            mytrans._31 += _rect.left, mytrans._32 += _rect.top;
+            _artist->SetTransform(&mytrans);
+
 	        _artist->DrawGeometry(_pathg, _artist->GetSCBrush(), _stroke_width, _artist->GetStrokeStyle());
-        else {
+            _artist->SetTransform(&_backup_trans);
+        } else {
             POINT_f pntOld, pntNew;
             pntOld.x = psForNew._pntOld.x,
                 pntOld.y = psForNew._pntOld.y,
@@ -371,7 +355,7 @@ HRESULT CDataLineGraph::RenewGraph()
 
 	COLORALPHA   clr = _artist->GetSCBrush()->GetColor();
 	_artist->GetSCBrush()->SetColor(D2D1::ColorF(_color));
-	
+
 	if (_changed_type & GLYPH_CHANGED_TYPE_COORDFRAME) {
         if (_pathg) {
 #ifdef      _DEBUG
@@ -395,10 +379,10 @@ HRESULT CDataLineGraph::RenewGraph()
     }
 
 	_artist->GetSCBrush()->SetColor(clr);
-
-	{/*
+	{
 #   ifdef _DEBUG
-		MATRIX_2D m;
+		/*
+        MATRIX_2D m;
 		_artist->GetTransform(&m);
 		D2D1::Matrix3x2F trans(m._11, m._12, m._21, m._22, m._31, m._32);
 		//MYTRACE(L"Re_new %s: %.02f %.02f, %.02f %.02f, %.02f %.02f\n", _name, m._11, m._12, m._21, m._22, m._31, m._32);
@@ -416,7 +400,8 @@ HRESULT CDataLineGraph::RenewGraph()
 			P2.x, P2.y,
 			p1.x, p1.y,
 			p2.x, p2.y);
-#	endif //_DEBUG*/
+        */
+#	endif //_DEBUG
 	}
 	return S_OK;
 }
@@ -490,7 +475,7 @@ void CDataLineGraph::SetRect(RECT& rect)
     }
 }
 
-inline void CDataLineGraph::BeginSetData(dataptr new_data)
+inline void CDataLineGraph::BeginSetData(float x, float y)
 {
 	HRESULT hr = S_OK;
 	SafeRelease(&_pathg);
@@ -501,22 +486,18 @@ inline void CDataLineGraph::BeginSetData(dataptr new_data)
 	if (SUCCEEDED(hr)) {
 		_pSink->SetFillMode(D2D1_FILL_MODE_ALTERNATE);
         _pSink->BeginFigure(
-            D2D1::Point2F(
-                *(float*)((char*)(new_data) + _data_x_offset),
-                *(float*)((char*)(new_data) + _data_y_offset)),
+            D2D1::Point2F(x, y),
             D2D1_FIGURE_BEGIN_HOLLOW);
 
-        psForSetData._pntNew.x = *(float*)((char*)(new_data) + _data_x_offset), psForSetData._pntNew.y = *(float*)((char*)(new_data) + _data_y_offset);
-        psForSetData._count = psForNew._count = 1;
+        psForSetData._pntNew.x = x, psForSetData._pntNew.y = y;
+        psForSetData._count = psForNew._count = _myown_data._count = 1;
+
+        _myown_data.Reset();
+        _myown_data.AddData(x, y);
     }
 }
 
-inline void CDataLineGraph::AddData(dataptr data)
-{
-    return AddDataToPathGeometry(data);
-}
-
-inline void CDataLineGraph::AddDataToPathGeometry(dataptr new_data)
+inline void CDataLineGraph::AddDataToPathGeometry(float x, float y)
 {
 #ifdef _DEBUG
     /*
@@ -536,17 +517,20 @@ inline void CDataLineGraph::AddDataToPathGeometry(dataptr new_data)
                 D2D1::BezierSegment(
                     D2D1::Point2F(psForSetData._pntOld.x, psForSetData._pntOld.y),
                     D2D1::Point2F(psForSetData._pntNew.x, psForSetData._pntNew.y),
-                    D2D1::Point2F(*(float*)((char*)(new_data) + _data_x_offset),
-                                  *(float*)((char*)(new_data) + _data_y_offset))));
+                    D2D1::Point2F(x, y)
+                    )
+                );
         }
         psForSetData._pntOld = psForSetData._pntNew;
     } else if (_path_type == CDataLineGraph::GEOMETRY_PATH_TYPE_LINE) {
         _pSink->AddLine(
-            D2D1::Point2F(
-                *(float*)((char*)(new_data) + _data_x_offset),
-                *(float*)((char*)(new_data) + _data_y_offset)));
+            D2D1::Point2F(x, y)
+            );
     }
-    psForSetData._pntNew.x = *(float*)((char*)(new_data) + _data_x_offset), psForSetData._pntNew.y = *(float*)((char*)(new_data) + _data_y_offset);
+
+    _myown_data.AddData(x, y);
+
+    psForSetData._pntNew.x = x, psForSetData._pntNew.y = y;
     psForSetData._count++;
     psForNew._count++;
 }
@@ -593,5 +577,48 @@ void CDataLineGraph::MoveBitmapToLeft()
     _artist = _back_artist;
 }
 
+#define get_float_value(ptr, i) (*(float*)((char*)(ptr) + _data_x_offset) + i * this->;
+
+
+int CDataLineGraph::is_selected(int x, int y)
+{
+    if (IsInRect(_rect, x, y)) {
+        POINT_f p = _referframe->InvertTransform(x - _rect.left, y - _rect.top);
+#ifdef _DEBUG
+        TCHAR name[MAX_PATH];
+        CChineseCodeLib::Gb2312ToUnicode(name, MAX_PATH, _name);
+        MYTRACE(L"dlg %s got %.02f %.02f offset %d %d\n", name, p.x, p.y, _rect.left, _rect.top);
+#endif //_DEBUG
+        if (_myown_data._count < 2)
+            return (0);
+
+        //float xx = *(double*)((char*)(_myown_data._points) + _data_x_offset + 10 * this->_si);
+        if (p.x >= _myown_data._points->x && p.x <= _myown_data._points[_myown_data._count - 1].x) {
+            POINT P = _referframe->Transform(2, 2);
+            for (size_t i = 0; i < _myown_data._count - 1; i++) {
+                //or conver to int
+                if (   p.x >= min(_myown_data._points[i].x, _myown_data._points[i + 1].x) - P.x
+                    && p.x <= max(_myown_data._points[i].x, _myown_data._points[i + 1].x) + P.x
+                    && p.y >= min(_myown_data._points[i].y, _myown_data._points[i + 1].y) - P.y
+                    && p.y <= max(_myown_data._points[i].y, _myown_data._points[i + 1].y) + P.y)
+                {
+#ifdef _DEBUG
+                    POINT P = _referframe->Transform(_myown_data._points[i].x, _myown_data._points[i].y);
+                    MYTRACE(L"%s %d:: the point is %d %d = %.02f %.02f\n", name, i, P.x, P.y, _myown_data._points[i].x, _myown_data._points[i].y);
+#endif //_DEBUG
+                    return (1);
+                }
+                /*
+                POINT P = _referframe->Transform(_myown_data._points[i].x, _myown_data._points[i].y);
+                if (P.y + _rect.top == y && P.x + _rect.left == x) {
+                    return (1);
+                }
+                */
+            }
+        }
+    }
+
+    return (0);
+}
 
 } //namespace WARMGUI

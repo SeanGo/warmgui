@@ -15,7 +15,7 @@ IAtelier::IAtelier(void)
     , _drawing(false)
     , _selected_canvas(0)
 {
-    _iterCanvasSlct = _canvasses.end();
+//    _iterCanvasSlct = _canvasses.end();
     _common_artist  = new eArtist();
     setClass();
 }
@@ -252,10 +252,7 @@ inline void IAtelier::Clear()
 
 inline ICanvas* IAtelier::GetSelectedCanvas()
 {
-	if (_iterCanvasSlct == _canvasses.end())
-		return (0);
-	else
-		return *_iterCanvasSlct;
+    return _selected_canvas;
 }
 
 bool IAtelier::GetBitmapMaterial()

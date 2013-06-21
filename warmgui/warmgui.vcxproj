@@ -93,7 +93,12 @@
     <ClInclude Include="Calculator.h" />
     <ClInclude Include="Canvas.h" />
     <ClInclude Include="CanvasCreator.h" />
+    <ClInclude Include="Canvas_summer.h" />
     <ClInclude Include="DataLineChart.h" />
+    <ClInclude Include="Atelier_summer.h" />
+    <ClInclude Include="Glyph_summer.h" />
+    <ClInclude Include="warmgui_summer.h" />
+    <ClInclude Include="warmgui_type_summer.h" />
     <ClInclude Include="World.h" />
     <ClInclude Include="DataDispatcher.h" />
     <ClInclude Include="GuiFactory.h" />
@@ -131,6 +136,9 @@
     <ClCompile Include="Canvas.cpp" />
     <ClCompile Include="CanvasCreator.cpp" />
     <ClCompile Include="DataLineChart.cpp" />
+    <ClCompile Include="Atelier_summer.cpp" />
+    <ClCompile Include="Glyph_summer.cpp" />
+    <ClCompile Include="Canvas_summer.cpp" />
     <ClCompile Include="World.cpp" />
     <ClCompile Include="DataDispatcher.cpp" />
     <ClCompile Include="GuiFactory.cpp" />

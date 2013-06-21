@@ -58,6 +58,58 @@ void ICanvas::set_background()
 	}
 }
 
+int ICanvas::OnLButtonUp(int x, int y)
+{
+    if (!_visible) return (0);
+
+    int s = IsInRect(_rect, x, y);
+    _iterSelected = _gt.end();
+    if (s) {
+#ifdef _DEBUG
+        TCHAR name[MAX_PATH];
+        CChineseCodeLib::Gb2312ToUnicode(name, MAX_PATH, _name);
+        MYTRACE(L"Canvas %s selected\n", name);
+#endif //_DEBUG
+        GlyphTreeIter it = _gt.begin();
+        if (it != _gt.end()) {
+            size_t n = _gt.number_of_siblings(it);
+            for (int i = n; i > 0; i--) {
+                GlyphTreeIter iter = _gt.sibling(it, i);
+                if ((*iter)->OnLButtonUp(x, y)) {
+                    _iterSelected = iter;
+                }
+            }
+        }
+    }
+    return (s);
+}
+
+int ICanvas::OnRButtonUp(int x, int y)
+{
+    if (!_visible) return (0);
+
+    int s = IsInRect(_rect, x, y);
+    _iterSelected = _gt.end();
+    if (s) {
+#ifdef _DEBUG
+        TCHAR name[MAX_PATH];
+        CChineseCodeLib::Gb2312ToUnicode(name, MAX_PATH, _name);
+        MYTRACE(L"Canvas %s selected\n", name);
+#endif //_DEBUG
+        GlyphTreeIter it = _gt.begin();
+        if (it != _gt.end()) {
+            size_t n = _gt.number_of_siblings(it);
+            for (int i = n; i > 0; i--) {
+                GlyphTreeIter iter = _gt.sibling(it, i);
+                if ((*iter)->OnLButtonUp(x, y)) {
+                    _iterSelected = iter;
+                }
+            }
+        }
+    }
+    return (s);
+}
+
 
 HRESULT ICanvas::Draw(bool redraw/* = false*/)
 {
@@ -68,26 +120,27 @@ HRESULT ICanvas::Draw(bool redraw/* = false*/)
     MATRIX_2D m = D2D1::Matrix3x2F::Identity(), backup;
     //MYTRACE(L"Canvas %s rect %d %d %d %d\n", _name, _rect.left, _rect.top, _rect.right, _rect.bottom);
 #ifdef _DEBUG
-    //TCHAR name[MAX_PATH];
-    //CChineseCodeLib::Gb2312ToUnicode(name, MAX_PATH, _name);
+    TCHAR name[MAX_PATH];
+    CChineseCodeLib::Gb2312ToUnicode(name, MAX_PATH, _name);
     //MYTRACE(L"canvas %s draw ", name);
 #endif //_DEBUG
 
     m._31 = (float)(_rect.left + _margin.left), m._32 = (float)(_rect.top + _margin.top);
     _common_artist->GetTransform(&backup);
     _common_artist->SetTransform(&m);
+
 	for (GlyphTreeIter iter = _gt.begin(); iter != _gt.end(); iter++) {
         if (GlyphIter->GetGlyphType() != IGlyph::GLYPH_TYPE_BKG) {
-#           ifdef _DEBUG
-            //TCHAR myname[MAX_PATH];
-            //CChineseCodeLib::Gb2312ToUnicode(myname, MAX_PATH, (*iter)->_name);
-            //MYTRACE(L"%s draw graph, ", myname);
-            //if ((*iter)->isClass("CCoordFrame"))
-            //{
-            //    int kkk = 0;
-            //    kkk = 1;
-            //}
-#           endif //_DEBUG
+#              ifdef _DEBUG
+                //TCHAR myname[MAX_PATH];
+                //CChineseCodeLib::Gb2312ToUnicode(myname, MAX_PATH, (*iter)->_name);
+                //MYTRACE(L"%s draw graph, ", myname);
+                //if ((*iter)->isClass("CCoordFrame"))
+                //{
+                //    int kkk = 0;
+                //    kkk = 1;
+                //}
+#              endif //_DEBUG
 		    (*iter)->Draw(redraw);
         }
 	}

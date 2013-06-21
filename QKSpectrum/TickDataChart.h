@@ -6,12 +6,13 @@
 class CPriceTickChart : public WARMGUI::CDataLineChart
 {
 public:
-    CPriceTickChart(const char* name, bool world_own_type = false, bool data_own_type  = false, bool own_artist = false);
+    CPriceTickChart(const char* name, bool world_own_type = false, bool own_artist = false);
     ~CPriceTickChart(void);
 
     virtual HRESULT     AddGraphs();
     GLYPH_CHANGED_TYPE  NewCtpData(CCtpmmdContainer* pdc, bool redraw_cood = false, bool b_first_data = false);
     virtual void        ResetWorldRect(IDataContainer* data_cont);
+
 private:
     WARMGUI::CDataLineGraph*             _dlg_price;
 };
@@ -20,12 +21,13 @@ private:
 class CPriceAnalysChart : public WARMGUI::CDataLineChart
 {
 public:
-    CPriceAnalysChart(const char* name, bool world_own_type = false, bool data_own_type  = false, bool own_artist = false);
+    CPriceAnalysChart(const char* name, bool world_own_type = false, bool own_artist = false);
     ~CPriceAnalysChart(void);
 
     virtual HRESULT     AddGraphs();
     GLYPH_CHANGED_TYPE  NewCtpData(CCtpmmdContainer* pdc, bool redraw_cood = false, bool b_first_data = false);
     virtual void        ResetWorldRect(IDataContainer* data_cont);
+
 private:
     WARMGUI::CDataLineGraph*             _dlg_price;
 
@@ -46,7 +48,7 @@ private:
 class CVolumeTickChart : public WARMGUI::CDataLineChart
 {
 public:
-    CVolumeTickChart(const char* name, bool world_own_type = false, bool data_own_type  = false, bool own_artist = false);
+    CVolumeTickChart(const char* name, bool world_own_type = false, bool own_artist = false);
     ~CVolumeTickChart(void);
 
     virtual HRESULT     AddGraphs();
@@ -66,7 +68,7 @@ private:
 class CInterestTickChart : public WARMGUI::CDataLineChart
 {
 public:
-    CInterestTickChart(const char* name, bool world_own_type = false, bool data_own_type  = false, bool own_artist = false);
+    CInterestTickChart(const char* name, bool world_own_type = false, bool own_artist = false);
     ~CInterestTickChart(void);
 
     virtual HRESULT     AddGraphs();

@@ -5,7 +5,7 @@ namespace WARMGUI {
 class WARMGUI_API CDataLineChart : public IDataGraph
 {
 public:
-	CDataLineChart(const char* name, bool world_own_type = false, bool data_own_type  = false, bool own_artist = false);
+	CDataLineChart(const char* name, bool world_own_type = false, bool own_artist = false);
     virtual ~CDataLineChart(void);
 
     virtual GLYPH_CHANGED_TYPE NewData(IDataContainer* data_cont, DataObject::MARKET_DATA_TYPE datatype)
@@ -21,8 +21,8 @@ public:
     void                       SetGeometryData(dataptr pdata, int count, int datasize);
     virtual void               AddData(dataptr data);
 
-    inline virtual void        BeginSetData(dataptr data);
-    inline virtual void        AddDataToPathGeometry(dataptr data);
+    inline virtual void        BeginSetData(float x, float y);
+    inline virtual void        AddDataToPathGeometry(float x, float y);
     inline virtual void        EndSetData();
 
     virtual bool               RenewData()    { return true; }

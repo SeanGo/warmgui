@@ -48,56 +48,56 @@ const HRESULT CEuclidCanvas::Init(const char* name/* = 0*/)
             g = InsertNext(g->GetGlyphTreeIter(), _prc_chart);
         _prc_chart->AddGraphs();
 
-        _approx_short_lo = new CDataLineGraph("rt-appx_short_lo", CDataLineGraph::GEOMETRY_PATH_TYPE_LINE, false, true, false);
+        _approx_short_lo = new CDataLineGraph("rt-appx_short_lo", CDataLineGraph::GEOMETRY_PATH_TYPE_LINE, false, false);
         _approx_short_lo->setWorld(_prc_chart->getCoordWorld());
         _approx_short_lo->SetLineColor(BGR(255, 0, 0), 1.0f);
         _approx_short_lo->SetStrokeWidth(.02f);
         _approx_short_lo->GetGraphData()->SetSize(1024);
         g = InsertNext(g->GetGlyphTreeIter(), _approx_short_lo);
 
-        _approx_short_he = new CDataLineGraph("rt-appx_short_he", CDataLineGraph::GEOMETRY_PATH_TYPE_LINE, false, true, false);
+        _approx_short_he = new CDataLineGraph("rt-appx_short_he", CDataLineGraph::GEOMETRY_PATH_TYPE_LINE, false, false);
         _approx_short_he->setWorld(_prc_chart->getCoordWorld());
         _approx_short_he->SetLineColor(BGR(0, 255, 0), 1.0f);
         _approx_short_he->SetStrokeWidth(.02f);
         _approx_short_he->GetGraphData()->SetSize(1024);
         g = InsertNext(g->GetGlyphTreeIter(), _approx_short_he);
 
-        _approx_long_lo = new CDataLineGraph("rt-appx_long_lo", CDataLineGraph::GEOMETRY_PATH_TYPE_LINE, false, true, false);
+        _approx_long_lo = new CDataLineGraph("rt-appx_long_lo", CDataLineGraph::GEOMETRY_PATH_TYPE_LINE, false, false);
         _approx_long_lo->setWorld(_prc_chart->getCoordWorld());
         _approx_long_lo->SetLineColor(BGR(255, 0, 0), 1.0f);
         _approx_long_lo->SetStrokeWidth(.1f);
         _approx_long_lo->GetGraphData()->SetSize(1024);
         g = InsertNext(g->GetGlyphTreeIter(), _approx_long_lo);
 
-        _approx_long_he = new CDataLineGraph("rt-appx_long_he", CDataLineGraph::GEOMETRY_PATH_TYPE_LINE, false, true, false);
+        _approx_long_he = new CDataLineGraph("rt-appx_long_he", CDataLineGraph::GEOMETRY_PATH_TYPE_LINE, false, false);
         _approx_long_he->setWorld(_prc_chart->getCoordWorld());
         _approx_long_he->SetLineColor(BGR(0, 255, 0), 1.0f);
         _approx_long_he->SetStrokeWidth(.1f);
         _approx_long_he->GetGraphData()->SetSize(1024);
         g = InsertNext(g->GetGlyphTreeIter(), _approx_long_he);
 
-        _predict_short_lo = new CDataLineGraph("rt-prdt_short_lo", CDataLineGraph::GEOMETRY_PATH_TYPE_LINE, false, true, false);
+        _predict_short_lo = new CDataLineGraph("rt-prdt_short_lo", CDataLineGraph::GEOMETRY_PATH_TYPE_LINE, false, false);
         _predict_short_lo->setWorld(_prc_chart->getCoordWorld());
         _predict_short_lo->SetLineColor(BGR(255, 0, 0), 1.0f);
         _predict_short_lo->SetStrokeWidth(.2f);
         _predict_short_lo->GetGraphData()->SetSize(180);
         g = InsertNext(g->GetGlyphTreeIter(), _predict_short_lo);
 
-        _predict_short_he = new CDataLineGraph("rt-prdt_short_he", CDataLineGraph::GEOMETRY_PATH_TYPE_LINE, false, true, false);
+        _predict_short_he = new CDataLineGraph("rt-prdt_short_he", CDataLineGraph::GEOMETRY_PATH_TYPE_LINE, false, false);
         _predict_short_he->setWorld(_prc_chart->getCoordWorld());
         _predict_short_he->SetLineColor(BGR(0, 255, 0), 1.0f);
         _predict_short_he->SetStrokeWidth(.2f);
         _predict_short_he->GetGraphData()->SetSize(180);
         g = InsertNext(g->GetGlyphTreeIter(), _predict_short_he);
 
-        _predict_long_lo = new CDataLineGraph("rt-prdt_long_lo", CDataLineGraph::GEOMETRY_PATH_TYPE_LINE, false, true, false);
+        _predict_long_lo = new CDataLineGraph("rt-prdt_long_lo", CDataLineGraph::GEOMETRY_PATH_TYPE_LINE, false, false);
         _predict_long_lo->setWorld(_prc_chart->getCoordWorld());
         _predict_long_lo->SetLineColor(BGR(255, 0, 0), 1.0f);
         _predict_long_lo->SetStrokeWidth(.2f);
         _predict_long_lo->GetGraphData()->SetSize(180);
         g = InsertNext(g->GetGlyphTreeIter(), _predict_long_lo);
 
-        _predict_long_he = new CDataLineGraph("rt-prdt_long_he", CDataLineGraph::GEOMETRY_PATH_TYPE_LINE, false, true, false);
+        _predict_long_he = new CDataLineGraph("rt-prdt_long_he", CDataLineGraph::GEOMETRY_PATH_TYPE_LINE, false, false);
         _predict_long_he->setWorld(_prc_chart->getCoordWorld());
         _predict_long_he->SetLineColor(BGR(255, 0, 0), 1.0f);
         _predict_long_he->SetStrokeWidth(.2f);
@@ -149,6 +149,7 @@ GLYPH_CHANGED_TYPE CEuclidCanvas::NewData(dataptr data, size_t datalen, DataObje
 {
     GLYPH_CHANGED_TYPE changed = GLYPH_CHANGED_TYPE_NONE;
     if (datatype == DataObject::MARKET_DATA_TYPE_ZITDATA) {
+        //MYTRACE(L"CEuclidCanvas::NewData - 3\n");
 #       ifdef _DEBUG
         //ZitData* zit = (ZitData*)data;
         //MYTRACE(L"CEuclidCanvas::NewData extremum %d, infl %d, central %d, area %d\n",
@@ -204,6 +205,7 @@ GLYPH_CHANGED_TYPE CEuclidCanvas::NewData(dataptr data, size_t datalen, DataObje
             _changed_type = (GLYPH_CHANGED_TYPE)((int)_changed_type | (int)GLYPH_CHANGED_TYPE_CHANGED);
         }
     } else if (datatype == DataObject::EUCLID_CALUC_DBL_FILTER_PREDICTOR) {
+        //MYTRACE(L"CEuclidCanvas::NewData - 4\n");
         if (datalen > (1024 + 1024 + 1024 + 180 + 180) * sizeof(double)) {
             //have short and long term
             double fFirstPos  = _prc_chart->getCoordWorld()->GetWorldRect().x0;
@@ -226,21 +228,40 @@ GLYPH_CHANGED_TYPE CEuclidCanvas::NewData(dataptr data, size_t datalen, DataObje
             _predict_short_he->GetGraphData()->Reset();
             _predict_long_lo ->GetGraphData()->Reset();
             _predict_long_he ->GetGraphData()->Reset();
-            for (size_t i = 0; i < 1024; i++) {
-                //copy approx-data to graph
-                _approx_short_lo->GetGraphData()->AddData(fshort_index[i], short_appx_low [i]);
-                _approx_short_he->GetGraphData()->AddData(fshort_index[i], short_appx_high[i]);
-                _approx_long_lo ->GetGraphData()->AddData(f_long_index[i], long_appx_low  [i]);
-                _approx_long_he ->GetGraphData()->AddData(f_long_index[i], long_appx_high [i]);
-            }
 
-            for (size_t i = 0; i < 180; i++) {
+            _approx_short_lo->BeginSetData(*fshort_index, *short_appx_low);
+            _approx_short_he->BeginSetData(*fshort_index, *short_appx_high);
+            _approx_long_lo->BeginSetData(*f_long_index, *long_appx_low);
+            _approx_long_he->BeginSetData(*f_long_index, *long_appx_high);
+            for (size_t i = 1; i < 1024; i++) {
                 //copy approx-data to graph
-                _predict_short_lo->GetGraphData()->AddData(fshort_index[1023] + i + 1, short_prdt_low [i]);
-                _predict_short_he->GetGraphData()->AddData(fshort_index[1023] + i + 1, short_prdt_high[i]);
-                _predict_long_lo ->GetGraphData()->AddData(f_long_index[1023] + i * 2 + 1, long_prdt_low  [i]);
-                _predict_long_he ->GetGraphData()->AddData(f_long_index[1023] + i * 2 + 1, long_prdt_high [i]);
+                _approx_short_lo->AddDataToPathGeometry(fshort_index[i], short_appx_low [i]);
+                _approx_short_he->AddDataToPathGeometry(fshort_index[i], short_appx_high[i]);
+                _approx_long_lo ->AddDataToPathGeometry(f_long_index[i], long_appx_low  [i]);
+                _approx_long_he ->AddDataToPathGeometry(f_long_index[i], long_appx_high [i]);
             }
+            _approx_short_lo->EndSetData();
+            _approx_short_he->EndSetData();
+            _approx_long_lo->EndSetData();
+            _approx_long_he->EndSetData();
+
+
+            _predict_short_lo->BeginSetData(fshort_index[1023] + 1, *short_prdt_low);
+            _predict_short_he->BeginSetData(fshort_index[1023] + 1, *short_prdt_high);
+            _predict_long_lo->BeginSetData(f_long_index[1023] + 1, *long_prdt_low);
+            _predict_long_he->BeginSetData(f_long_index[1023] + 1, *long_prdt_high);
+            for (size_t i = 1; i < 180; i++) {
+                //copy approx-data to graph
+                _predict_short_lo->AddDataToPathGeometry(fshort_index[1023] + i + 1, short_prdt_low [i]);
+                _predict_short_he->AddDataToPathGeometry(fshort_index[1023] + i + 1, short_prdt_high[i]);
+                _predict_long_lo ->AddDataToPathGeometry(f_long_index[1023] + i * 2 + 1, long_prdt_low  [i]);
+                _predict_long_he ->AddDataToPathGeometry(f_long_index[1023] + i * 2 + 1, long_prdt_high [i]);
+            }
+            _predict_short_lo->EndSetData();
+            _predict_short_he->EndSetData();
+            _predict_long_lo->EndSetData();
+            _predict_long_he->EndSetData();
+
             _changed_type = (GLYPH_CHANGED_TYPE)((int)_changed_type | (int)GLYPH_CHANGED_TYPE_CHANGED);
         } else if (datalen) {
             //short only
@@ -259,20 +280,30 @@ GLYPH_CHANGED_TYPE CEuclidCanvas::NewData(dataptr data, size_t datalen, DataObje
             _predict_short_lo->GetGraphData()->Reset();
             _predict_short_he->GetGraphData()->Reset();
 
-            for (size_t i = 0; i < 1024; i++) {
+            _approx_short_lo->BeginSetData(*findex, *appx_low);
+            _approx_short_he->BeginSetData(*findex, *appx_high);
+
+            for (size_t i = 1; i < 1024; i++) {
                 //copy approx-data to graph
-                _approx_short_lo->GetGraphData()->AddData(findex[i], appx_low [i]);
-                _approx_short_he->GetGraphData()->AddData(findex[i], appx_high[i]);
+                _approx_short_lo->AddDataToPathGeometry(findex[i], appx_low [i]);
+                _approx_short_he->AddDataToPathGeometry(findex[i], appx_high[i]);
                 //if (appx_low [i] - appx_high[i] != 0) {
                 //    MYTRACE(L"%d %.02f - %.02f = %.02f, is not zero\n", i, appx_low[i], appx_high[i], appx_low[i] - appx_high[i]);
                 //}
             }
+            _approx_short_lo->EndSetData();
+            _approx_short_he->EndSetData();
 
-            for (size_t i = 0; i < 180; i++) {
+            _predict_short_lo->BeginSetData(findex[1023] + 1, *prdt_low);
+            _predict_short_he->BeginSetData(findex[1023] + 1, *prdt_high);
+            for (size_t i = 1; i < 180; i++) {
                 //copy approx-data to graph
-                _predict_short_lo->GetGraphData()->AddData(findex[1023] + i + 1, prdt_low [i]);
-                _predict_short_he->GetGraphData()->AddData(findex[1023] + i + 1, prdt_high[i]);
+                _predict_short_lo->AddDataToPathGeometry(findex[1023] + i + 1, prdt_low [i]);
+                _predict_short_he->AddDataToPathGeometry(findex[1023] + i + 1, prdt_high[i]);
             }
+            _predict_short_lo->EndSetData();
+            _predict_short_he->EndSetData();
+
             _changed_type = (GLYPH_CHANGED_TYPE)((int)_changed_type | (int)GLYPH_CHANGED_TYPE_CHANGED);
         }
     }
@@ -281,11 +312,12 @@ GLYPH_CHANGED_TYPE CEuclidCanvas::NewData(dataptr data, size_t datalen, DataObje
 
 GLYPH_CHANGED_TYPE CEuclidCanvas::NewData(IDataContainer* data_cont, DataObject::MARKET_DATA_TYPE datatype)
 {
-    _data_cont = (CCtpmmdContainer*)data_cont;
     //return GLYPH_CHANGED_TYPE_NONE;
+    _data_cont = (CCtpmmdContainer*)data_cont;
     //MYTRACE(L"CEuclidCanvas::NewData\n");
     _changed_type = GLYPH_CHANGED_TYPE_NONE;
     if (datatype == DataObject::MARKET_DATA_TYPE_CTPMMD) {
+        //MYTRACE(L"CEuclidCanvas::NewData - 2\n");
 #       ifdef _DEBUG
         //if (!((((CCtpmmdContainer*)data_cont)->getCount()) % 300)) {
         //    const CTPMMD* pctpmmd = ((CCtpmmdContainer*)data_cont)->getCurrentData();
@@ -321,11 +353,12 @@ GLYPH_CHANGED_TYPE CEuclidCanvas::NewData(IDataContainer* data_cont, DataObject:
         //MYTRACE(L"My world is %.02f %.02f\n",
         //    ((CCtpmmdContainer*)data_cont)->getCurrentData()->fIndex,
         //    (_prc_chart->getCoordWorld()->GetWorldRect().x0 + _prc_chart->getCoordWorld()->_vi._left_shirft));
-        if (!b_first_data
-            &&
-            (((CCtpmmdContainer*)data_cont)->getCurrentData()->fIndex
-                 >=
-                 (_prc_chart->getCoordWorld()->GetWorldRect().x0 + _prc_chart->getCoordWorld()->_vi._init_width)))
+
+        if (!b_first_data)
+            //&&
+            //(((CCtpmmdContainer*)data_cont)->getCurrentData()->fIndex
+            //     >=
+            //     (_prc_chart->getCoordWorld()->GetWorldRect().x0 + _prc_chart->getCoordWorld()->_vi._init_width)))
         {
             //MYTRACE(L"My world is %.02f %.02f %.02f %.02f %.02f %.02f %.02f %.02f uuu %.02f %.02f %.02f\n",
             //    _prc_chart->getCoordWorld()->GetWorldRect().x0,
@@ -345,12 +378,14 @@ GLYPH_CHANGED_TYPE CEuclidCanvas::NewData(IDataContainer* data_cont, DataObject:
             _changed_type = GLYPH_CHANGED_TYPE_COORDFRAME;
         }
 
-        _changed_type = (GLYPH_CHANGED_TYPE)((int)_changed_type | (int)(_prc_chart->NewCtpData((CCtpmmdContainer*)data_cont, (_changed_type), b_first_data)));
+        //_changed_type = (GLYPH_CHANGED_TYPE)((int)_changed_type | (int)(_prc_chart->NewCtpData((CCtpmmdContainer*)data_cont, (_changed_type), b_first_data)));
         if (!b_first_data && ((int)_changed_type & (int)GLYPH_CHANGED_TYPE_COORDFRAME))
         {
             NewDataForCtpmmd((CCtpmmdContainer*)data_cont, datatype);
             _changed_type = (GLYPH_CHANGED_TYPE)((int)_changed_type | (int)GLYPH_CHANGED_TYPE_CHANGED);
         }
+
+        MYTRACE(L"world %d\n", _prc_chart->getCoordWorld()->GetWorldRect().xn - _prc_chart->getCoordWorld()->GetWorldRect().x0);
     }
     return _changed_type;
 }
@@ -358,16 +393,18 @@ GLYPH_CHANGED_TYPE CEuclidCanvas::NewData(IDataContainer* data_cont, DataObject:
 
 GLYPH_CHANGED_TYPE CEuclidCanvas::NewDataForCtpmmd(CCtpmmdContainer* czc, DataObject::MARKET_DATA_TYPE datatype)
 {
+    MYTRACE(L"CEuclidCanvas::NewDataForCtpmmd - 1\n");
+
     GLYPH_CHANGED_TYPE changed = GLYPH_CHANGED_TYPE_NONE;
-    _prc_chart->BeginSetData((dataptr)(czc->getCurrentData()));
     //set data
     CTPMMD* curdata = (CTPMMD*)czc->getCurrentData();
     CTPMMD* dataptr = czc->getDataPtr();
     CTPMMD* x0data = curdata - (int)(_prc_chart->getCoordWorld()->GetWorldRect().width()) + 1;
     if (x0data < dataptr)
         x0data = dataptr;
+    _prc_chart->BeginSetData(x0data->fIndex, x0data->LastPrice);
 
-    for (CTPMMD* ctpmmd = (CTPMMD*)curdata; ctpmmd >= x0data; --ctpmmd) {
+    for (CTPMMD* ctpmmd = x0data; ctpmmd <= curdata; ++ctpmmd) {
         //the world of price was changed
 #ifdef _DEBUG
         /*
@@ -384,7 +421,7 @@ GLYPH_CHANGED_TYPE CEuclidCanvas::NewDataForCtpmmd(CCtpmmdContainer* czc, DataOb
             (ctpmmmd + i)->relInterest);
         */
 #endif //_DEBUG
-        _prc_chart->AddDataToPathGeometry(ctpmmd);
+        _prc_chart->AddDataToPathGeometry(ctpmmd->fIndex, ctpmmd->LastPrice);
     }
 
     _prc_chart->EndSetData();

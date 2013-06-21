@@ -85,6 +85,7 @@ IGlyph::IGlyph(void)
 	, _glyph_type(GLYPH_TYPE_GLYPH)
 	, _draw_method(DRAW_METHOD_TYPE_DRAW)
     , _ops(0)
+    , _selected_child(0)
 {
 	memset(&_rect, 0, sizeof(RECT));
 	*_name = L'\0';
@@ -102,6 +103,7 @@ IGlyph::IGlyph(const char* name, bool own_artist/* = false*/)
 	, _glyph_type(GLYPH_TYPE_GLYPH)
 	, _draw_method(DRAW_METHOD_TYPE_DRAW)
     , _ops(0)
+    , _selected_child(0)
 {
 	memset(&_rect, 0, sizeof(RECT));
 	strcpy_s(_name, MAX_WARMGUI_NAME_LEN, name);
@@ -123,6 +125,65 @@ IGlyph::~IGlyph(void)
     if (_myown_artist) delete _myown_artist;
 }
 
+int IGlyph::is_selected(int x, int y)
+{
+    return IsInRect(_rect, x, y);
+}
+
+int IGlyph::OnLButtonUp(int x, int y)
+{
+    if (!_visible) return (0);
+
+    int s = is_selected(x, y);
+    _selected_child = 0;
+    if (s && _canvas) {
+#ifdef _DEBUG
+        TCHAR name[MAX_PATH];
+        CChineseCodeLib::Gb2312ToUnicode(name, MAX_PATH, _name);
+        MYTRACE(L"Glyph %s selected\n", name);
+#endif //_DEBUG
+        IGlyph* g_selected = 0;
+        size_t n = _iter.number_of_children();
+        if (n) {
+            for (int i = n - 1; i >= 0 ; i--) {
+                g_selected = _canvas->getChild(_iter, i);
+                if (g_selected ->OnLButtonUp(x, y)) {
+                    _selected_child = g_selected;
+                    break;
+                }
+            }
+        }
+    }
+    return s;
+}
+
+int IGlyph::OnRButtonUp(int x, int y)
+{
+    if (!_visible) return (0);
+
+    int s = is_selected(x, y);
+    _selected_child = 0;
+    if (s && _canvas) {
+#ifdef _DEBUG
+        TCHAR name[MAX_PATH];
+        CChineseCodeLib::Gb2312ToUnicode(name, MAX_PATH, _name);
+        MYTRACE(L"Glyph %s selected\n", name);
+#endif //_DEBUG
+        IGlyph* g_selected = 0;
+        size_t n = _iter.number_of_children();
+        if (n) {
+            for (int i = n - 1; i >= 0 ; i--) {
+                g_selected = _canvas->getChild(_iter, i);
+                if (g_selected ->OnLButtonUp(x, y)) {
+                    _selected_child = g_selected;
+                    break;
+                }
+            }
+        }
+    }
+    return s;
+}
+
 
 HRESULT IGlyph::PreDraw()
 {
@@ -142,7 +203,15 @@ HRESULT IGlyph::Draw(bool redraw/* = false*/)
 {
 	if (!_visible) return S_OK;
 
-	HRESULT hr = S_OK;
+#ifdef _DEBUG
+    if (!strcmp(_name, "toolbar-image"))
+    {
+        int kkk = 0;
+        kkk = 1;
+    }
+#endif //_DEBUG
+
+    HRESULT hr = S_OK;
     if (_myown_artist) {
         CriticalLock::Scoped scope(_myown_artist->_lock_artist);
 
@@ -153,19 +222,21 @@ HRESULT IGlyph::Draw(bool redraw/* = false*/)
         MATRIX_2D backmatrix, m;
         _artist->GetTransform(&backmatrix);
         m = backmatrix;
-        m._31 = _rect.left, m._32 = _rect.top;
+        m._31 = (float)_rect.left, m._32 = (float)_rect.top;
         _artist->SetTransform(&m);
 
         _artist->DrawBitmap(_myown_artist->GetDefaultBmp(), dest, src);
+
         _artist->SetTransform(&backmatrix);
 
 		_artist = back_artist;
     } else {
         hr = DrawGraph(redraw);
     }
-	//GetbackArtistTransform();
+    //GetbackArtistTransform();
 	_changed_type = GLYPH_CHANGED_TYPE_NONE;
-	return hr;
+
+    return hr;
 }
 
 HRESULT IGlyph::Renew()

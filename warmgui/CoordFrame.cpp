@@ -13,7 +13,7 @@ namespace WARMGUI {
 /// class CCoordFrame
 
 CCoordFrame::CCoordFrame(const char* name)
-	: IDataGraph(name, true, false, true)
+	: IDataGraph(name, true, true)
     , _pTextFormat(0)
     , _pTextLayout(0)
 {

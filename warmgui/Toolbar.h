@@ -26,7 +26,7 @@ public:
     int           _margin;
 protected:
 	CSharedImage* _imgToolbar;
-
+    CBlind*            _blind;
     UINT GetCommandID(int x);
 
 private:

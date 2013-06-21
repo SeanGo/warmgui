@@ -68,7 +68,6 @@ const HRESULT CPVI_Canvas::Init(const char* name/*=0*/)
     } catch(...) {
         return (-1);
     }
-
     return S_OK;
 }
 
@@ -193,19 +192,19 @@ GLYPH_CHANGED_TYPE CPVI_Canvas::NewDataForCtpmmd(CCtpmmdContainer* czc, DataObje
     GLYPH_CHANGED_TYPE changed = GLYPH_CHANGED_TYPE_CHANGED;
     {//begin set data
         if ((int)_prc_graph_changed & (int)GLYPH_CHANGED_TYPE_COORDFRAME)
-            _prc_chart->BeginSetData((dataptr)(czc->getDataPtr()));
+            _prc_chart->BeginSetData(czc->getDataPtr()->fIndex, czc->getDataPtr()->LastPrice);
 
         if ((int)_vol_graph_changed & (int)GLYPH_CHANGED_TYPE_COORDFRAME)
-            _vol_chart->BeginSetData((dataptr)(czc->getDataPtr()));
+            _vol_chart->BeginSetData(czc->getDataPtr()->fIndex, czc->getDataPtr()->relVolume);
 
         if ((int)_itr_graph_changed & (int)GLYPH_CHANGED_TYPE_COORDFRAME)
-            _itr_chart->BeginSetData((dataptr)(czc->getDataPtr()));
+            _itr_chart->BeginSetData(czc->getDataPtr()->fIndex, czc->getDataPtr()->OpenInterest);
     }
 
     //set data
     size_t i = (int)_prc_chart->getCoordWorld()->GetWorldRect().x0;
     for (; i < czc->getCount() ; i++) {
-        CTPMMD* ctpmmmd = (CTPMMD*)czc->getDataPtr();
+        CTPMMD* ctpmmd = (CTPMMD*)czc->getDataPtr();
         //the world of price was changed
 #ifdef _DEBUG
         /*
@@ -223,13 +222,13 @@ GLYPH_CHANGED_TYPE CPVI_Canvas::NewDataForCtpmmd(CCtpmmdContainer* czc, DataObje
         */
 #endif //_DEBUG
         if ((int)_prc_graph_changed & (int)GLYPH_CHANGED_TYPE_COORDFRAME)
-            _prc_chart->AddDataToPathGeometry(ctpmmmd + i);
+            _prc_chart->AddDataToPathGeometry((ctpmmd + i)->fIndex, (ctpmmd + i)->LastPrice);
 
         if ((int)_vol_graph_changed & (int)GLYPH_CHANGED_TYPE_COORDFRAME)
-            _vol_chart->AddDataToPathGeometry(ctpmmmd + i);
+            _vol_chart->AddDataToPathGeometry((ctpmmd + i)->fIndex, (ctpmmd + i)->relVolume);
 
         if ((int)_itr_graph_changed & (int)GLYPH_CHANGED_TYPE_COORDFRAME)
-            _itr_chart->AddDataToPathGeometry(ctpmmmd + i);
+            _itr_chart->AddDataToPathGeometry((ctpmmd + i)->fIndex, (ctpmmd + i)->OpenInterest);
     }
 
     {//end set data

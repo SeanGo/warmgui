@@ -5,8 +5,8 @@
 namespace WARMGUI {
 
 
-CDataLineChart::CDataLineChart(const char* name, bool world_own_type/* = false*/, bool data_own_type/*  = false*/, bool own_artist/* = false*/)
-    : IDataGraph(name, world_own_type, data_own_type, own_artist)
+CDataLineChart::CDataLineChart(const char* name, bool world_own_type/* = false*/, bool own_artist/* = false*/)
+    : IDataGraph(name, world_own_type, own_artist)
     , _coord(0)
     , _stroke_width(1.0f)
 {
@@ -58,6 +58,7 @@ void CDataLineChart::AddData(dataptr data)
 
 void CDataLineChart::SetRect(RECT& rect)
 {
+    _rect = rect;
     RECT rect_graph = rect;
     rect_graph.left += _coord->getRulerWidth().left,
         rect_graph.top += _coord->getRulerWidth().top,
@@ -96,7 +97,7 @@ HRESULT CDataLineChart::Init()
 }
 
 
-void CDataLineChart::BeginSetData(dataptr data)
+void CDataLineChart::BeginSetData(float x, float y)
 {
 #ifdef _DEBUG
     //TCHAR name[MAX_PATH];
@@ -106,11 +107,11 @@ void CDataLineChart::BeginSetData(dataptr data)
     for (int i = 0; i < _canvas->getChildNumber(_iter); i++) {
         IGlyph* g = _canvas->getChild(_iter, i);
         if (g->isClass("CDataLineGraph"))
-            ((CDataLineGraph*)g)->BeginSetData(data);
+            ((CDataLineGraph*)g)->BeginSetData(x, y);
     }
 }
 
-void CDataLineChart::AddDataToPathGeometry(dataptr data)
+void CDataLineChart::AddDataToPathGeometry(float x, float y)
 {
 #ifdef _DEBUG
     /*
@@ -131,7 +132,7 @@ void CDataLineChart::AddDataToPathGeometry(dataptr data)
     for (int i = 0; i < _canvas->getChildNumber(_iter); i++) {
         IGlyph* g = _canvas->getChild(_iter, i);
         if (g->isClass("CDataLineGraph"))
-            ((CDataLineGraph*)g)->AddDataToPathGeometry(data);
+            ((CDataLineGraph*)g)->AddDataToPathGeometry(x, y);
     }
 }
 
@@ -171,5 +172,6 @@ void CDataLineChart::MoveBitmapToLeft()
         }
     }
 }
+
 
 }//namespace WARMGUI

@@ -61,6 +61,9 @@ public:
 	virtual GLYPH_CHANGED_TYPE  IsChanged() {CriticalLock::Scoped scope(_lockChange); return _changed_type;}
 	void                        ClearChanged() {CriticalLock::Scoped scope(_lockChange); _changed_type = GLYPH_CHANGED_TYPE_NONE;}
 
+    virtual int                 OnLButtonUp(int x, int y);
+    virtual int                 OnRButtonUp(int x, int y);
+
 protected:
 	MARGIN              _margin;
 	POINT_f             _offset;              //offset point to the originla window

@@ -47,11 +47,11 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USE_32BIT_TIME_T;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>../warmgui; E:\projects\America\nrlib; E:\projects\America\nrlib\include; E:\projects\America\clicomm\;E:\projects\America\ctpmdif;E:\projects\America\filter;E:\projects\America\utility;;E:\projects\America\nrlib;E:\projects\America\euclid</AdditionalIncludeDirectories>
+      <PrecompiledHeader>Use</PrecompiledHeader>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -114,6 +114,7 @@
     <ClInclude Include="resource.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="test-unit.h" />
     <ClInclude Include="TickDataView.h" />
     <ClInclude Include="TickdataCanvas.h" />
     <ClInclude Include="TickDataChart.h" />
@@ -147,6 +148,7 @@
     <ClCompile Include="QksFactories.cpp" />
     <ClCompile Include="QKSpectrum.cpp" />
     <ClCompile Include="stdafx.cpp" />
+    <ClCompile Include="test-unit.cpp" />
     <ClCompile Include="TickDataView.cpp" />
     <ClCompile Include="TickdataCanvas.cpp" />
     <ClCompile Include="TickDataChart.cpp" />

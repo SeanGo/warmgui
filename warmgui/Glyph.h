@@ -242,7 +242,9 @@ public:
     void                       SetGlyphTreeIter(GlyphTreeIter iter) { _iter = iter;}
     GlyphTreeIter              GetGlyphTreeIter(void) { return _iter; }
 
-
+    virtual int                OnLButtonUp(int x, int y);
+    virtual int                OnRButtonUp(int x, int y);
+    virtual int                is_selected(int x, int y);
 protected:
     bool                   _bFill;
 
@@ -260,6 +262,7 @@ protected:
 
     Operations*              _ops;
     GlyphTreeIter           _iter;   ///a iter pointer to myself
+    IGlyph*       _selected_child;
 private:
     //set class name, by IObject
     virtual void setClass() { SetMyClass("IGlyph"); }
@@ -356,6 +359,7 @@ public:
 
     virtual HRESULT DrawGraph(bool redraw = false);
     void            SetBrush(COLORREF bkgclr, float alpha = 0.5f) {_bkgclr = bkgclr, _alpha = alpha;}
+    virtual int     is_selected(int x, int y) { return (0); }
 
 private:
     float     _alpha;
@@ -376,11 +380,8 @@ class WARMGUI_API IDataGraph : public IGlyph
 public:
                                IDataGraph ( const char* name,
                                             bool world_own_type = false,
-                                            bool data_own_type  = false,
                                             bool own_artist = false)
                                    : IGlyph(name, own_artist)
-                                   , _pdata(0)
-                                   , _data_own_type(data_own_type)
                                    , _world_own_type(world_own_type)
                                {
                                    setClass(); *_strconf = 0;
@@ -390,8 +391,7 @@ public:
                                        _referframe = 0;
                                }
     virtual                   ~IDataGraph ()
-                               { if (_data_own_type == true) SafeDelete(_pdata);
-                                 if (_world_own_type == true) SafeDelete(this->_referframe); }
+                               { if (_world_own_type == true) SafeDelete(this->_referframe); }
 
     virtual GLYPH_CHANGED_TYPE NewData(IDataContainer* data_cont, DataObject::MARKET_DATA_TYPE datatype) = 0;
     virtual bool               RenewData()    { return true; }
@@ -439,9 +439,6 @@ protected:
     CWarmguiConfig*   _config;
     char   _strconf[MAX_PATH];
     char _data_name[MAX_PATH];    //the data name from data-container
-    dataptr            _pdata;
-    size_t       _n_data_size;
-    bool       _data_own_type;
     bool      _world_own_type;
     CWorld*       _referframe;    ///the pointer to reference frame system
     char   _my_cont[MAX_PATH];

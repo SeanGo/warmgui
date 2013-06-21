@@ -198,19 +198,19 @@ GLYPH_CHANGED_TYPE CPVIAnalysisCanvas::NewDataForCtpmmd(CCtpmmdContainer* czc, D
     GLYPH_CHANGED_TYPE changed = GLYPH_CHANGED_TYPE_CHANGED;
     {//begin set data
         if ((int)_prc_graph_changed & (int)GLYPH_CHANGED_TYPE_COORDFRAME)
-            _prc_chart->BeginSetData((dataptr)(czc->getDataPtr()));
+            _prc_chart->BeginSetData(czc->getDataPtr()->fIndex, czc->getDataPtr()->LastPrice);
 
         if ((int)_vol_graph_changed & (int)GLYPH_CHANGED_TYPE_COORDFRAME)
-            _vol_chart->BeginSetData((dataptr)(czc->getDataPtr()));
+            _vol_chart->BeginSetData(czc->getDataPtr()->fIndex, czc->getDataPtr()->relVolume);
 
         if ((int)_itr_graph_changed & (int)GLYPH_CHANGED_TYPE_COORDFRAME)
-            _itr_chart->BeginSetData((dataptr)(czc->getDataPtr()));
+            _itr_chart->BeginSetData(czc->getDataPtr()->fIndex, czc->getDataPtr()->OpenInterest);
     }
 
     //set data
     size_t i = (int)_prc_chart->getCoordWorld()->GetWorldRect().x0;
     for (; i < czc->getCount() ; i++) {
-        CTPMMD* ctpmmmd = (CTPMMD*)czc->getDataPtr();
+        CTPMMD* ctpmmd = (CTPMMD*)czc->getDataPtr();
         //the world of price was changed
 #ifdef _DEBUG
         /*
@@ -228,13 +228,13 @@ GLYPH_CHANGED_TYPE CPVIAnalysisCanvas::NewDataForCtpmmd(CCtpmmdContainer* czc, D
         */
 #endif //_DEBUG
         if ((int)_prc_graph_changed & (int)GLYPH_CHANGED_TYPE_COORDFRAME)
-            _prc_chart->AddDataToPathGeometry(ctpmmmd + i);
+            _prc_chart->AddDataToPathGeometry((ctpmmd + i)->fIndex, (ctpmmd + i)->LastPrice);
 
         if ((int)_vol_graph_changed & (int)GLYPH_CHANGED_TYPE_COORDFRAME)
-            _vol_chart->AddDataToPathGeometry(ctpmmmd + i);
+            _vol_chart->AddDataToPathGeometry((ctpmmd + i)->fIndex, (ctpmmd + i)->relVolume);
 
         if ((int)_itr_graph_changed & (int)GLYPH_CHANGED_TYPE_COORDFRAME)
-            _itr_chart->AddDataToPathGeometry(ctpmmmd + i);
+            _itr_chart->AddDataToPathGeometry((ctpmmd + i)->fIndex, (ctpmmd + i)->OpenInterest);
     }
 
     {//end set data
@@ -270,30 +270,30 @@ void CPVIAnalysisCanvas::set_analyst(EUCLID::CEuclidAnalyst* analyst)
     _ctpdata = _analyst->get_ctpdata()->get_data(_n_down_sample);
 
     if (_ctpdata && _ctpdata->_ctpmmd) {
-        _prc_chart->BeginSetData(_ctpdata->_ctpmmd);
+        _prc_chart->BeginSetData(_ctpdata->_ctpmmd->fIndex, _ctpdata->_ctpmmd->LastPrice);
         _prc_chart->getCoordWorld()->reset_zeor_world(_ctpdata->_ctpmmd->fIndex, _ctpdata->_ctpmmd->LastPrice);
 
-        _vol_chart->BeginSetData(_ctpdata->_ctpmmd);
+        _vol_chart->BeginSetData(_ctpdata->_ctpmmd->fIndex, _ctpdata->_ctpmmd->relVolume);
         _vol_chart->getCoordWorld()->reset_zeor_world(_ctpdata->_ctpmmd->fIndex, _ctpdata->_ctpmmd->relVolume);
         
-        _itr_chart->BeginSetData(_ctpdata->_ctpmmd);
+        _itr_chart->BeginSetData(_ctpdata->_ctpmmd->fIndex, _ctpdata->_ctpmmd->OpenInterest);
         _itr_chart->getCoordWorld()->reset_zeor_world(_ctpdata->_ctpmmd->fIndex, _ctpdata->_ctpmmd->OpenInterest);
 
         for (int i = 0; i < _ctpdata->_length ; i++) {
-            _prc_chart->AddDataToPathGeometry(_ctpdata->_ctpmmd + i);
+            _prc_chart->AddDataToPathGeometry((_ctpdata->_ctpmmd + i)->fIndex, (_ctpdata->_ctpmmd + i)->LastPrice);
             _prc_chart->getCoordWorld()->fresh_y_limit((_ctpdata->_ctpmmd + i)->fIndex, (_ctpdata->_ctpmmd + i)->LastPrice);
             
-            _vol_chart->AddDataToPathGeometry(_ctpdata->_ctpmmd + i);
+            _vol_chart->AddDataToPathGeometry((_ctpdata->_ctpmmd + i)->fIndex, (_ctpdata->_ctpmmd + i)->relVolume);
             _vol_chart->getCoordWorld()->fresh_y_limit((_ctpdata->_ctpmmd + i)->fIndex, (_ctpdata->_ctpmmd + i)->relVolume);
             
-            _itr_chart->AddDataToPathGeometry(_ctpdata->_ctpmmd + i);
+            _itr_chart->AddDataToPathGeometry((_ctpdata->_ctpmmd + i)->fIndex, (_ctpdata->_ctpmmd + i)->OpenInterest);
             _itr_chart->getCoordWorld()->fresh_y_limit((_ctpdata->_ctpmmd + i)->fIndex, (_ctpdata->_ctpmmd + i)->OpenInterest);
         }
 
         _prc_chart->EndSetData();
         _vol_chart->EndSetData();
         _itr_chart->EndSetData();
-        CWorld* world = _prc_chart->getCoordWorld();
+        //CWorld* world = _prc_chart->getCoordWorld();
         _prc_chart->RenewGraph(GLYPH_CHANGED_TYPE_COORDFRAME);
         _vol_chart->RenewGraph(GLYPH_CHANGED_TYPE_COORDFRAME);
         _itr_chart->RenewGraph(GLYPH_CHANGED_TYPE_COORDFRAME);
