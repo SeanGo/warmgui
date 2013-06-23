@@ -127,3 +127,4 @@ int ShowAnalystView(CWindow* parent_window)
     }
     return (0);
 }
+

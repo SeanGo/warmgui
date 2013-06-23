@@ -59,12 +59,12 @@ public:
                           ~IGlyph_summer(void);
     
     inline  void           set_config(CWarmguiConfig* config) { _config = config; }
-    inline  void           set_config(CWarmguiConfig* config, const char *conf_str);
+    inline  void           set_config(CWarmguiConfig* config, const char *str_conf);
     inline virtual HRESULT init() { return S_OK; }
     virtual HRESULT        pre_draw() { return S_OK; }
 
     void                   set_name(const char* name) { strcpy_s(_name, MAX_PATH, name); }
-    char*                  get_name()  { return  _name; }
+    const char*            get_name()  { return  _name; }
 
     inline virtual void    set_rect(RECT& rect);
     RECT&                  get_rect()  { return  _rect; }
@@ -89,10 +89,16 @@ public:
         GLYPH_TYPE_BKG,   ///as a backgound graph
     };
     void                   set_glyph_type(GLYPH_TYPE glyph_type) { _mytype = glyph_type; }
+    GLYPH_TYPE             get_glyph_type() { return _mytype; }
 
     void                   set_change(GLYPH_CHANGED_TYPE changed) {CriticalLock::Scoped scope(_lockChange); _changed =  changed ;}
     inline void            change(GLYPH_CHANGED_TYPE     changed);
 	void                   dechange(GLYPH_CHANGED_TYPE   changed) {CriticalLock::Scoped scope(_lockChange); _changed &= ~changed;}
+
+    const char*            get_config_str() { return _str_conf; }
+    bool                   is_visible() { return _visible; }
+    void                   toggle_visible() { _visible = (_visible) ? false : true; }
+
 protected:
 
     HRESULT                draw_graph(GLYPH_TYPE glyph_type =IGlyph_summer::GLYPH_TYPE_GLYPH);
@@ -114,7 +120,7 @@ protected:
 
     MATRIX_2D             _back_trans;
     CWarmguiConfig*           _config;
-    char          _conf_str[MAX_PATH];
+    char          _str_conf[MAX_PATH];
 
     IAtelier_summer*         _atelier;
     ICanvas_summer*           _canvas;
@@ -123,9 +129,113 @@ protected:
     CriticalLock          _lockChange;
 
     GLYPH_TYPE                _mytype;
+    bool                     _visible;
 private:
     virtual void setClass() { SetMyClass("IGlyph_summer"); }
 };
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+// class CImage
+class WARMGUI_API CImage_summer : public IGlyph_summer {
+public:
+    CImage_summer();
+    CImage_summer(const char* name, const char* imgpath);
+    CImage_summer(const char* name, const TCHAR * imgpath);
+    CImage_summer(const char* name);
+    virtual ~CImage_summer();
+
+    HRESULT         DrawGraph_wired();
+    virtual HRESULT draw();
+    inline  HRESULT DrawImage(RECT& rectSrc, RECT& rectDest, float opacity = 1.0f);
+    inline  HRESULT DrawImage(RECT_f& rectSrc, RECT_f& rectDest, float opacity = 1.0f);
+    inline  virtual bool Intersect(int x, int y) { return IsInRect(_rect, x, y); }
+    inline  HRESULT SetImage(const TCHAR* imgpath = 0);
+    inline  void    SetOpacity(float opacity);
+    inline  void    SetSrcRect(RECT* rect);
+    inline  void    SetSrcRectFromScaledRect(RECT* scaledRect, RECT* targetRect);
+
+    inline HRESULT  GetSharedImage(WGBitmap** pDestBmp) const;
+    inline HRESULT  SetSharedImage(const WGBitmap* pSrcBmp) const;
+
+protected:
+    WGBitmap*        _pImage;          ///Dont call SafeRelease to _pImage!!!
+    TCHAR _imgpath[MAX_PATH];
+    float           _opacity;
+
+    RECT            _srcRect;
+
+private:
+    //set class name, by IObject
+    virtual void setClass() { SetMyClass("CImage"); }
+};
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+// class CImage
+class WARMGUI_API CSharedImage_summer : public IGlyph_summer {
+public:
+    CSharedImage_summer();
+    CSharedImage_summer(GLYPH_TYPE glyph_type, WGBitmap* pBmp);
+    ~CSharedImage_summer();
+
+    inline virtual HRESULT draw();
+    inline void            SetSharedImage(WGBitmap* pBmp) {_pBmp = pBmp;}
+    inline HRESULT         DrawImage(RECT& rectSrc, RECT& rectDest, float opacity = 1.0f);
+    inline void            SetSharedImageRect(RECT& rectSrc, float opacity = 1.0f);
+
+protected:
+    WGBitmap*          _pBmp;            ///Dont call SafeRelease to _pImage!!!
+    TCHAR _imgpath[MAX_PATH];
+    float           _opacity;
+    D2D1_RECT_F     _srcRect;           ///the rect in the _pBmp
+    D2D1_RECT_F     _dstRect;
+
+private:
+    //set class name, by IObject
+    virtual void setClass() { SetMyClass("CSharedImage"); }
+};
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+// class CBlind
+class WARMGUI_API CBlind_summer : public IGlyph_summer
+{
+public:
+    CBlind_summer(const char* name)
+        : _bkgclr(0)
+        , _alpha(0.3f)
+    {
+        _snprintf_s(_name, MAX_PATH, _TRUNCATE, "Blind-%s", name);
+        _mytype = GLYPH_TYPE_BKG;
+        setClass();
+    }
+
+    CBlind_summer(const char* name, COLORREF bkgclr, float alpha = 0.3f, IGlyph_summer::GLYPH_TYPE type = GLYPH_TYPE_BKG)
+        : _bkgclr(bkgclr)
+        , _alpha(alpha)
+    {
+        _snprintf_s(_name, MAX_PATH, _TRUNCATE, "Blind-%s", name);
+        _mytype = type;
+        setClass();
+    }
+
+    virtual HRESULT draw();
+    void            set_brush_color(COLORREF bkgclr, float alpha = 0.5f) {_bkgclr = bkgclr, _alpha = alpha;}
+    virtual int     is_selected(int x, int y) { return (0); }
+
+private:
+    float     _alpha;
+    COLORREF _bkgclr;
+
+
+private:
+    //set class name, by IObject
+    virtual void setClass() { SetMyClass("CBlind"); }
+};
+
+
 
 } //namespace WARMGUI
 

@@ -233,15 +233,17 @@ bool CWarmguiConfig::getSize(SIZE& size, const char* config_str)
 bool CWarmguiConfig::getToolbarPos(TOOLBAR_POSITION& pos, const char* config_str)
 {
 	try {
-		std::string pos = getString(config_str);
-		if (pos == "top")
+		std::string strpos = getString(config_str);
+		if (strpos == "top")
 			pos = TOOLBAR_POSITION_TOP;
-		else if (pos == "left")
+		else if (strpos == "left")
 			pos = TOOLBAR_POSITION_LEFT;
-		else if (pos == "right")
+		else if (strpos == "right")
 			pos = TOOLBAR_POSITION_RIGHT;
-		else if (pos == "bottom")
+		else if (strpos == "bottom")
 			pos = TOOLBAR_POSITION_BOTTOM;
+        else if (strpos == "middle")
+            pos = TOOLBAR_POSITION_MIDDLE;
 		return true;
 	} catch(Poco::NotFoundException&) {
         MYTRACE(L"CWarmguiConfig::getToolbarPos\n");

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<config>
+	<atelier-summer>
+		<bitmap_materials>e:/projects/bin/qks/media/qks-pics.png</bitmap_materials>
+		<mainwindow-bkgimg-rect>0, 0, 1920, 1080</mainwindow-bkgimg-rect>
+
+		<canvas-bkg-canvas>
+			<canvas-type>background-canvas</canvas-type>
+			<canvas-name>mainwindow-bkgimg</canvas-name>
+			<blind>false</blind>
+			<rect>0, 0, 1920, 1080</rect>
+		</canvas-bkg-canvas>
+		<canvas-toolbar>
+			<canvas-type>toolbar</canvas-type>
+			<canvas-name>toolbar</canvas-name>
+			<!-- top, left, right, bottom -->
+			<first-command>32771</first-command>
+			<position>middle</position>
+			<button-size>64, 64</button-size>
+			<!-- must be zero now (forever ? heihei) -->
+			<interval>0</interval>
+			<toolbar-materials-rect>0, 1080, 320, 1144</toolbar-materials-rect>
+		</canvas-toolbar>
+	</atelier-summer>
+</config>
+

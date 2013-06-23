@@ -27,7 +27,6 @@
 #include "WarmguiConfig.h"
 #include "DxFactorys.h"
 #include "WndApp.h"
-#include "DxWinApp.h"
 #include "Window.h"
 #include "WindowManager.h"
 
@@ -39,14 +38,11 @@
 
 #include "Glyph_summer.h"
 #include "Canvas_summer.h"
-#include "Lyout_summer.h"
+
+#include "Toolbar_summer.h"
+
+
 #include "Atelier_summer.h"
-
-
-
-
-
-
 
 
 #endif //__warmgui_summer_h_include__

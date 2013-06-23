@@ -10,16 +10,43 @@ public:
     ICanvas_summer(const char *name);
     ~ICanvas_summer();
 
-    void        inherit(IAtelier_summer* atelier, CGlyphTree_summer* tree, GlyphTreeIter_summer& tree_iter, eArtist* artist, CWarmguiConfig* config)
-                {_atelier = atelier, _glyph_tree = tree, _tree_iter = tree_iter, _artist = artist, _config = config;;}
+    inline void     inherit(IAtelier_summer* atelier, CGlyphTree_summer* tree, GlyphTreeIter_summer& tree_iter, eArtist* artist, CWarmguiConfig* config, AppBitmap_summer* appbmp);
+    virtual HRESULT init();
+    inline  void    append_glyph(IGlyph_summer* glyph);
 
-    inline void append_glyph(IGlyph_summer* glyph);
+    void            set_appbitmap(AppBitmap_summer* appbmp) { _appbmp = appbmp; }
 
 protected:
-    IAtelier_summer* _atelier;
+	CSharedImage_summer* _imgBkg;
+	AppBitmap_summer*    _appbmp;    ///bitmap of materies and background of all
+    IAtelier_summer*     _atelier;
 private:
     void setClass() { SetMyClass("ICanvas_summer"); }
 };
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////
+// class CBkgCanvas_summer
+class WARMGUI_API CBkgCanvas_summer : public ICanvas_summer
+{
+public:
+	CBkgCanvas_summer(void);
+	CBkgCanvas_summer(const char* name);
+	~CBkgCanvas_summer(void);
+
+	virtual HRESULT init();
+
+protected:
+	CSharedImage_summer* _imgBkg;
+
+private:
+    //set class name, by IObject
+    virtual void setClass() { SetMyClass("CBkgCanvas_summer"); }
+};
+
+
+
 
 } //namespace WARMGUI
 

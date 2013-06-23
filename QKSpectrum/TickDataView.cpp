@@ -7,7 +7,6 @@
 #include "LoginDlg.h"
 #include "resource.h"
 
-#include "test-unit.h"
 
 #define __TRACE_INFO__ 0
 #if (__TRACE_INFO__)
@@ -177,7 +176,7 @@ int CTickDataView::OnCommand(WORD nCmdId, WORD /*nSource*/, HWND /*hwnd*/)
         ShowAnalystView(this);
         break;
     case ID_TEST_SUMMER:
-        test_generate_glyph_tree(_hwnd);
+        //test_generate_glyph_tree(_hwnd);
         break;
 	}
 

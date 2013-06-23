@@ -2,7 +2,7 @@
 #include "warmgui_incs.h"
 
 POINT     pntZero  = {0, 0};
-MATRIX_2D idmatrix = D2D1::Matrix3x2F::Identity();
+static MATRIX_2D idmatrix = D2D1::Matrix3x2F::Identity();
 
 namespace WARMGUI {
 

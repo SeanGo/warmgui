@@ -204,5 +204,9 @@ const int GLYPH_CHANGED_CANVAS_BKG     = 0x008;  ///the background of canvas  wa
 const int GLYPH_CHANGED_GLYPH_BKG      = 0x010;  ///the background of glyph   was changed
 const int GLYPH_CHANGED_CHANGED        = 0x020;  ///the glyph was changed, N/A for atelier and canvas
 
+#define BGR(b,g,r) ((COLORREF)(((BYTE)(b)|((WORD)((BYTE)(g))<<8))|(((DWORD)(BYTE)(r))<<16)))
+
+const RECT zero_rect = {0, 0, 0, 0};
+
 
 #endif //__warmgui_type_summer_h__

@@ -18,25 +18,37 @@ public:
 	bool                   IsWindowSizing() { return _sizing; }
     inline HRESULT         Draw();
 
-protected:
-    HWND                      _hwnd;
-	ID2D1HwndRenderTarget* _pHwndRT;    ///HwndRT of the window
-    ILayout_summer*         _layout;
+    inline virtual void    set_rect(RECT& rect);
 
-	AppBitmap_summer        _appbmp;    ///bitmap of materies and background of all
-	bool                    _sizing;    ///the windows is re-sizing
+    inline bool            GetBitmapMaterial();
+    inline bool            GetMyBackgroundRect();
+    inline void            GetWinrectInMaterial(RECT& canvas_rect, RECT_f* bmprect);
+
+    virtual void           disposal(RECT& rect) {}
+    HWND                   get_hwnd() { return _hwnd; }
+    inline void            redraw_window();
+
+    void                   ToggleToolbar(const char* toolbar_name = "toolbar");
+
+protected:
+    HWND                   _hwnd;
+	ID2D1HwndRenderTarget* _pHwndRT;    ///HwndRT of the window
+
+	AppBitmap_summer       _appbmp;    ///bitmap of materies and background of all
+	bool                   _sizing;    ///the windows is re-sizing
 
     inline HRESULT         DrawBkg();
     inline HRESULT         DrawGraph();
 
-    inline HRESULT         copy_bkg_to_bitmap();
-    inline HRESULT         draw_bkg_bitmap();
     inline HRESULT         copy_screen_to_bitmap();
     inline HRESULT         draw_screen_bitmap();
 
+    RECT                   _winrect_in_material;    ///the window-rect in material-bitmap
 private:
     void setClass() { SetMyClass("IAtelier_summer"); }
 };
+
+
 
 } //namespace WARMGUI
 
