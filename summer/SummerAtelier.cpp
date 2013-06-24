@@ -1,6 +1,7 @@
 #include "StdAfx.h"
 #include "warmgui_summer.h"
 #include "SummerApp.h"
+#include "TestSummerCanvas.h"
 #include "SummerAtelier.h"
 
 extern CSummerApp the_app;
@@ -8,6 +9,7 @@ extern CSummerApp the_app;
 CSummerAtelier::CSummerAtelier(void)
     : _bkg_canvas(0)
     , _toolbar(0)
+    , _ts_canvas(0)
 {
     strcpy_s(_name, MAX_PATH, "CSummerAtelier");
 }
@@ -17,6 +19,7 @@ CSummerAtelier::CSummerAtelier(const char* name)
     : WARMGUI::IAtelier_summer(name)
     , _bkg_canvas(0)
     , _toolbar(0)
+    , _ts_canvas(0)
 {
 }
 
@@ -45,6 +48,10 @@ HRESULT CSummerAtelier::init(HWND hwnd)
     append_canvas(_bkg_canvas);
     _bkg_canvas->init();
 
+    _ts_canvas = new CTestSummerCanvas("summer-canvas");
+    append_canvas(_ts_canvas);
+    _ts_canvas->init();
+
     _toolbar = new WARMGUI::CToolbar_summer("toolbar");
     append_canvas(_toolbar);
     _toolbar->init();
@@ -56,6 +63,9 @@ void CSummerAtelier::disposal(RECT& rect)
 {
     if (_bkg_canvas)
         _bkg_canvas->set_rect(rect);
+
+    if (_ts_canvas)
+        _ts_canvas->set_rect(rect);
 
     if (_toolbar)
         _toolbar->set_rect(rect);

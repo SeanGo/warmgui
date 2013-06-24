@@ -59,6 +59,13 @@ typedef ID2D1Bitmap       WGBitmap;
 typedef D2D1_SIZE_F       SIZE_f;
 typedef D2D1_COLOR_F      COLORALPHA;
 
+/*
+typedef struct POINTF {
+    float x;
+    float y;
+} POINTF;
+*/
+
 typedef RECT              MARGIN;
 typedef RECT         RULER_WIDTH;
 typedef unsigned int    uint32_t;
@@ -204,9 +211,55 @@ const int GLYPH_CHANGED_CANVAS_BKG     = 0x008;  ///the background of canvas  wa
 const int GLYPH_CHANGED_GLYPH_BKG      = 0x010;  ///the background of glyph   was changed
 const int GLYPH_CHANGED_CHANGED        = 0x020;  ///the glyph was changed, N/A for atelier and canvas
 
+
+
 #define BGR(b,g,r) ((COLORREF)(((BYTE)(b)|((WORD)((BYTE)(g))<<8))|(((DWORD)(BYTE)(r))<<16)))
 
 const RECT zero_rect = {0, 0, 0, 0};
 
+typedef void* dataptr;
 
+
+typedef struct DATA_POINTS {
+    POINTF*  _points;
+    size_t _buf_size;
+    size_t    _count;
+
+    DATA_POINTS() : _points(0), _buf_size(0), _count(0) {}
+    ~DATA_POINTS() {
+        SafeDelete(_points);
+    }
+
+    void set_size(size_t bufsize) {
+        SafeDelete(_points);
+        _count = 0, _buf_size = bufsize;
+
+        _points = new POINTF[_buf_size];
+    }
+
+    void reset() {
+        _count = 0 ;
+
+        if (_points)
+            memset(_points, 0, sizeof(POINTF) * _buf_size);
+        else
+            _buf_size = 0;
+    }
+
+    bool add_data(float x, float y) {
+        if (_count < _buf_size) {
+            _points[_count].x = x, _points[_count++].y = y;
+        } else {
+            memmove(_points, _points + 1, (_count - 1) * sizeof(POINTF));
+            _points[_count - 1].x = x, _points[_count - 1].y = y;
+        }
+        return true;
+    }
+} DATA_POINTS;
+
+typedef struct DOUBLE_DATA_POINTER {
+    double* x;
+    double* y;
+    size_t  count;
+} DOUBLE_DATA_POINTER;
 #endif //__warmgui_type_summer_h__

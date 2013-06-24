@@ -15,6 +15,7 @@ private:
 
     WARMGUI::CBkgCanvas_summer* _bkg_canvas;
     WARMGUI::CToolbar_summer*   _toolbar;
+    CTestSummerCanvas*          _ts_canvas;
 };
 
 #endif //__summer_atelier__

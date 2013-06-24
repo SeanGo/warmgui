@@ -37,11 +37,9 @@
 #include "World.h"
 
 #include "Glyph_summer.h"
+#include "DataGraph_summer.h"
 #include "Canvas_summer.h"
-
 #include "Toolbar_summer.h"
-
-
 #include "Atelier_summer.h"
 
 

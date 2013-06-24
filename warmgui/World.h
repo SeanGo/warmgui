@@ -2,6 +2,13 @@
 #define __warmgui_reference_frame_h_include__
 
 
+typedef int WORLD_CHANGED_TYPE;
+const int WORLD_CHANGED_TYPE_NONE  = 0x00;
+const int WORLD_CHANGED_TYPE_MAX_X = 0x01;
+const int WORLD_CHANGED_TYPE_MIN_X = 0x02;
+const int WORLD_CHANGED_TYPE_MAX_Y = 0x04;
+const int WORLD_CHANGED_TYPE_MIN_Y = 0x08;
+
 namespace WARMGUI {
 
 
@@ -57,27 +64,32 @@ public:
     inline void         RenewYLimit(float x, float y);
     inline void         reset_zeor_world(float x0, float y0);
     inline void         fresh_y_limit(float x, float y);
+
+    inline WORLD_CHANGED_TYPE fresh_limit(float x, float y);
+    inline WORLD_CHANGED_TYPE get_world_change() { return _world_changed; }
+
+    float               get_x_left() { return _transform._11 * _x_left; }
 protected:
 	inline virtual void SetScale();
 
-	MATRIX_2D     _transform;   ///the matrix of transform
+	MATRIX_2D          _transform;   ///the matrix of transform
 	RECT               _rect;   ///the rectagle on screen
 
     inline  void        real_world_to_screen();
-
+    WORLD_CHANGED_TYPE  _world_changed;
 public:
     ///get from aCCartesian instance
-    WORLD_RECT          _real_world; ///the init-world
-    WORLD_RECT          _zero_world; ///the init-world
-	WORLD_RECT           _bak_world; ///the world of background
-    ValueIncrease               _vi;
+    WORLD_RECT         _real_world; ///the init-world
+    WORLD_RECT         _zero_world; ///the init-world
+	WORLD_RECT         _bak_world; ///the world of background
+    ValueIncrease      _vi;
 
 
 protected:
     CWarmguiConfig*   _config;
     char   _strconf[MAX_PATH];
     char      _name[MAX_PATH];
-
+    float     _x_left;
 };
 
 

@@ -97,6 +97,7 @@
     <ClInclude Include="DataLineChart.h" />
     <ClInclude Include="Atelier_summer.h" />
     <ClInclude Include="Glyph_summer.h" />
+    <ClInclude Include="DataGraph_summer.h" />
     <ClInclude Include="Toolbar_summer.h" />
     <ClInclude Include="warmgui_summer.h" />
     <ClInclude Include="warmgui_type_summer.h" />
@@ -140,6 +141,7 @@
     <ClCompile Include="Atelier_summer.cpp" />
     <ClCompile Include="Glyph_summer.cpp" />
     <ClCompile Include="Canvas_summer.cpp" />
+    <ClCompile Include="DataGraph_summer.cpp" />
     <ClCompile Include="Toolbar_summer.cpp" />
     <ClCompile Include="World.cpp" />
     <ClCompile Include="DataDispatcher.cpp" />

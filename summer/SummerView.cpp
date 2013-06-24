@@ -1,5 +1,6 @@
 #include "StdAfx.h"
 #include "warmgui_summer.h"
+#include "TestSummerCanvas.h"
 #include "SummerAtelier.h"
 #include "SummerView.h"
 

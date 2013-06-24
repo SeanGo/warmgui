@@ -7,6 +7,7 @@ namespace WARMGUI {
 /// class CWorld
 inline CWorld::CWorld()
 	: _transform(D2D1::Matrix3x2F::Identity())
+    , _x_left(0)
 {
 	memset(&_rect , 0, sizeof(RECT));
     *_name = 0;
@@ -105,6 +106,31 @@ inline void CWorld::fresh_y_limit(float x, float y)
         _bak_world = _real_world;
 	    SetScale();
     }
+}
+
+inline WORLD_CHANGED_TYPE CWorld::fresh_limit(float x, float y)
+{
+    _world_changed = WORLD_CHANGED_TYPE_NONE;
+    _x_left = 0.0f;
+    if (y > _real_world.maxy)
+        _real_world.maxpos = x, _real_world.maxy = y, _world_changed |= WORLD_CHANGED_TYPE_MAX_Y;
+    if (y < _real_world.miny)
+        _real_world.minpos = x, _real_world.miny = y, _world_changed |= WORLD_CHANGED_TYPE_MIN_Y;
+    if (!_vi._b_fix_width && _real_world.xn < x)
+        _real_world.xn = x, _real_world.yn = y, _world_changed |= WORLD_CHANGED_TYPE_MAX_X;
+    if (_world_changed & WORLD_CHANGED_TYPE_MAX_X)
+        if (_vi._b_fix_width)
+            _x_left = _real_world.xn - _vi._init_width - _real_world.x0,
+                _real_world.x0 = _real_world.xn - _vi._init_width,
+                _world_changed |= WORLD_CHANGED_TYPE_MIN_X;
+
+    if (_world_changed) {
+        real_world_to_screen();
+        _bak_world = _real_world;
+	    SetScale();
+    }
+
+    return _world_changed;
 }
 
 inline void CWorld::ChangeYlimit(float miny, float maxy, float y0)
