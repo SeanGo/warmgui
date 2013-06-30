@@ -5,7 +5,10 @@
 
 
 CSummerApp::CSummerApp(void)
-    : dispatcher(0)
+    : dispatcher_1(0)
+    , dispatcher_2(0)
+    , dispatcher_3(0)
+    , dispatcher_4(0)
 {
 
 }
@@ -13,7 +16,10 @@ CSummerApp::CSummerApp(void)
 
 CSummerApp::~CSummerApp(void)
 {
-    SafeDelete(dispatcher);
+    SafeDelete(dispatcher_1);
+    SafeDelete(dispatcher_2);
+    SafeDelete(dispatcher_3);
+    SafeDelete(dispatcher_4);
 }
 
 int CSummerApp::InitialApp(HINSTANCE hInstance, int nCmdShow)
@@ -34,18 +40,41 @@ int CSummerApp::InitialApp(HINSTANCE hInstance, int nCmdShow)
 	if (!factorys)
 		return (-3);
 
-    dispatcher = new CTestDispatcher_summer("ok");
+    dispatcher_1 = new CTestDispatcher_summer("ok1", 1);
+    dispatcher_2 = new CTestDispatcher_summer("ok2", 2);
+    dispatcher_3 = new CTestDispatcher_summer("ok3", 3);
+    dispatcher_4 = new CTestDispatcher_summer("ok4", 4);
+
 	return (0);
 }
 
 
 void CSummerApp::CleanupApp()
 {
-    dispatcher->stop();
+    dispatcher_1->stop();
+    dispatcher_2->stop();
+    dispatcher_3->stop();
+    dispatcher_4->stop();
 
     Sleep(1000);
 
 	WARMGUI::CDxFactorys::GetInstance()->ReleaseResource();
 	CWndApp::CleanupApp();
+}
+
+void CSummerApp::regester_graph(WARMGUI::IDataGraph_summer* graph)
+{
+    dispatcher_1->reg_data_graph(graph);
+    dispatcher_2->reg_data_graph(graph);
+    dispatcher_3->reg_data_graph(graph);
+    dispatcher_4->reg_data_graph(graph);
+}
+
+void CSummerApp::dispathcer_start()
+{
+    dispatcher_4->start();
+    dispatcher_3->start();
+    dispatcher_2->start();
+    dispatcher_1->start();
 }
 

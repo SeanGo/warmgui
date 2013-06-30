@@ -10,9 +10,14 @@ public:
 	virtual int InitialApp(HINSTANCE hInstance, int nCmdShow);
 	virtual void CleanupApp();
 
-    CTestDispatcher_summer* get_test_dispatcher() { return dispatcher; }
+    void regester_graph(WARMGUI::IDataGraph_summer* graph);
+    void dispathcer_start();
+
 protected:
-    CTestDispatcher_summer* dispatcher;
+    CTestDispatcher_summer* dispatcher_1;
+    CTestDispatcher_summer* dispatcher_2;
+    CTestDispatcher_summer* dispatcher_3;
+    CTestDispatcher_summer* dispatcher_4;
 };
 
 extern CSummerApp the_app;

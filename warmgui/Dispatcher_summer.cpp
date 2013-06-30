@@ -28,4 +28,18 @@ inline void IDispatcher_summer::dispatch_data(DataObjectPtr dop)
         _atelier_array[i]->redraw_window(false);
 }
 
+
+inline void IDispatcher_summer::register_atelier(IAtelier_summer* as)
+{
+    bool found = false;
+    for (int i = 0; i < _atelier_array.size(); i++) {
+        if (as == _atelier_array[i]) {
+            found = true;
+            break;
+        }
+    }
+    if (!found)
+        _atelier_array.push_back(as);
+}
+
 } //namespace WARMGUI {

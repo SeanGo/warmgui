@@ -105,6 +105,8 @@ public:
     virtual bool           is_interior(int x, int y) { return false; }
     //for mouse
 
+    IAtelier_summer*       get_atelier() { return _atelier; }
+    ICanvas_summer*        get_canvas()  { return _canvas;  }
 protected:
 
     HRESULT                draw_graph(bool redraw_all = false, GLYPH_TYPE glyph_type =IGlyph_summer::GLYPH_TYPE_GLYPH);

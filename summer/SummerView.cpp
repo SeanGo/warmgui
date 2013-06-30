@@ -86,7 +86,7 @@ int CSummerView::OnCommand(WORD nCmdId, WORD /*nSource*/, HWND /*hwnd*/)
 
 void CSummerView::OnRButtonUp(UINT, int x, int y)
 {
-    the_app.get_test_dispatcher()->start();
+    the_app.dispathcer_start();
 }
 
 

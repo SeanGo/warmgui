@@ -21,7 +21,7 @@ public:
 		}
 	}
 
-    inline void  reg_data_graph(IDataGraph_summer* dg)   { _dgraph.push_back(dg); }
+    inline void  reg_data_graph(IDataGraph_summer* dg)   { register_atelier(dg->get_atelier()); _dgraph.push_back(dg); }
     inline void  reg_calculator(ICalculator_summer* cal)     {_cals.push_back(cal);}
 
     //inline void  remove_dc(IDataContainer* dc);
@@ -52,8 +52,8 @@ public:
     inline void  dispatch_data(DataObjectPtr dop);
 
     AtelierArray_summer& get_atlier_array() {return _atelier_array;}
-    void register_atelier(IAtelier_summer* as) { _atelier_array.push_back(as); }
-    void remove_hwnd(IAtelier_summer* as) { 
+    void register_atelier(IAtelier_summer* as);
+    void remove_atelier(IAtelier_summer* as) { 
         for (AtelierConstIter_summer iter = _atelier_array.begin(); iter != _atelier_array.end(); iter++) {
             if ((*iter) == as) {
                 _atelier_array.erase(iter);

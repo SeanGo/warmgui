@@ -96,7 +96,7 @@ HRESULT CTestSummerCanvas::init()
     if (_curve_2) _curve_2->update(&pset2);
     */
 
-    the_app.get_test_dispatcher()->reg_data_graph(_curve_3);
+    the_app.regester_graph(_curve_3);
     //the_app.get_test_dispatcher()->reg_data_graph(_curve_4);
 
     return S_OK;

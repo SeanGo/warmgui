@@ -137,6 +137,7 @@ GLYPH_CHANGED_TYPE CCurveGraph_summer::update(dataptr data)
 
         //add data to data-point-set
         _points.add_data(((POINTF*)data)->x, ((POINTF*)data)->y);
+        MYTRACE(L"Update Data %.02f, %.02f\n", ((POINTF*)data)->x, ((POINTF*)data)->y);
 
         if (_my_own_artist) {
             draw_new_point();

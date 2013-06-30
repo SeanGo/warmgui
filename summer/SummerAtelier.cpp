@@ -56,8 +56,6 @@ HRESULT CSummerAtelier::init(HWND hwnd)
     append_canvas(_toolbar);
     _toolbar->init();
 
-    the_app.get_test_dispatcher()->register_atelier(this);
-
     return hr;
 }
 

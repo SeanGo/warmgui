@@ -81,7 +81,9 @@
     <None Include="ReadMe.txt" />
     <None Include="small.ico" />
     <None Include="summer.ico" />
-    <None Include="summer.xml" />
+    <None Include="summer.xml">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resource.h" />

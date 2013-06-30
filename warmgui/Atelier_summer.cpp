@@ -225,8 +225,8 @@ inline void IAtelier_summer::ToggleToolbar(const char* toolbar_name/* = "toolbar
 inline void IAtelier_summer::redraw_window(bool all_redraw/* = false*/)
 {
     //if (all_redraw)
-    //    change(GLYPH_CHANGED_ATELIER_RESIZE);
-
+    change(GLYPH_CHANGED_ATELIER_RESIZE);
+    MYTRACE(L"redraw window\n");
     PostMessage(_hwnd, WM_WINDOWS_REDRAW, (WPARAM)&_abs_rect, all_redraw);
 }
 
