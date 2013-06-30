@@ -1,7 +1,6 @@
 #include "StdAfx.h"
 #include "warmgui.h"
 #include "pocoinc.h"
-#include "clicomm.h"
 
 
 namespace WARMGUI {

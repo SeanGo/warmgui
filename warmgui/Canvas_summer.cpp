@@ -5,6 +5,8 @@ namespace WARMGUI {
 ICanvas_summer::ICanvas_summer()
     : _atelier(0)
     , _appbmp(0)
+    , _canvas_bmp(0)
+    , _mouse_graph(0)
 {
 }
 
@@ -12,11 +14,15 @@ ICanvas_summer::ICanvas_summer(const char* name)
     : IGlyph_summer(name)
     , _atelier(0)
     , _appbmp(0)
+    , _canvas_bmp(0)
+    , _mouse_graph(0)
 {
 }
 
 ICanvas_summer::~ICanvas_summer()
 {
+    SafeRelease(&_canvas_bmp);
+    SafeDelete(_mouse_graph);
 }
 
 inline void ICanvas_summer::append_glyph(IGlyph_summer* glyph)
@@ -40,8 +46,7 @@ inline void  ICanvas_summer::inherit(
     _config = config,
     _appbmp = appbmp;
 
-    if (_atelier)
-        _snprintf_s(_str_conf, MAX_PATH, _TRUNCATE, "%s.canvas-%s", _atelier->get_config_str(), _name);
+    inherit_config_string();
 }
 
 HRESULT ICanvas_summer::init()

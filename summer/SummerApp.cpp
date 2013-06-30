@@ -1,15 +1,19 @@
 #include "StdAfx.h"
 #include "warmgui_summer.h"
+#include "TestDispatcher_summer.h"
 #include "SummerApp.h"
 
 
 CSummerApp::CSummerApp(void)
+    : dispatcher(0)
 {
+
 }
 
 
 CSummerApp::~CSummerApp(void)
 {
+    SafeDelete(dispatcher);
 }
 
 int CSummerApp::InitialApp(HINSTANCE hInstance, int nCmdShow)
@@ -30,12 +34,17 @@ int CSummerApp::InitialApp(HINSTANCE hInstance, int nCmdShow)
 	if (!factorys)
 		return (-3);
 
+    dispatcher = new CTestDispatcher_summer("ok");
 	return (0);
 }
 
 
 void CSummerApp::CleanupApp()
 {
+    dispatcher->stop();
+
+    Sleep(1000);
+
 	WARMGUI::CDxFactorys::GetInstance()->ReleaseResource();
 	CWndApp::CleanupApp();
 }

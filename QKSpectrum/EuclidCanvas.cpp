@@ -130,7 +130,7 @@ void CEuclidCanvas::SetGlyphRect()
     }
 
     if (_data_cont) {
-       NewDataForCtpmmd(_data_cont, DataObject::MARKET_DATA_TYPE_CTPMMD);
+       NewDataForCtpmmd(_data_cont, MARKET_DATA_TYPE_CTPMMD);
        _changed_type = (GLYPH_CHANGED_TYPE)((int)_changed_type | (int)GLYPH_CHANGED_TYPE_CHANGED | (int)GLYPH_CHANGED_TYPE_COORDFRAME);
     }
 }
@@ -316,7 +316,7 @@ GLYPH_CHANGED_TYPE CEuclidCanvas::NewData(IDataContainer* data_cont, DataObject:
     _data_cont = (CCtpmmdContainer*)data_cont;
     //MYTRACE(L"CEuclidCanvas::NewData\n");
     _changed_type = GLYPH_CHANGED_TYPE_NONE;
-    if (datatype == DataObject::MARKET_DATA_TYPE_CTPMMD) {
+    if (datatype == MARKET_DATA_TYPE_CTPMMD) {
         //MYTRACE(L"CEuclidCanvas::NewData - 2\n");
 #       ifdef _DEBUG
         //if (!((((CCtpmmdContainer*)data_cont)->getCount()) % 300)) {

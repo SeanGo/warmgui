@@ -6,9 +6,9 @@ namespace WARMGUI {
 class WARMGUI_API IAtelier_summer : public IGlyph_summer
 {
 public:
-    IAtelier_summer(void);
-    IAtelier_summer(const char* name);
-    ~IAtelier_summer(void);
+                           IAtelier_summer(void);
+                           IAtelier_summer(const char* name);
+    virtual               ~IAtelier_summer(void);
 
     inline virtual HRESULT init(HWND hwnd);
     inline void            append_canvas(ICanvas_summer* canvas);
@@ -26,7 +26,7 @@ public:
 
     virtual void           disposal(RECT& rect) {}
     HWND                   get_hwnd() { return _hwnd; }
-    inline void            redraw_window();
+    inline void            redraw_window(bool all_redraw = false);
 
     void                   ToggleToolbar(const char* toolbar_name = "toolbar");
 
@@ -49,6 +49,10 @@ private:
 };
 
 
+EXPORT_STL_VECTOR(WARMGUI_API, IAtelier_summer*)
+typedef std::vector<IAtelier_summer*> AtelierArray_summer;
+typedef AtelierArray_summer::iterator AtelierIter_summer;
+typedef AtelierArray_summer::const_iterator AtelierConstIter_summer;
 
 } //namespace WARMGUI
 

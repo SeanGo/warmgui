@@ -12,7 +12,7 @@ bool CCtpmmdContainer::NewData(DataObjectPtr dop)
     char* buf = (char*)dop->GetData();
     size_t len = dop->GetDataLength();
 
-    if ((DataObject::MARKET_DATA_TYPE)(*(int*)buf) == DataObject::MARKET_DATA_TYPE_CTPMMD) {
+    if ((DataObject::MARKET_DATA_TYPE)(*(int*)buf) == MARKET_DATA_TYPE_CTPMMD) {
         buf += sizeof(int), len -= sizeof(int);
         CTPMMD* ctpmmd = (CTPMMD*)buf;
 

@@ -3,6 +3,7 @@
 #include "TestSummerCanvas.h"
 #include "SummerAtelier.h"
 #include "SummerView.h"
+#include "TestDispatcher_summer.h"
 #include "SummerApp.h"
 
 CSummerApp the_app;

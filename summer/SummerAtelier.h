@@ -10,6 +10,8 @@ public:
 
     virtual HRESULT init(HWND hwnd);
     virtual void    disposal(RECT& rect);
+    void draw_time_series();
+    void Changed(GLYPH_CHANGED_TYPE change_type);
 private:
     void SetClass() { SetMyClass("CSummerAtelier"); }
 

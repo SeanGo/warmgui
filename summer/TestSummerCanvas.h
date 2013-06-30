@@ -9,10 +9,15 @@ public:
     ~CTestSummerCanvas(void);
 
     virtual HRESULT init();
+    void            draw_time_series();
+    void            set_rect(RECT& rect);
 
 protected:
     WARMGUI::CCurveGraph_summer* _curve_1;
     WARMGUI::CCurveGraph_summer* _curve_2;
+    WARMGUI::CCurveGraph_summer* _curve_3;
+    WARMGUI::CCurveGraph_summer* _curve_4;
+
     WARMGUI::CBlind_summer*      _blind;
 
 private:

@@ -1,10 +1,10 @@
 #include "StdAfx.h"
 #include "warmgui_summer.h"
+#include "TestDispatcher_summer.h"
 #include "SummerApp.h"
 #include "TestSummerCanvas.h"
 #include "SummerAtelier.h"
 
-extern CSummerApp the_app;
 
 CSummerAtelier::CSummerAtelier(void)
     : _bkg_canvas(0)
@@ -44,20 +44,38 @@ HRESULT CSummerAtelier::init(HWND hwnd)
             hr = -4;
 
 
-    _bkg_canvas = new WARMGUI::CBkgCanvas_summer("bkg-canvas");
+    _bkg_canvas = new WARMGUI::CBkgCanvas_summer("canvas-bkg");
     append_canvas(_bkg_canvas);
     _bkg_canvas->init();
 
-    _ts_canvas = new CTestSummerCanvas("summer-canvas");
+    _ts_canvas = new CTestSummerCanvas("canvas-summer");
     append_canvas(_ts_canvas);
     _ts_canvas->init();
 
-    _toolbar = new WARMGUI::CToolbar_summer("toolbar");
+    _toolbar = new WARMGUI::CToolbar_summer("canvas-toolbar");
     append_canvas(_toolbar);
     _toolbar->init();
+
+    the_app.get_test_dispatcher()->register_atelier(this);
+
     return hr;
 }
 
+
+
+DWORD WINAPI draw_time_series(LPVOID param)
+{
+    if (param)
+        ((CTestSummerCanvas*)param)->draw_time_series();
+    return (0);
+}
+
+void CSummerAtelier::draw_time_series()
+{
+    DWORD id_thread;
+
+    CreateThread(0, 0, ::draw_time_series, _ts_canvas, 0, &id_thread);
+}
 
 void CSummerAtelier::disposal(RECT& rect)
 {
@@ -69,4 +87,9 @@ void CSummerAtelier::disposal(RECT& rect)
 
     if (_toolbar)
         _toolbar->set_rect(rect);
+}
+
+void CSummerAtelier::Changed(GLYPH_CHANGED_TYPE change_type)
+{
+    _changed |= change_type;
 }

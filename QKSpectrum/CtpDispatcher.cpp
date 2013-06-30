@@ -83,9 +83,9 @@ bool CCtpDispatcher::IGotANewData(MyMarketData* mmd)
     ctpmmd.relInterest = ctpmmd.OpenInterest - _prev_interest;
     _prev_volume = ctpmmd.Volume, _prev_interest = ctpmmd.OpenInterest;
 
-    DataObject data(sizeof(CTPMMD) + sizeof(int), DataObject::MARKET_DATA_TYPE_CTPMMD);
+    DataObject data(sizeof(CTPMMD) + sizeof(int), MARKET_DATA_TYPE_CTPMMD);
     char* buf = (char*)data.GetData();
-    *(int*)buf = (int)DataObject::MARKET_DATA_TYPE_CTPMMD;
+    *(int*)buf = (int)MARKET_DATA_TYPE_CTPMMD;
     memcpy(buf + sizeof(int), &ctpmmd, sizeof(CTPMMD));
     
     //CTPMMD* pmmd = (CTPMMD*)(buf+sizeof(int));

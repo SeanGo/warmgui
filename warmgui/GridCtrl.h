@@ -170,7 +170,7 @@ public:
     // Generated message map functions
     //{{AFX_MSG(CGridCtrl)
     virtual void               OnPaint() {}
-    virtual GLYPH_CHANGED_TYPE NewData(IDataContainer* data_cont, DataObject::MARKET_DATA_TYPE datatype) { return GLYPH_CHANGED_TYPE_NONE; }
+    virtual GLYPH_CHANGED_TYPE NewData(IDataContainer* data_cont, MARKET_DATA_TYPE datatype) { return GLYPH_CHANGED_TYPE_NONE; }
     virtual void            OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar) {}
     virtual void            OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar) {}
     virtual void            OnSize(UINT nType, int cx, int cy) {}

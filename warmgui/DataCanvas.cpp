@@ -59,7 +59,7 @@ void IDataCanvas::SetGlyphRect()
     //MYTRACE(L"IDataCanvas::price %d %d %d %d\n", tmp.left, tmp.top, tmp.right, tmp.bottom);
 }
 
-GLYPH_CHANGED_TYPE IDataCanvas::NewData(IDataContainer* dataa_cont, DataObject::MARKET_DATA_TYPE /*datatype*/)
+GLYPH_CHANGED_TYPE IDataCanvas::NewData(IDataContainer* dataa_cont, MARKET_DATA_TYPE /*datatype*/)
 {
     GLYPH_CHANGED_TYPE changed = GLYPH_CHANGED_TYPE_NONE;
     return changed;

@@ -36,11 +36,14 @@
 #include "Artist.h"
 #include "World.h"
 
+#include "IInputResponse.h"
 #include "Glyph_summer.h"
 #include "DataGraph_summer.h"
 #include "Canvas_summer.h"
 #include "Toolbar_summer.h"
 #include "Atelier_summer.h"
 
+#include "Calculator_summer.h"
+#include "Dispatcher_summer.h"
 
 #endif //__warmgui_summer_h_include__

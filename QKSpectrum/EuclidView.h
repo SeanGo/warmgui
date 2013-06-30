@@ -20,7 +20,6 @@ public:
 
 	msgfun  void OnMouseMove(UINT nFlags, int x, int y);
 	msgfun  int  OnCommand(WORD nCmdId, WORD nSource, HWND hwnd);
-
     msgfun  int  OnMessage(UINT message, WPARAM wParam, LPARAM lParam);
 
 	//msgfun int  OnRenewBitmap(ICanvas * canvas);

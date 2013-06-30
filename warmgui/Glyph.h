@@ -393,7 +393,7 @@ public:
     virtual                   ~IDataGraph ()
                                { if (_world_own_type == true) SafeDelete(this->_referframe); }
 
-    virtual GLYPH_CHANGED_TYPE NewData(IDataContainer* data_cont, DataObject::MARKET_DATA_TYPE datatype) = 0;
+    virtual GLYPH_CHANGED_TYPE NewData(IDataContainer* data_cont, MARKET_DATA_TYPE datatype) = 0;
     virtual bool               RenewData()    { return true; }
     virtual bool               process_data() { return true; }
 
@@ -431,7 +431,7 @@ public:
     void                       setWorld(const CWorld* cart) {_referframe = (CWorld*)cart;}
     CWorld*                    getWorld() { return _referframe; }
     virtual GLYPH_CHANGED_TYPE NewData(DataObjectPtr dop) { return GLYPH_CHANGED_TYPE_NONE;}
-    virtual GLYPH_CHANGED_TYPE NewData(dataptr pdata, DataObject::MARKET_DATA_TYPE datatype) { return GLYPH_CHANGED_TYPE_NONE;}
+    virtual GLYPH_CHANGED_TYPE NewData(dataptr pdata, MARKET_DATA_TYPE datatype) { return GLYPH_CHANGED_TYPE_NONE;}
     const   char*              getContainerName() {return _my_cont;}
     const   char*              getName() {return _name;}
 

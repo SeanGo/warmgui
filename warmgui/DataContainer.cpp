@@ -97,7 +97,7 @@ inline void IDataContainer::RegisterDataGraph(IDataGraph* graph)
 GLYPH_CHANGED_TYPE IDataContainer::AddData(DataObjectPtr dop)
 {
     GLYPH_CHANGED_TYPE change = GLYPH_CHANGED_TYPE_NONE;
-    DataObject::MARKET_DATA_TYPE datatype = (DataObject::MARKET_DATA_TYPE)*(int*)(dop->GetData());
+    MARKET_DATA_TYPE datatype = (MARKET_DATA_TYPE)*(int*)(dop->GetData());
 
     if (NewData(dop)) {
         //TCHAR name[MAX_PATH];

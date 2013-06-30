@@ -304,7 +304,7 @@ inline HRESULT CCoordFrame::Init()
 
 
 
-inline GLYPH_CHANGED_TYPE CCoordFrame::NewData(IDataContainer* data_cont, DataObject::MARKET_DATA_TYPE datatype)
+inline GLYPH_CHANGED_TYPE CCoordFrame::NewData(IDataContainer* data_cont, MARKET_DATA_TYPE datatype)
 {
     /*
     WORLD_RECT* wr = _dc->getWorldByName(_data_name);

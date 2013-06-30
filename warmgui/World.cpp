@@ -51,6 +51,7 @@ bool CWorld::setConfig(CWarmguiConfig* config, const char* config_str)
 inline void CWorld::SetRectSize(RECT& rect)
 {
 	_rect.right = RectWidth(rect), _rect.bottom = RectHeight(rect), _rect.left = _rect.top = 0;
+    //_rect = rect;
 	SetScale();
 }
 
@@ -119,7 +120,7 @@ inline WORLD_CHANGED_TYPE CWorld::fresh_limit(float x, float y)
     if (!_vi._b_fix_width && _real_world.xn < x)
         _real_world.xn = x, _real_world.yn = y, _world_changed |= WORLD_CHANGED_TYPE_MAX_X;
     if (_world_changed & WORLD_CHANGED_TYPE_MAX_X)
-        if (_vi._b_fix_width)
+        if (!_vi._b_fix_width)
             _x_left = _real_world.xn - _vi._init_width - _real_world.x0,
                 _real_world.x0 = _real_world.xn - _vi._init_width,
                 _world_changed |= WORLD_CHANGED_TYPE_MIN_X;
@@ -180,9 +181,8 @@ inline void CWorld::SetScale()
     _transform = D2D1::Matrix3x2F(
                              xs,   0,
                               0, -ys,
-          - _real_world.x0 * xs, _real_world.miny * ys + (float)_rect.bottom);
-
-
+          - _real_world.x0 * xs, _real_world.miny * ys + (float)(_rect.bottom));
+  
 	/*
 	DEBUG_TRACE(L"\n\nCCartesian::SetScale\n");
 	DEBUG_TRACE(L"RECT %d, %d, %d, %d\n", _rect.left, _rect.top, _rect.right,  _rect.bottom);
@@ -251,12 +251,14 @@ void CWorld::ResetZoom()
 
 inline void CWorld::real_world_to_screen()
 {
+    /*
     if (_vi._breadth_type == DATA_BREADTH_TYPE_PERCENT)
         _real_world.miny = _real_world.miny * (1 - _vi._min_decres_mag),
         _real_world.maxy = _real_world.maxy * (1 + _vi._max_incres_mag);
     else if (_vi._breadth_type == DATA_BREADTH_TYPE_VALUE)
         _real_world.miny = _real_world.miny - _vi._min_decres_mag,
         _real_world.maxy = _real_world.maxy + _vi._max_incres_mag;
+    */
 }
 
 inline void CWorld::RenewByRealWorld()
@@ -279,6 +281,12 @@ inline void CWorld::reset_zeor_world(float x0, float y0)
 
     real_world_to_screen();
     _bak_world = _real_world;
+}
+
+
+inline float CWorld::get_x_left()
+{
+    return _transform._11 * _x_left;
 }
 
 } //namespace WARMGUI

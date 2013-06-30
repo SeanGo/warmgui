@@ -101,7 +101,7 @@ void CZitCanvas::SetGlyphRect()
     }
 
     if (_data_cont) {
-       NewDataForCtpmmd(_data_cont, DataObject::MARKET_DATA_TYPE_CTPMMD);
+       NewDataForCtpmmd(_data_cont, MARKET_DATA_TYPE_CTPMMD);
        _changed_type = (GLYPH_CHANGED_TYPE)((int)_changed_type | (int)GLYPH_CHANGED_TYPE_CHANGED | (int)GLYPH_CHANGED_TYPE_COORDFRAME);
     }
 }
@@ -192,7 +192,7 @@ GLYPH_CHANGED_TYPE CZitCanvas::NewData(IDataContainer* data_cont, DataObject::MA
     //return GLYPH_CHANGED_TYPE_NONE;
     //MYTRACE(L"CZitCanvas::NewData\n");
     _changed_type = GLYPH_CHANGED_TYPE_NONE;
-    if (datatype == DataObject::MARKET_DATA_TYPE_CTPMMD) {
+    if (datatype == MARKET_DATA_TYPE_CTPMMD) {
 #       ifdef _DEBUG
         //if (!((((CCtpmmdContainer*)data_cont)->getCount()) % 300)) {
         //    const CTPMMD* pctpmmd = ((CCtpmmdContainer*)data_cont)->getCurrentData();

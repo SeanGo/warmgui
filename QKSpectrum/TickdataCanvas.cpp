@@ -64,7 +64,7 @@ GLYPH_CHANGED_TYPE CTickdataCanvas::NewData(DataObjectPtr data)
 GLYPH_CHANGED_TYPE CTickdataCanvas::NewData(IDataContainer* data_cont, DataObject::MARKET_DATA_TYPE datatype)
 {
     _changed_type = GLYPH_CHANGED_TYPE_NONE;
-    if (datatype == DataObject::MARKET_DATA_TYPE_CTPMMD) {
+    if (datatype == MARKET_DATA_TYPE_CTPMMD) {
 #       ifdef _DEBUG
         //if (!((((CCtpmmdContainer*)data_cont)->getCount()) % 300)) {
         //    const CTPMMD* pctpmmd = ((CCtpmmdContainer*)data_cont)->getCurrentData();

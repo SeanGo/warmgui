@@ -10,6 +10,11 @@ public:
 	virtual int InitialApp(HINSTANCE hInstance, int nCmdShow);
 	virtual void CleanupApp();
 
+    CTestDispatcher_summer* get_test_dispatcher() { return dispatcher; }
+protected:
+    CTestDispatcher_summer* dispatcher;
 };
+
+extern CSummerApp the_app;
 
 #endif //__summer_application__

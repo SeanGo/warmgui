@@ -6,20 +6,23 @@ namespace WARMGUI {
 class IAtelier_summer;
 class WARMGUI_API ICanvas_summer : public IGlyph_summer {
 public:
-    ICanvas_summer();
-    ICanvas_summer(const char *name);
-    ~ICanvas_summer();
+                    ICanvas_summer();
+                    ICanvas_summer(const char *name);
+    virtual        ~ICanvas_summer();
 
     inline void     inherit(IAtelier_summer* atelier, CGlyphTree_summer* tree, GlyphTreeIter_summer& tree_iter, eArtist* artist, CWarmguiConfig* config, AppBitmap_summer* appbmp);
     virtual HRESULT init();
     inline  void    append_glyph(IGlyph_summer* glyph);
 
     void            set_appbitmap(AppBitmap_summer* appbmp) { _appbmp = appbmp; }
-
+    virtual HRESULT draw_mouse_graph() { if (_mouse_graph) return _mouse_graph->draw(); else return S_OK; }
 protected:
 	CSharedImage_summer* _imgBkg;
-	AppBitmap_summer*    _appbmp;    ///bitmap of materies and background of all
+	AppBitmap_summer*    _appbmp;      ///bitmap of materies and background of all
     IAtelier_summer*     _atelier;
+
+    WGBitmap*            _canvas_bmp;  ///graph of the canvas for redraw
+    CMouseGraph_summer*  _mouse_graph; ///grraph of the mouse trike
 private:
     void setClass() { SetMyClass("ICanvas_summer"); }
 };

@@ -68,7 +68,7 @@ public:
     inline WORLD_CHANGED_TYPE fresh_limit(float x, float y);
     inline WORLD_CHANGED_TYPE get_world_change() { return _world_changed; }
 
-    float               get_x_left() { return _transform._11 * _x_left; }
+    inline float        get_x_left();
 protected:
 	inline virtual void SetScale();
 

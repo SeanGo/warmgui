@@ -17,7 +17,7 @@ CEuclidCalculator::~CEuclidCalculator(void)
 
 int CEuclidCalculator::calculate(MSG msg)
 {
-    if ((DataObject::MARKET_DATA_TYPE)msg.lParam == DataObject::MARKET_DATA_TYPE_CTPMMD) {
+    if ((DataObject::MARKET_DATA_TYPE)msg.lParam == MARKET_DATA_TYPE_CTPMMD) {
         CCtpmmdContainer* cc = (CCtpmmdContainer*)msg.wParam;
         if (!cc)
             return (-1);

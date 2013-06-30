@@ -4,17 +4,51 @@
 		<bitmap_materials>e:/projects/bin/qks/media/qks-pics.png</bitmap_materials>
 		<mainwindow-bkgimg-rect>0, 0, 1920, 1080</mainwindow-bkgimg-rect>
 
-		<canvas-bkg-canvas>
+		<canvas-bkg>
 			<canvas-type>background-canvas</canvas-type>
 			<canvas-name>mainwindow-bkgimg</canvas-name>
 			<blind>false</blind>
 			<rect>0, 0, 1920, 1080</rect>
-		</canvas-bkg-canvas>
+		</canvas-bkg>
+		<canvas-summer>
+			<dataline-curve1>
+				<stroke-width>0.618</stroke-width>
+				<world>
+					<name>volume</name>
+					<world>0, 10, 200, 30, 0, 10, 200, 30</world>
+					<increase>0.0, 0.0, DATA_BREADTH_TYPE_VALUE, 200, 0, true</increase>
+				</world>>
+			</dataline-curve1>
+			<dataline-curve2>
+				<stroke-width>0.618</stroke-width>
+				<world>
+					<name>volume</name>
+					<world>0, 10, 2148, 30, 0,10, 2148, 30</world>
+					<increase>0.0, 0.0, DATA_BREADTH_TYPE_VALUE, 2148, 100, true</increase>
+				</world>>
+			</dataline-curve2>
+			<dataline-curve3>
+				<stroke-width>0.618</stroke-width>
+				<world>
+					<name>volume</name>
+					<world>0, 10, 10, 30, 0, 10, 10, 30</world>
+					<increase>0.0, 0.0, DATA_BREADTH_TYPE_VALUE, 10, 0, false</increase>
+				</world>>
+			</dataline-curve3>
+			<dataline-curve4>
+				<stroke-width>0.618</stroke-width>
+				<world>
+					<name>volume</name>
+					<world>0, 10, 2148, 30, 0, 10, 2148, 30</world>
+					<increase>0.0, 0.0, DATA_BREADTH_TYPE_VALUE, 2148, 100, true</increase>
+				</world>>
+			</dataline-curve4>
+		</canvas-summer>
 		<canvas-toolbar>
 			<canvas-type>toolbar</canvas-type>
 			<canvas-name>toolbar</canvas-name>
 			<!-- top, left, right, bottom -->
-			<first-command>32771</first-command>
+			<first-command>32772</first-command>
 			<position>middle</position>
 			<button-size>64, 64</button-size>
 			<!-- must be zero now (forever ? heihei) -->

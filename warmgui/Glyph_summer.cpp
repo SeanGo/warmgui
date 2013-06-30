@@ -3,7 +3,7 @@
 
 namespace WARMGUI {
 IGlyph_summer::IGlyph_summer(void)
-    : _own_artist(GLYPH_OWN_ARTIST_TYPE_OUTSIDE)
+    : _own_artist(false)
     , _artist(0)
     //, _my_artist(0)
     , _glyph_tree(0)
@@ -14,6 +14,8 @@ IGlyph_summer::IGlyph_summer(void)
     , _canvas(0)
     , _mytype(GLYPH_TYPE_GLYPH)
     , _visible(true)
+    , _selected_child_graph(0)
+    , _selected(false)
 {
     memset(&_rect, 0 , sizeof(RECT));
     _abs_rect = _rect;
@@ -21,7 +23,7 @@ IGlyph_summer::IGlyph_summer(void)
 }
 
 IGlyph_summer::IGlyph_summer(const char* name)
-    : _own_artist(GLYPH_OWN_ARTIST_TYPE_OUTSIDE)
+    : _own_artist(false)
     , _artist(0)
     //, _my_artist(0)
     , _glyph_tree(0)
@@ -31,6 +33,8 @@ IGlyph_summer::IGlyph_summer(const char* name)
     , _canvas(0)
     , _mytype(GLYPH_TYPE_GLYPH)
     , _visible(true)
+    , _selected_child_graph(0)
+    , _selected(false)
 {
     memset(&_rect, 0 , sizeof(RECT));
     _abs_rect = _rect;
@@ -40,7 +44,7 @@ IGlyph_summer::IGlyph_summer(const char* name)
 
 IGlyph_summer::~IGlyph_summer(void)
 {
-    if (_own_artist == GLYPH_OWN_ARTIST_TYPE_MYSELF)
+    if (_own_artist == true)
         SafeDelete(_artist);
 }
 
@@ -50,7 +54,7 @@ bool IGlyph_summer::is_me(const char* name)
     return (!strcmp(name, _name));
 }
 
-HRESULT IGlyph_summer::draw()
+HRESULT IGlyph_summer::draw(bool/* redraw_all = false*/)
 {
 #ifdef _DEBUG
     TCHAR name[MAX_PATH];
@@ -61,11 +65,6 @@ HRESULT IGlyph_summer::draw()
     return S_OK;
 }
 
-inline void IGlyph_summer::set_config(CWarmguiConfig* config, const char *conf_str)
-{
-    _config = config; strcpy_s(_str_conf, MAX_PATH, conf_str);
-}
-
 inline HRESULT IGlyph_summer::push_layer()
 {
 #ifdef _DEBUG
@@ -73,11 +72,13 @@ inline HRESULT IGlyph_summer::push_layer()
     CChineseCodeLib::Gb2312ToUnicode(name, MAX_PATH, _name);
     MYTRACE(L"Graph::PUSH layer %s %d, %d, %d, %d\n", name, _abs_rect.left, _abs_rect.top, _abs_rect.right, _abs_rect.bottom);
 #endif //_DEBUG
-    _artist->GetTransform(&_back_trans);
+    MATRIX_2D back_trans;
+    _artist->GetTransform(&back_trans);
     MATRIX_2D I = D2D1::IdentityMatrix();
     I._31 = (float)_abs_rect.left, I._32 = (float)_abs_rect.top;
     _artist->SetTransform(&I);
     _artist->PushLayer(_rect);
+    _artist->SetTransform(&back_trans);
     return S_OK;
 }
 
@@ -88,38 +89,51 @@ inline HRESULT IGlyph_summer::pop_layer()
     CChineseCodeLib::Gb2312ToUnicode(name, MAX_PATH, _name);
     MYTRACE(L"Graph::POP layer %s\n", name);
 #endif //_DEBUG
+    MATRIX_2D back_trans;
+    _artist->GetTransform(&back_trans);
+    MATRIX_2D I = D2D1::IdentityMatrix();
+    I._31 = (float)_abs_rect.left, I._32 = (float)_abs_rect.top;
+    _artist->SetTransform(&I);
     _artist->PopLayer();
-    _artist->SetTransform(&_back_trans);
+    _artist->SetTransform(&back_trans);
     return S_OK;
 }
 
 
-HRESULT IGlyph_summer::draw_graph(GLYPH_TYPE glyph_type /*=IGlyph_summer::GLYPH_TYPE_GLYPH*/)
+HRESULT IGlyph_summer::draw_graph(bool redraw_all/* = false*/, GLYPH_TYPE glyph_type /*=IGlyph_summer::GLYPH_TYPE_GLYPH*/)
 {
     HRESULT hr = S_OK;
 
     if (_artist && _glyph_tree && (*_tree_iter)) {
+        //draw all children
         int num_of_children = _glyph_tree->number_of_children(_tree_iter);
         if (num_of_children) {
+            //push layer
             if (SUCCEEDED(hr) && _tree_iter != _glyph_tree->begin())
                 hr = push_layer();
 
+            //draw all children graph
             if (SUCCEEDED(hr) &&  _visible) {
                 for (int i = 0; i < num_of_children; i++) {
                     //draw all 
                     GlyphTreeIter_summer it = _glyph_tree->child(_tree_iter, (unsigned int)i);
                     if ((*it)->get_glyph_type() == glyph_type)
-                        hr = (*it)->draw_graph(glyph_type);
+                        hr = (*it)->draw_graph(redraw_all, glyph_type);
                     if (FAILED(hr))
                         break;
                 }
             }
 
+            //canvas draw the mouse graph
+            if (SUCCEEDED(hr) && ((*_tree_iter)->isClass("ICanvas_summer")))
+                hr = ((ICanvas_summer*)(*_tree_iter))->draw_mouse_graph();
+
+            //pop layer
             if (SUCCEEDED(hr) && _tree_iter != _glyph_tree->begin())
                 hr = pop_layer();
         } else {
             //set transform
-            if (this->_mytype == glyph_type) {
+            if (_mytype == glyph_type) {
                 _artist->GetTransform(&_back_trans);
                 MATRIX_2D I = D2D1::IdentityMatrix();
                 I._31 = (float)_abs_rect.left, I._32 = (float)_abs_rect.top;
@@ -130,11 +144,12 @@ HRESULT IGlyph_summer::draw_graph(GLYPH_TYPE glyph_type /*=IGlyph_summer::GLYPH_
                 CChineseCodeLib::Gb2312ToUnicode(name, MAX_PATH, _name);
                 MYTRACE(L"Graph::draw %s\n", name);
 #endif //_DEBUG
-                hr = draw();
+
+                hr = draw(redraw_all);
 
                 //get back for transform
                 _artist->SetTransform(&_back_trans);
-                set_change(GLYPH_CHANGED_NONE);
+                //set_change(GLYPH_CHANGED_NONE);
             }
         }
 
@@ -167,15 +182,33 @@ inline void IGlyph_summer::set_children_rect()
     }
 }
 
-inline void IGlyph_summer::change(GLYPH_CHANGED_TYPE     changed)
+inline void IGlyph_summer::change(GLYPH_CHANGED_TYPE changed)
 {
-    CriticalLock::Scoped scope(_lockChange);
     _changed |= changed ;
     
     if (_atelier) _atelier->change(changed);
     if (_canvas)   _canvas->change(changed);
 }
 
+inline void IGlyph_summer::inherit(IAtelier_summer* atelier, CGlyphTree_summer* tree, ICanvas_summer* canvas, GlyphTreeIter_summer& tree_iter, eArtist* artist, CWarmguiConfig* config)
+{
+    _atelier = atelier,
+        _glyph_tree = tree,
+        _canvas = canvas,
+        _tree_iter = tree_iter,
+        _artist = artist,
+        _config = config;
+    inherit_config_string();
+}
+
+inline void IGlyph_summer::inherit_config_string()
+{
+    GlyphTreeIter_summer parent = _glyph_tree->parent(_tree_iter);
+    if (*parent)
+        _snprintf_s(_str_conf, MAX_PATH, _TRUNCATE, "%s.%s", (*parent)->get_config_str(), _name);
+    else
+        strcpy_s(_str_conf, MAX_PATH, _name);
+}
 
 
 
@@ -291,7 +324,7 @@ HRESULT CImage_summer::DrawGraph_wired()
 	return S_OK;
 }
 
-HRESULT CImage_summer::draw()
+HRESULT CImage_summer::draw(bool /*redraw_all = false*/)
 {
 	return DrawImage(_srcRect, _rect, _opacity);
 }
@@ -416,7 +449,7 @@ void CSharedImage_summer::SetSharedImageRect(RECT& rectSrc, float opacity/* = 1.
 }
 
 
-inline HRESULT CSharedImage_summer::draw()
+inline HRESULT CSharedImage_summer::draw(bool /*redraw_all = false*/)
 {
 	if (!_pBmp || !_artist)
 		return (-1);
@@ -428,7 +461,7 @@ inline HRESULT CSharedImage_summer::draw()
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 // class CBlind
-HRESULT CBlind_summer::draw()
+HRESULT CBlind_summer::draw(bool /*redraw_all = false*/)
 {
     _artist->SetSolidColorBrush(D2D1::ColorF(_bkgclr, _alpha));
     _artist->FillRectangle(_rect);

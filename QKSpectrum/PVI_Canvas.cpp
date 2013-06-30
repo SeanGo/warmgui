@@ -90,7 +90,7 @@ void CPVI_Canvas::SetGlyphRect()
 
     if (_data_cont) {
         _prc_graph_changed = _vol_graph_changed = _itr_graph_changed = GLYPH_CHANGED_TYPE_COORDFRAME;
-       NewDataForCtpmmd(_data_cont, DataObject::MARKET_DATA_TYPE_CTPMMD);
+       NewDataForCtpmmd(_data_cont, MARKET_DATA_TYPE_CTPMMD);
        _changed_type = (GLYPH_CHANGED_TYPE)((int)_changed_type | (int)GLYPH_CHANGED_TYPE_CHANGED | (int)GLYPH_CHANGED_TYPE_COORDFRAME);
     }
 }
@@ -128,7 +128,7 @@ GLYPH_CHANGED_TYPE CPVI_Canvas::NewData(IDataContainer* data_cont, DataObject::M
 {
     //return GLYPH_CHANGED_TYPE_NONE ;
     _changed_type = _prc_graph_changed = _prc_graph_changed = _prc_graph_changed = GLYPH_CHANGED_TYPE_NONE;
-    if (datatype == DataObject::MARKET_DATA_TYPE_CTPMMD) {
+    if (datatype == MARKET_DATA_TYPE_CTPMMD) {
 #       ifdef _DEBUG
         //if (!((((CCtpmmdContainer*)data_cont)->getCount()) % 300)) {
         //    const CTPMMD* pctpmmd = ((CCtpmmdContainer*)data_cont)->getCurrentData();

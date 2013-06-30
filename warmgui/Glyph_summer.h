@@ -51,15 +51,14 @@ typedef tree_node_<IGlyph_summer*> WARMGUI_API glyph_node;
 class IAtelier_summer;
 class ICanvas_summer;
 
-class WARMGUI_API IGlyph_summer : public IObject
+class WARMGUI_API IGlyph_summer : public IObject, public IInputResponse
 {
 public:
                            IGlyph_summer(void);
                            IGlyph_summer(const char* name);
-                          ~IGlyph_summer(void);
+    virtual               ~IGlyph_summer(void);
     
     inline  void           set_config(CWarmguiConfig* config) { _config = config; }
-    inline  void           set_config(CWarmguiConfig* config, const char *str_conf);
     inline virtual HRESULT init() { return S_OK; }
     virtual HRESULT        pre_draw() { return S_OK; }
 
@@ -77,11 +76,10 @@ public:
 
     inline bool            is_me(const char* name);
 
-    void                   set_myown_artist() { _own_artist = GLYPH_OWN_ARTIST_TYPE_MYSELF; }
+    void                   set_myown_artist() { _own_artist = true; }
     eArtist*               get_artist() { return _artist; }
-    void                   inherit(IAtelier_summer* atelier, CGlyphTree_summer* tree, ICanvas_summer* canvas, GlyphTreeIter_summer& tree_iter, eArtist* artist, CWarmguiConfig* config)
-                           { _atelier = atelier, _glyph_tree = tree, _canvas = canvas, _tree_iter = tree_iter, _artist = artist, _config = config; }
-
+    inline virtual void    inherit(IAtelier_summer* atelier, CGlyphTree_summer* tree, ICanvas_summer* canvas, GlyphTreeIter_summer& tree_iter, eArtist* artist, CWarmguiConfig* config);
+    inline void            inherit_config_string();
     int                    is_changed() { return _changed; }
 
     enum GLYPH_TYPE {
@@ -91,24 +89,32 @@ public:
     void                   set_glyph_type(GLYPH_TYPE glyph_type) { _mytype = glyph_type; }
     GLYPH_TYPE             get_glyph_type() { return _mytype; }
 
-    void                   set_change(GLYPH_CHANGED_TYPE changed) {CriticalLock::Scoped scope(_lockChange); _changed =  changed ;}
+    void                   set_change(GLYPH_CHANGED_TYPE changed) {_changed =  changed ;}
     inline void            change(GLYPH_CHANGED_TYPE     changed);
-	void                   dechange(GLYPH_CHANGED_TYPE   changed) {CriticalLock::Scoped scope(_lockChange); _changed &= ~changed;}
+	void                   dechange(GLYPH_CHANGED_TYPE   changed) {_changed &= ~changed;}
 
     const char*            get_config_str() { return _str_conf; }
     bool                   is_visible() { return _visible; }
     void                   toggle_visible() { _visible = (_visible) ? false : true; }
 
+    CriticalLock*          get_change_lock() { return &_lockChange; }
+
+    //for mouse
+    IGlyph_summer*         get_selected_child_graph() { return _selected_child_graph; }
+    bool                   is_selected() { return _selected; }
+    virtual bool           is_interior(int x, int y) { return false; }
+    //for mouse
+
 protected:
 
-    HRESULT                draw_graph(GLYPH_TYPE glyph_type =IGlyph_summer::GLYPH_TYPE_GLYPH);
-    virtual HRESULT        draw();
+    HRESULT                draw_graph(bool redraw_all = false, GLYPH_TYPE glyph_type =IGlyph_summer::GLYPH_TYPE_GLYPH);
+    virtual HRESULT        draw(bool redraw_all = false);
 
     inline HRESULT         push_layer();
     inline HRESULT         pop_layer();
 
 protected:
-    GLYPH_OWN_ARTIST_TYPE _own_artist;
+    bool                  _own_artist;
     eArtist*                  _artist;
 
     RECT                        _rect;
@@ -130,9 +136,15 @@ protected:
 
     GLYPH_TYPE                _mytype;
     bool                     _visible;
+
+
+    IGlyph_summer*     _selected_child_graph;
+    bool               _selected;
 private:
     virtual void setClass() { SetMyClass("IGlyph_summer"); }
 };
+
+
 
 
 
@@ -147,7 +159,7 @@ public:
     virtual ~CImage_summer();
 
     HRESULT         DrawGraph_wired();
-    virtual HRESULT draw();
+    virtual HRESULT draw(bool redraw_all = false);
     inline  HRESULT DrawImage(RECT& rectSrc, RECT& rectDest, float opacity = 1.0f);
     inline  HRESULT DrawImage(RECT_f& rectSrc, RECT_f& rectDest, float opacity = 1.0f);
     inline  virtual bool Intersect(int x, int y) { return IsInRect(_rect, x, y); }
@@ -172,6 +184,8 @@ private:
 };
 
 
+
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 // class CImage
 class WARMGUI_API CSharedImage_summer : public IGlyph_summer {
@@ -180,7 +194,7 @@ public:
     CSharedImage_summer(GLYPH_TYPE glyph_type, WGBitmap* pBmp);
     ~CSharedImage_summer();
 
-    inline virtual HRESULT draw();
+    inline virtual HRESULT draw(bool redraw_all = false);
     inline void            SetSharedImage(WGBitmap* pBmp) {_pBmp = pBmp;}
     inline HRESULT         DrawImage(RECT& rectSrc, RECT& rectDest, float opacity = 1.0f);
     inline void            SetSharedImageRect(RECT& rectSrc, float opacity = 1.0f);
@@ -196,6 +210,8 @@ private:
     //set class name, by IObject
     virtual void setClass() { SetMyClass("CSharedImage"); }
 };
+
+
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -221,7 +237,7 @@ public:
         setClass();
     }
 
-    virtual HRESULT draw();
+    virtual HRESULT draw(bool redraw_all = false);
     void            set_brush_color(COLORREF bkgclr, float alpha = 0.5f) {_bkgclr = bkgclr, _alpha = alpha;}
     virtual int     is_selected(int x, int y) { return (0); }
 
@@ -235,7 +251,15 @@ private:
     virtual void setClass() { SetMyClass("CBlind"); }
 };
 
+class WARMGUI_API CMouseGraph_summer : public IGlyph_summer
+{
+public:
+    CMouseGraph_summer() {}
+    CMouseGraph_summer(const char* name) : IGlyph_summer(name) {}
+    ~CMouseGraph_summer(){}
 
+    virtual HRESULT draw(bool redraw_all = false) {return S_OK;}
+};
 
 } //namespace WARMGUI
 

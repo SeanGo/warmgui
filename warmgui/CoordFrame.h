@@ -31,7 +31,7 @@ public:
 	inline  void            SetSideBarWidth(RULER_WIDTH& ruler_width) {_ruler_width = ruler_width;}
     inline  void            SetRect(RECT& rect);
     virtual HRESULT         PreDraw();
-    inline  virtual GLYPH_CHANGED_TYPE  NewData(IDataContainer* data_cont, DataObject::MARKET_DATA_TYPE datatype);
+    inline  virtual GLYPH_CHANGED_TYPE  NewData(IDataContainer* data_cont, MARKET_DATA_TYPE datatype);
     //inline  virtual GLYPH_CHANGED_TYPE  NewData(int index, float x, float y);
     //GLYPH_CHANGED_TYPE      renew_world(WORLD_RECT* pwr, bool bfirstdata = false);
     GLYPH_CHANGED_TYPE      renew_world(float x, float y, bool redraw_cood = false, bool bfirstdata = false);

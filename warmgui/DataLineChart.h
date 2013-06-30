@@ -8,7 +8,7 @@ public:
 	CDataLineChart(const char* name, bool world_own_type = false, bool own_artist = false);
     virtual ~CDataLineChart(void);
 
-    virtual GLYPH_CHANGED_TYPE NewData(IDataContainer* data_cont, DataObject::MARKET_DATA_TYPE datatype)
+    virtual GLYPH_CHANGED_TYPE NewData(IDataContainer* data_cont, MARKET_DATA_TYPE datatype)
                                { return GLYPH_CHANGED_TYPE_NONE; }
     virtual HRESULT            DrawGraph(bool redraw = false);
     //virtual HRESULT            Draw(bool redraw = false);     ///draw the graph

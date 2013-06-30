@@ -5,21 +5,21 @@
 
 namespace WARMGUI {
 
-class ICalculator;
-EXPORT_STL_VECTOR(WARMGUI_API, ICalculator*)
-typedef std::vector<ICalculator*>    CalculatorArray;
-typedef CalculatorArray::iterator            CalIter;
-typedef CalculatorArray::const_iterator CalConstIter;
+class ICalculator_summer;
+EXPORT_STL_VECTOR(WARMGUI_API, ICalculator_summer*)
+typedef std::vector<ICalculator_summer*>    CalculatorArray_summer;
+typedef CalculatorArray_summer::iterator            CalIter_summer;
+typedef CalculatorArray_summer::const_iterator CalConstIter_summer;
 
 
-class WARMGUI_API ICalculator : public Poco::Runnable
+class WARMGUI_API ICalculator_summer : public Poco::Runnable
 {
 public:
-    ICalculator(const char* name)
+    ICalculator_summer(const char* name)
         : _tid(0), _stop(1), _busy(false)
     { strcpy_s(_name, MAX_PATH, name); *_my_cont = 0; }
 
-    virtual ~ICalculator(void) {}
+    virtual ~ICalculator_summer(void) {}
 
 	Poco::Thread::TID GetThreadId() {
 		for(;;) {
@@ -79,7 +79,8 @@ public:
         }
     }
 
-    bool NewData(IDataContainer* data_cont, MARKET_DATA_TYPE datatype)
+    /*
+    bool NewData(IDataContainer_summer* data_cont, MARKET_DATA_TYPE datatype)
     {
         ///multi-thread
         /*
@@ -89,46 +90,35 @@ public:
         } else 
             return false;
         */
-        MSG msg;
+        /*MSG msg;
         msg.message = WM_CALCULATOR_MESSAGE;
         msg.wParam  = (WPARAM)data_cont;
         msg.lParam  = (LPARAM)datatype;
         calculate(msg);
         return true;
-    }
+    }*/
 
-    virtual GLYPH_CHANGED_TYPE NewData(DataObjectPtr dop) { return GLYPH_CHANGED_TYPE_NONE;}
-    virtual GLYPH_CHANGED_TYPE NewData(dataptr pdata, MARKET_DATA_TYPE datatype) { return GLYPH_CHANGED_TYPE_NONE;}
+    virtual void new_data(DataObjectPtr dop) = 0;
+    //virtual void NewData(dataptr pdata, MARKET_DATA_TYPE datatype) { return GLYPH_CHANGED_TYPE_NONE;}
 
-    void RegisterCalculator(ICalculator* calculator)
+    void RegisterCalculator(ICalculator_summer* calculator)
     {
         _cals.push_back(calculator);
     }
 
-    void RegisterCanvas(IDataCanvas* canvas)
-    {
-#       ifdef _DEBUG
-        TCHAR name1[MAX_PATH], name2[MAX_PATH];
-        CChineseCodeLib::Gb2312ToUnicode(name1, MAX_PATH, canvas->getName());
-        CChineseCodeLib::Gb2312ToUnicode(name2, MAX_PATH, _name);
-        MYTRACE(L"IDataCanvas %s regestered to calculator %s\n", name1, name2);
-#       endif //_DEBUG
-        _canvases.push_back(canvas);
-    }
-
-    void RegisterDataGraph(IDataGraph* graph)
+    void RegisterDataGraph(IDataGraph_summer* graph)
     {
         _dgraph.push_back(graph);
     }
     const char* getContainerName() {return _my_cont;}
     const char* getName() {return _name;}
 
-    HwndArray& get_hwnd_array() {return _hwnd_array;}
-    void register_hwnd(HWND hwnd) { _hwnd_array.push_back(hwnd); }
-    void remove_hwnd(HWND hwnd) { 
-        for (HwndConstIter iter = _hwnd_array.begin(); iter != _hwnd_array.end(); iter++) {
-            if ((*iter) == hwnd) {
-                _hwnd_array.erase(iter);
+    AtelierArray_summer& get_atlier_array() {return _atelier_array;}
+    void register_atelier(IAtelier_summer* as) { _atelier_array.push_back(as); }
+    void remove_hwnd(IAtelier_summer* as) { 
+        for (AtelierConstIter_summer iter = _atelier_array.begin(); iter != _atelier_array.end(); iter++) {
+            if ((*iter) == as) {
+                _atelier_array.erase(iter);
                 break;
             }
         }
@@ -143,12 +133,11 @@ protected:
     char      _name[MAX_PATH];
     char   _strconf[MAX_PATH];
     char   _my_cont[MAX_PATH];
-    CalculatorArray     _cals;
-    DataCanvasArray _canvases;
-    DataGraphArray    _dgraph;
+    CalculatorArray_summer     _cals;
+    DataGraphArray_summer    _dgraph;
 	Poco::Thread      _thread;
 
-    HwndArray     _hwnd_array;
+    AtelierArray_summer     _atelier_array;
 };
 
 
@@ -163,7 +152,7 @@ public:
 
 
     void SetConfigure(CWarmguiConfig* config) { _config = config; }
-    virtual ICalculator* CreateCalculator(const char* str_config) = 0;
+    virtual ICalculator_summer* CreateCalculator(const char* str_config) = 0;
 
 protected:
     CWarmguiConfig* _config;

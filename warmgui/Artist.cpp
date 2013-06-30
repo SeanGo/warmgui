@@ -38,25 +38,8 @@ eArtist::~eArtist(void)
 
 void eArtist::SetHwndRenderTarget(ID2D1HwndRenderTarget* pHwndRT, HWND hwnd)
 { 
-	HRESULT hr = S_OK;
 	if (pHwndRT) {
 		_pHwndRT = pHwndRT, _hwnd = hwnd;
-
-		SafeRelease(&_pDefaultBmpRT);
-		hr = _pHwndRT->CreateCompatibleRenderTarget(_pHwndRT->GetSize(), &_pDefaultBmpRT);
-
-        if (SUCCEEDED(hr))
-            _pPaintRT = _pDefaultBmpRT;
-        else
-            _pPaintRT = _pHwndRT;      		
-
-		SafeRelease(&_pscBrush);
-		if (SUCCEEDED(hr))
-			hr = _pHwndRT->CreateSolidColorBrush(D2D1::ColorF(BGR(0, 0, 0)), &_pscBrush);
-
-		SafeRelease(&_pStroke);
-		if (SUCCEEDED(hr))
-			hr = SetStrokeStyle();
 	}
 }
 
@@ -70,10 +53,22 @@ inline HRESULT eArtist::ResizeRenderTarget(int cx, int cy)
 		D2D1::SizeF(static_cast<float>(cx), static_cast<float>(cy)),
 		&_pDefaultBmpRT);
 
-	SafeRelease(&_pDefaultBmp);
+    if (SUCCEEDED(hr))
+            _pPaintRT = _pDefaultBmpRT;
+        else
+            _pPaintRT = _pHwndRT;      		
 
+	SafeRelease(&_pscBrush);
 	if (SUCCEEDED(hr))
-		hr = _pDefaultBmpRT->CreateBitmap(
+		hr = _pPaintRT->CreateSolidColorBrush(D2D1::ColorF(BGR(0, 0, 0)), &_pscBrush);
+
+	SafeRelease(&_pStroke);
+	if (SUCCEEDED(hr))
+		hr = SetStrokeStyle();
+
+	SafeRelease(&_pDefaultBmp);
+	if (SUCCEEDED(hr))
+		hr = _pPaintRT->CreateBitmap(
 			D2D1::SizeU(cx, cy),
 			D2D1::BitmapProperties(D2D1::PixelFormat(DXGI_FORMAT_B8G8R8A8_UNORM, D2D1_ALPHA_MODE_PREMULTIPLIED)),
 			&_pDefaultBmp);
@@ -373,8 +368,7 @@ inline void eArtist::UsingBmpRT()
 inline HRESULT eArtist::EndBmpDraw()
 {
 	_pPaintRT = _pBackupRT;
-	HRESULT hr = _pDefaultBmpRT->EndDraw();
-
+    HRESULT hr = S_OK;
 	//get rt's size
 	D2D1_SIZE_F size = _pDefaultBmpRT->GetSize();
 	//D2D1_SIZE_F size2 = _pDefaultBmp->GetSize();
@@ -391,6 +385,7 @@ inline HRESULT eArtist::EndBmpDraw()
 	if (_pDefaultBmp)
         hr = _pDefaultBmp->CopyFromRenderTarget(&pnt0, _pDefaultBmpRT, &rect);
 
+	hr = _pDefaultBmpRT->EndDraw();
 	//backup transfprm
 	_pDefaultBmpRT->SetTransform(&trans);
 	return hr;

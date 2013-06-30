@@ -93,7 +93,7 @@ public:
     void                  set_data_buffer(size_t size) { _myown_data.SetSize(size); }
     void                  reset_data() { _myown_data.Reset(); }
 
-    virtual GLYPH_CHANGED_TYPE NewData(IDataContainer* data_cont, DataObject::MARKET_DATA_TYPE datatype) { return GLYPH_CHANGED_TYPE_NONE; }
+    virtual GLYPH_CHANGED_TYPE NewData(IDataContainer* data_cont, MARKET_DATA_TYPE datatype) { return GLYPH_CHANGED_TYPE_NONE; }
 
 protected:
 	COLORREF                  _color;

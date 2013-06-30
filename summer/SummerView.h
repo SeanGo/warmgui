@@ -13,10 +13,15 @@ public:
 	msgfun  void OnDraw();
 	msgfun  void OnDestroy();
     msgfun  int  OnCommand(WORD nCmdId, WORD /*nSource*/, HWND /*hwnd*/);
-
+    msgfun  void OnRButtonUp(UINT, int , int);
+    msgfun  int  OnMessage(UINT message, WPARAM wparam, LPARAM lparam);
+    msgfun  int  OnKillfocus(WPARAM, LPARAM);
+    msgfun  int  OnSetfocus(HWND);
 protected:
     CSummerAtelier* _atelier;
     RECT         _rectClient;
+
+    bool              _focus;
 };
 
 

@@ -9,11 +9,10 @@ inline IDataGraph_summer::IDataGraph_summer(void)
     : _world(0)
     , _my_own_world(false)
     , _my_artist(0)
-    , _my_own_artist(false)
-    , _my_lockArtist(0)
     , _pdata(0)
     , _my_own_data(false)
     , _world_change(WORLD_CHANGED_TYPE_NONE)
+    , _my_own_artist(false)
 {
 }
 
@@ -21,16 +20,14 @@ inline IDataGraph_summer::IDataGraph_summer(const char* name, bool own_world, bo
     : IGlyph_summer(name)
     , _pdata(0)
     , _my_own_world(own_world)
-    , _my_own_artist(own_artist)
     , _my_own_data(own_data)
+    , _my_own_artist(own_artist)
     , _world_change(WORLD_CHANGED_TYPE_NONE)
 {
     if (own_artist) {
         _my_artist  = new eArtist();
-        _my_lockArtist = new CriticalLock();
     } else {
         _my_artist  = 0;
-        _my_lockArtist = 0;
     }
     
     if (own_world)
@@ -46,7 +43,6 @@ inline IDataGraph_summer::~IDataGraph_summer(void)
 
     if (_my_own_artist) {
         SafeDelete(_my_artist);
-        SafeDelete(_my_lockArtist);
     }
 
     if (_my_own_data)
@@ -57,11 +53,28 @@ inline IDataGraph_summer::~IDataGraph_summer(void)
 void IDataGraph_summer::set_rect(RECT& rect)
 {
     if (_my_own_world)
-        _world->SetRectSize(rect);
+        _world->SetRectSize(rect);  //absolutely position
+    if (_my_artist)
+        _my_artist->ResizeRenderTarget(RectWidth(rect), RectHeight(rect));
+
     IGlyph_summer::set_rect(rect);
+
+    predraw();
 }
 
+inline void IDataGraph_summer::inherit(IAtelier_summer* atelier, CGlyphTree_summer* tree, ICanvas_summer* canvas, GlyphTreeIter_summer& tree_iter, eArtist* artist, CWarmguiConfig* config)
+{
+    _atelier = atelier,
+        _glyph_tree = tree,
+        _canvas = canvas,
+        _tree_iter = tree_iter,
+        _artist = artist,
+        _config = config;
+    inherit_config_string();
 
+    if (_my_artist)
+        _my_artist->SetHwndRenderTarget(_artist->GetHwndRT(), _artist->GetHwnd());
+}
 
 
 
@@ -100,14 +113,22 @@ inline CCurveGraph_summer::CCurveGraph_summer(const char* name, bool own_world, 
 inline CCurveGraph_summer::~CCurveGraph_summer(void)
 {
     if (_pSink)
-        SafeDelete(_pSink);
+        SafeRelease(&_pSink);
 
     if (_pathg)
-        SafeDelete(_pathg);
+        SafeRelease(&_pathg);
+}
+
+GLYPH_CHANGED_TYPE CCurveGraph_summer::new_data(DataObjectPtr dop)
+{
+    return update(dop.get()->GetData());
 }
 
 GLYPH_CHANGED_TYPE CCurveGraph_summer::update(dataptr data)
 {
+    CriticalLock::Scoped scope(_lockChange);
+    change(GLYPH_CHANGED_GLYPH);
+
     _pdata = data;
     if (_update_method == UPDATE_METHOD_INCREST) {
         //fresh world limit
@@ -116,7 +137,11 @@ GLYPH_CHANGED_TYPE CCurveGraph_summer::update(dataptr data)
 
         //add data to data-point-set
         _points.add_data(((POINTF*)data)->x, ((POINTF*)data)->y);
-        change(GLYPH_CHANGED_CHANGED);
+
+        if (_my_own_artist) {
+            draw_new_point();
+            set_change(GLYPH_CHANGED_NONE);
+        }
     } else {
         //call virtual function, set the curve graph
         //the data pointer is DOUBLE_DATA_POINTER
@@ -126,8 +151,34 @@ GLYPH_CHANGED_TYPE CCurveGraph_summer::update(dataptr data)
     return _changed;
 }
 
+inline HRESULT CCurveGraph_summer::_predraw()
+{
+    HRESULT hr = S_OK;
+    if (_my_artist && _rect.right > 0 && _rect.bottom > 0) {
+        if (_pathg)
+            draw_whole_line();
+        else if (_points._count < 2)
+            clear_bmp_target();
+        else {
+            prepare_path();
+            if (_pathg) draw_whole_line();
+        }
+    }
+    return hr;
+}
+
+
+inline void CCurveGraph_summer::clear_bmp_target()
+{
+    if(_my_artist)
+    {
+        _my_artist->BeginBmpDraw(true);
+        _my_artist->EndBmpDraw();
+    }
+}
 
 //reset path gemoetry, if add_to_point_set is true, reset the data-point-set
+//must  lock _lockChange before call this
 inline void CCurveGraph_summer::begin_set_data(float x, float y, bool add_to_point_set/* = true*/)
 {
 	HRESULT hr = S_OK;
@@ -135,7 +186,7 @@ inline void CCurveGraph_summer::begin_set_data(float x, float y, bool add_to_poi
     SafeRelease(&_pSink);
 	hr = CDxFactorys::GetInstance()->GetD2DFactory()->CreatePathGeometry(&_pathg);
 
-    set_change(GLYPH_CHANGED_NONE);
+    //set_change(GLYPH_CHANGED_NONE);
 
 	hr = _pathg->Open(&_pSink);
 	if (SUCCEEDED(hr)) {
@@ -166,11 +217,14 @@ inline void CCurveGraph_summer::end_set_data()
     _pSink->Close();
 	SafeRelease(&_pSink);
     
-    change(GLYPH_CHANGED_CHANGED);
+    change(GLYPH_CHANGED_GLYPH);
 }
 
 inline void CCurveGraph_summer::update_data()
 {
+    CriticalLock::Scoped scope(_lockChange);
+    change(GLYPH_CHANGED_GLYPH);
+
     DOUBLE_DATA_POINTER* ddp = (DOUBLE_DATA_POINTER*)_pdata;
     if (ddp && ddp->count > 2) {
         begin_set_data((float)*(ddp->x), (float)*(ddp->y), true);
@@ -182,48 +236,102 @@ inline void CCurveGraph_summer::update_data()
         }
 
         end_set_data();
+
+        if (_my_own_artist) {
+            predraw();
+            set_change(GLYPH_CHANGED_NONE);
+        }
     }
 }
 
-HRESULT CCurveGraph_summer::draw()
+HRESULT CCurveGraph_summer::_draw(bool redraw_all/* = false*/)
 {
     HRESULT hr = S_OK;
+    CriticalLock::Scoped scope(_lockChange);
 
-    if (_own_artist) {
+    if (SUCCEEDED(hr))
+        hr = push_layer();
+
+    if (_my_own_artist) {
         //draw bitmap
-        _artist->DrawBitmap(_my_artist->GetDefaultBmp(), _rect, _rect, 1.0f);
+        if (_points._count > 1) {
+            if (redraw_all && _changed) {
+                MYTRACE(L"redraw--------------\n");
+                prepare_path();
+                hr = draw_whole_line();
+            }
+            
+            _artist->DrawBitmap(_my_artist->GetDefaultBmp(), _rect, _rect, 1.0f);
+        }
     } else {
         //draw whold line using common artist
         if (_update_method == UPDATE_METHOD_INCREST)
-            hr = draw_new_point();
-        else
-            hr = draw_whole_line();
+            prepare_path();
+
+        //    hr = draw_new_point();
+        //else
+        hr = draw_whole_line();
     }
+
+    if (SUCCEEDED(hr))
+        hr = pop_layer();
+
+    set_change(GLYPH_CHANGED_NONE);
     return hr;
+}
+
+void CCurveGraph_summer::prepare_path()
+{
+    SafeRelease(&_pathg);
+    if (_points._count > 1) {
+        begin_set_data(_points._points->x, _points._points->y, false);
+        _world_change = WORLD_CHANGED_TYPE_NONE;
+
+        for (int i = 1; i < _points._count; i++) {
+            add_data_to_path_geometry(_points._points[i].x, _points._points[i].y, false);
+            _world_change = _world->fresh_limit(_points._points[i].x, _points._points[i].y);
+        }
+
+        end_set_data();
+    }
+}
+
+void CCurveGraph_summer::_draw_whole_line(eArtist* artist)
+{
+    artist->SetSolidColorBrush(D2D1::ColorF(_color, _alpha));
+    ////////////////////////////////////////////////////////////////
+    //artist->DrawRectangle(_rect);
+    ////////////////////////////////////////////////////////////////
+
+    artist->GetTransform(&_back_trans);
+
+    ////////////////////////////////////////////////////////////////
+    MATRIX_2D trans = *(_world->GetTransform());
+    trans._31 += _back_trans._31, trans._32 += _back_trans._32;
+    artist->SetTransform(&trans);
+    ////////////////////////////////////////////////////////////////
+
+    D2D1_ANTIALIAS_MODE am = artist->GetHwndRT()->GetAntialiasMode();
+	artist->GetUsingRT()->SetAntialiasMode(D2D1_ANTIALIAS_MODE_PER_PRIMITIVE);
+	artist->SetSolidColorBrush(D2D1::ColorF(_color, _alpha));
+    artist->DrawGeometry(_pathg, artist->GetSCBrush(), _stroke_width / _world->GetTransform()->_11, artist->GetStrokeStyle());
+
+    artist->SetTransform(&_back_trans);
+    artist->GetUsingRT()->SetAntialiasMode(am);
 }
 
 HRESULT CCurveGraph_summer::draw_whole_line()
 {
-    eArtist* artist = (_own_artist) ? _my_artist : _artist;
-
     HRESULT hr = S_OK;
-    if (_points._count > 1 && _pathg) {
-        if (_own_artist)
-            artist->BeginBmpDraw();
 
-        D2D1_ANTIALIAS_MODE am = artist->GetHwndRT()->GetAntialiasMode();
-	    artist->GetUsingRT()->SetAntialiasMode(D2D1_ANTIALIAS_MODE_ALIASED);
-
-        artist->GetTransform(&_back_trans);
-        artist->SetTransform(_world->GetTransform());
-        artist->SetSolidColorBrush(D2D1::ColorF(_color, _alpha));
-	    artist->DrawGeometry(_pathg, _artist->GetSCBrush(), _stroke_width, _artist->GetStrokeStyle());
-
-        artist->SetTransform(&_back_trans);
-        artist->GetUsingRT()->SetAntialiasMode(am);
-
-        if (_own_artist)
-            hr = artist->EndBmpDraw();
+    if (_points._count > 1) {
+        if (_my_own_artist) {
+            _my_artist->BeginBmpDraw(true);
+            _draw_whole_line(_my_artist);
+            hr = _my_artist->EndBmpDraw();
+        } else {
+            _draw_whole_line(_artist);
+        }
     }
     return hr;
 }
@@ -236,47 +344,73 @@ HRESULT CCurveGraph_summer::move_bitmap_left()
         D2D1_RECT_F rectDest = D2D1::RectF(0.0f , 0.0f, fRectWidth(_rect) - delta, fRectHeight(_rect));
         D2D1_RECT_F rectSrc  = D2D1::RectF(delta, 0.0f, fRectWidth(_rect), fRectHeight(_rect));
 
+        /*
         MATRIX_2D _backup_trans;
         _my_artist->GetTransform(&_backup_trans);
         MATRIX_2D id = D2D1::Matrix3x2F::Identity();
         _my_artist->SetTransform(&id);
+        */
+        _my_artist->DrawBitmap(_my_artist->GetDefaultBmp(), rectDest, rectSrc);
 
-        _my_artist->DrawBitmap(_artist->GetDefaultBmp(), rectDest, rectSrc);
-
-        _my_artist->SetTransform(&_backup_trans);
+        //_my_artist->SetTransform(&_backup_trans);
     }
     return hr;
 }
 
+void CCurveGraph_summer::_draw_new_point(eArtist* artist)
+{
+    artist->GetTransform(&_back_trans);
+
+    ////////////////////////////////////////////////////////////////
+    MATRIX_2D trans = *(_world->GetTransform());
+    trans._31 += _back_trans._31, trans._32 += _back_trans._32;
+    artist->SetTransform(&trans);
+    ////////////////////////////////////////////////////////////////
+
+    artist->SetSolidColorBrush(D2D1::ColorF(_color, _alpha));
+    //draw last two points
+    artist->DrawLine(
+        _points._points[_points._count - 2].x,
+        _points._points[_points._count - 2].y,
+        _points._points[_points._count - 1].x,
+        _points._points[_points._count - 1].y,
+        _stroke_width / _world->GetTransform()->_11);
+
+    artist->SetTransform(&_back_trans);
+}
+
 HRESULT CCurveGraph_summer::draw_new_point()
 {
-    eArtist* artist = (_own_artist) ? _my_artist : _artist;
-
     HRESULT hr = S_OK;
+
     if (_points._count > 1) {
-        if (_own_artist) {
-            artist->BeginBmpDraw();
+        if (_my_own_artist) {
+            _my_artist->BeginBmpDraw(true);
+            ////////////////////////////////////////////////////////////////
+            _my_artist->DrawRectangle(_rect);
+            ////////////////////////////////////////////////////////////////
             if (_world_change & WORLD_CHANGED_TYPE_MIN_X || _world_change & WORLD_CHANGED_TYPE_MAX_X)
                 move_bitmap_left();
+            else
+                _my_artist->DrawBitmap(_my_artist->GetDefaultBmp(), _rect, _rect, 1.0f);
+            _draw_new_point(_my_artist);
+            hr = _my_artist->EndBmpDraw();
+        } else {
+            _draw_new_point(_artist);
         }
-
-        artist->GetTransform(&_back_trans);
-        artist->SetTransform(_world->GetTransform());
-        artist->SetSolidColorBrush(D2D1::ColorF(_color, _alpha));
-        //draw last two points
-        artist->DrawLine(
-            _points._points[_points._count - 2].x,
-            _points._points[_points._count - 2].y,
-            _points._points[_points._count - 1].x,
-            _points._points[_points._count - 1].y,
-            _stroke_width);
-
-        artist->SetTransform(&_back_trans);
-
-        if (_own_artist)
-            hr = artist->EndBmpDraw();
     }
     return S_OK;
+}
+
+
+HRESULT CCurveGraph_summer::init()
+{
+
+    if (_my_own_world) {
+        if (!_world->setConfig(_config, _str_conf))
+            return (-1);
+    }
+    return (S_OK);
 }
 
 ///////////////////////////////////////////////////////////////////////////////

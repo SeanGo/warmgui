@@ -41,11 +41,6 @@ EXTERN_C IMAGE_DOS_HEADER __ImageBase;
     std::allocator< vectype > >;
 
 
-enum GLYPH_OWN_ARTIST_TYPE {
-    GLYPH_OWN_ARTIST_TYPE_OUTSIDE,
-    GLYPH_OWN_ARTIST_TYPE_MYSELF,
-};
-
 enum GLYPH_OWN_WORLD_TYPE {
     GLYPH_OWN_WORLD_TYPE_OUTSIDE,
     GLYPH_OWN_WORLD_TYPE_MYSELF,
@@ -209,8 +204,8 @@ const int GLYPH_CHANGED_CANVAS_RESIZE  = 0x002;  ///the size of canvas  was chan
 const int GLYPH_CHANGED_ATELIER_BKG    = 0x004;  ///the background of atelier was changed
 const int GLYPH_CHANGED_CANVAS_BKG     = 0x008;  ///the background of canvas  was changed
 const int GLYPH_CHANGED_GLYPH_BKG      = 0x010;  ///the background of glyph   was changed
-const int GLYPH_CHANGED_CHANGED        = 0x020;  ///the glyph was changed, N/A for atelier and canvas
-
+const int GLYPH_CHANGED_GLYPH          = 0x020;  ///the glyph was changed, N/A for atelier and canvas
+const int GLYPH_CHANGED_CANVAS         = 0x040;
 
 
 #define BGR(b,g,r) ((COLORREF)(((BYTE)(b)|((WORD)((BYTE)(g))<<8))|(((DWORD)(BYTE)(r))<<16)))
@@ -261,5 +256,14 @@ typedef struct DOUBLE_DATA_POINTER {
     double* x;
     double* y;
     size_t  count;
+    DOUBLE_DATA_POINTER() : x(0), y(0), count(0) {}
+    ~DOUBLE_DATA_POINTER() { reset(); }
+    void reset() { SafeDelete(x); SafeDelete(y); count = 0; }
+    void init(size_t size) { reset() ; x = new double[size]; y = new double[size]; }
 } DOUBLE_DATA_POINTER;
+
+
+#define WM_FIRST_USER_COMMAND WM_USER + 1
+#define WM_WINDOWS_REDRAW WM_FIRST_USER_COMMAND
+
 #endif //__warmgui_type_summer_h__

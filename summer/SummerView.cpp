@@ -1,13 +1,16 @@
 #include "StdAfx.h"
 #include "warmgui_summer.h"
+#include "TestDispatcher_summer.h"
 #include "TestSummerCanvas.h"
 #include "SummerAtelier.h"
+#include "SummerApp.h"
 #include "SummerView.h"
 
 #include "Resource.h"
 
 CSummerView::CSummerView(void)
     : _atelier(0)
+    , _focus(false)
 {
     _rectClient.left = _rectClient.top = _rectClient.bottom = _rectClient.right = 0;
 }
@@ -71,9 +74,45 @@ int CSummerView::OnCommand(WORD nCmdId, WORD /*nSource*/, HWND /*hwnd*/)
 {
 	switch(nCmdId) {
 	case ID_VIEW_TOOLBAR:
-		_atelier->ToggleToolbar();
+		_atelier->ToggleToolbar("canvas-toolbar");
 		break;
+    case ID_TEST_DRAW_TIME_SERIES:
+        _atelier->draw_time_series();
+        break;
 	}
 
 	return (0);
 }
+
+void CSummerView::OnRButtonUp(UINT, int x, int y)
+{
+    the_app.get_test_dispatcher()->start();
+}
+
+
+int CSummerView::OnMessage(UINT message, WPARAM wparam, LPARAM lparam)
+{
+    switch(message) {
+    case WM_WINDOWS_REDRAW:
+        ::InvalidateRect(_hwnd, (RECT*)wparam, lparam);
+        break;
+    }
+    return (0);
+}
+
+
+int  CSummerView::OnKillfocus(WPARAM, LPARAM)
+{
+    _focus = false;
+    return (0);
+}
+
+int  CSummerView::OnSetfocus(HWND)
+{
+    MYTRACE(L"focus\n");
+    if (!_focus)
+        _atelier->Changed(GLYPH_CHANGED_ATELIER_RESIZE);
+    return (0);
+}
+
+

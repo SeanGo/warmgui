@@ -67,16 +67,18 @@ IGlyph_summer* IAtelier_summer::find_glyph(const char* name)
 
 
 #define bkg_is_changed(change) \
-    ((change) & GLYPH_CHANGED_ATELIER_BKG\
-        || (change) & GLYPH_CHANGED_CANVAS_BKG\
-        || (change) & GLYPH_CHANGED_GLYPH_BKG\
-        || (change) & GLYPH_CHANGED_ATELIER_RESIZE\
+    ((change) & GLYPH_CHANGED_ATELIER_BKG \
+        || (change) & GLYPH_CHANGED_CANVAS_BKG \
+        || (change) & GLYPH_CHANGED_GLYPH_BKG \
+        || (change) & GLYPH_CHANGED_ATELIER_RESIZE \
         || (change) & GLYPH_CHANGED_CANVAS_RESIZE)
 
 #define graph_is_changed(change) \
-    ((change) & GLYPH_CHANGED_CHANGED\
-        || (change) & GLYPH_CHANGED_ATELIER_RESIZE\
+    ((change) & GLYPH_CHANGED_GLYPH \
+        || (change) & GLYPH_CHANGED_CANVAS \
+        || (change) & GLYPH_CHANGED_ATELIER_RESIZE \
         || (change) & GLYPH_CHANGED_CANVAS_RESIZE)
+
 
 static MATRIX_2D idmatrix = D2D1::Matrix3x2F::Identity();
 static POINT     pntZero  = {0, 0};
@@ -97,7 +99,7 @@ inline HRESULT IAtelier_summer::Draw()
         _artist->BeginBmpDraw(true);
         _artist->SetTransform(&idmatrix);
 
-        hr = draw_graph(IGlyph_summer::GLYPH_TYPE_BKG);
+        hr = draw_graph(true, IGlyph_summer::GLYPH_TYPE_BKG);
 
         if (SUCCEEDED(hr))
             hr = _artist->EndBmpDraw();
@@ -106,9 +108,6 @@ inline HRESULT IAtelier_summer::Draw()
     if (SUCCEEDED(hr)) {
         if (bkgchanged || graph_is_changed(_changed))
         {
-#ifdef  _DEBUG
-            MYTRACE(L"draw graph\n");
-#endif  //_DEBUG
             _artist->BeginDraw(true);
             _artist->SetTransform(&idmatrix);
 
@@ -116,14 +115,14 @@ inline HRESULT IAtelier_summer::Draw()
             _artist->DrawBitmap(_artist->GetDefaultBmp(), _rect, _rect);
 
             //draw all graph
-            hr = draw_graph();
-
-            if (SUCCEEDED(hr))
-                hr = _artist->EndDraw();
+            hr = draw_graph(bkgchanged);
 
             //copy to screen-bitmap
             if (SUCCEEDED(hr))
                 hr = CopyFromRenderTarget(_pHwndRT, _appbmp._screen, pntZero, _rect);
+
+            if (SUCCEEDED(hr))
+                hr = _artist->EndDraw();
         } else
             hr = draw_screen_bitmap();
     }
@@ -159,10 +158,13 @@ inline HRESULT IAtelier_summer::draw_screen_bitmap()
 
 inline void IAtelier_summer::set_rect(RECT& rect)
 {
-	if (RectEqulas(rect, _abs_rect))
+    if (RectEqulas(rect, _abs_rect))
 		return;
-    _abs_rect = rect, _rect.left = _rect.top = 0, _rect.right = RectWidth(rect), _rect.bottom = RectHeight(rect);
+
+    CriticalLock::Scoped scope(_lockChange);
     set_change(GLYPH_CHANGED_ATELIER_RESIZE);
+
+    _abs_rect = rect, _rect.left = _rect.top = 0, _rect.right = RectWidth(rect), _rect.bottom = RectHeight(rect);
 
     _pHwndRT->Resize(D2D1::SizeU(_rect.right, _rect.bottom));
 	_appbmp.SetSize(_pHwndRT, _rect);
@@ -216,13 +218,16 @@ inline void IAtelier_summer::ToggleToolbar(const char* toolbar_name/* = "toolbar
     CToolbar_summer* tb = (CToolbar_summer*)find_glyph(toolbar_name);
     if (tb) tb->toggle_visible();
 
-    change(GLYPH_CHANGED_CANVAS_BKG);
+    //change(GLYPH_CHANGED_CANVAS_BKG | GLYPH_CHANGED_CANVAS);
     redraw_window();
 }
 
-inline void IAtelier_summer::redraw_window()
+inline void IAtelier_summer::redraw_window(bool all_redraw/* = false*/)
 {
-    ::InvalidateRect(_hwnd, &_abs_rect, false);
+    //if (all_redraw)
+    //    change(GLYPH_CHANGED_ATELIER_RESIZE);
+
+    PostMessage(_hwnd, WM_WINDOWS_REDRAW, (WPARAM)&_abs_rect, all_redraw);
 }
 
 } //namespace WARMGUI
