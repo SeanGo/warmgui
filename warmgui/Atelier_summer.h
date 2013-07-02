@@ -30,6 +30,13 @@ public:
 
     void                   ToggleToolbar(const char* toolbar_name = "toolbar");
 
+    virtual int            is_changed()
+                           {
+                               CriticalLock::Scoped scope(_lockChange);
+                               return ((_changed & GLYPH_CHANGED_ATELIER_RESIZE)
+                                   || (_changed & GLYPH_CHANGED_ATELIER_BKG));
+                           }
+
 protected:
     HWND                   _hwnd;
 	ID2D1HwndRenderTarget* _pHwndRT;    ///HwndRT of the window

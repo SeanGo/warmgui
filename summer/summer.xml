@@ -11,6 +11,23 @@
 			<rect>0, 0, 1920, 1080</rect>
 		</canvas-bkg>
 		<canvas-summer>
+			<coord-grid>
+				<name>price-coord-grid</name>
+				<!-- RULER_LEFT, RULER_RIGHT, RULER_TOP,RULER_BOTTOM -->
+				<ruler-size>50, 20, 50,  5</ruler-size>
+				<!-- B, G, R, alpah -->
+				<ruler-color-alpha>255, 0, 0, 1.0</ruler-color-alpha>
+				<font>Verdana, 10</font>
+				<color>255, 0, 0, 1.0</color>
+				<split-pieces>11</split-pieces>
+				<world>
+					<name>price</name>
+					<!-- x0,y0, xn, yn, minpos, miny, maxpos, maxy -->
+					<!-- max ctpdata is 32400, but plus 180 * 2 predict data -->
+					<world>0, 10, 10, 30, 0, 10, 10, 30</world>
+					<increase>0.0, 0.0, DATA_BREADTH_TYPE_VALUE, 10, 0, false</increase>
+				</world>
+			</coord-grid>
 			<dataline-curve1>
 				<stroke-width>0.618</stroke-width>
 				<world>

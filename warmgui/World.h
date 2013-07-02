@@ -67,6 +67,7 @@ public:
 
     inline WORLD_CHANGED_TYPE fresh_limit(float x, float y);
     inline WORLD_CHANGED_TYPE get_world_change() { return _world_changed; }
+    inline void         set_world_change(WORLD_CHANGED_TYPE type = WORLD_CHANGED_TYPE_NONE) { _world_changed = type; }
 
     inline float        get_x_left();
 protected:
@@ -84,7 +85,7 @@ public:
 	WORLD_RECT         _bak_world; ///the world of background
     ValueIncrease      _vi;
 
-
+    CriticalLock       _lock_change;
 protected:
     CWarmguiConfig*   _config;
     char   _strconf[MAX_PATH];

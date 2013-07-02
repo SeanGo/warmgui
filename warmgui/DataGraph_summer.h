@@ -50,6 +50,8 @@ protected:
 
     virtual HRESULT            _predraw() = 0;
     virtual HRESULT            _draw(bool redraw_all = false) = 0;
+    inline  virtual void       _update_data() = 0;
+
 };
 
 
@@ -105,12 +107,12 @@ protected:
     virtual void            _draw_whole_line(eArtist* artist);
     virtual HRESULT         draw_new_point();
     virtual void            _draw_new_point(eArtist* artist);
-    inline  virtual void    update_data();
     inline  virtual void    prepare_path();
 
     inline  void            clear_bmp_target();
     inline  virtual HRESULT _predraw();
-    virtual HRESULT            _draw(bool redraw_all = false);
+    virtual HRESULT         _draw(bool redraw_all = false);
+    inline  virtual void    _update_data();
 };
 
 

@@ -68,9 +68,9 @@ HRESULT IGlyph_summer::draw(bool/* redraw_all = false*/)
 inline HRESULT IGlyph_summer::push_layer()
 {
 #ifdef _DEBUG
-    TCHAR name[MAX_PATH];
-    CChineseCodeLib::Gb2312ToUnicode(name, MAX_PATH, _name);
-    MYTRACE(L"Graph::PUSH layer %s %d, %d, %d, %d\n", name, _abs_rect.left, _abs_rect.top, _abs_rect.right, _abs_rect.bottom);
+    //TCHAR name[MAX_PATH];
+    //CChineseCodeLib::Gb2312ToUnicode(name, MAX_PATH, _name);
+    //MYTRACE(L"Graph::PUSH layer %s %d, %d, %d, %d\n", name, _abs_rect.left, _abs_rect.top, _abs_rect.right, _abs_rect.bottom);
 #endif //_DEBUG
     MATRIX_2D back_trans;
     _artist->GetTransform(&back_trans);
@@ -85,9 +85,9 @@ inline HRESULT IGlyph_summer::push_layer()
 inline HRESULT IGlyph_summer::pop_layer()
 {
 #ifdef _DEBUG
-    TCHAR name[MAX_PATH];
-    CChineseCodeLib::Gb2312ToUnicode(name, MAX_PATH, _name);
-    MYTRACE(L"Graph::POP layer %s\n", name);
+    //TCHAR name[MAX_PATH];
+    //CChineseCodeLib::Gb2312ToUnicode(name, MAX_PATH, _name);
+    //MYTRACE(L"Graph::POP layer %s\n", name);
 #endif //_DEBUG
     MATRIX_2D back_trans;
     _artist->GetTransform(&back_trans);
@@ -140,9 +140,9 @@ HRESULT IGlyph_summer::draw_graph(bool redraw_all/* = false*/, GLYPH_TYPE glyph_
                 _artist->SetTransform(&I);
 
 #ifdef _DEBUG
-                TCHAR name[MAX_PATH];
-                CChineseCodeLib::Gb2312ToUnicode(name, MAX_PATH, _name);
-                MYTRACE(L"Graph::draw %s\n", name);
+                //TCHAR name[MAX_PATH];
+                //CChineseCodeLib::Gb2312ToUnicode(name, MAX_PATH, _name);
+                //MYTRACE(L"Graph::draw %s\n", name);
 #endif //_DEBUG
 
                 hr = draw(redraw_all);

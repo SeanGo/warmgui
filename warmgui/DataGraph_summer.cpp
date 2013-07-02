@@ -137,7 +137,7 @@ GLYPH_CHANGED_TYPE CCurveGraph_summer::update(dataptr data)
 
         //add data to data-point-set
         _points.add_data(((POINTF*)data)->x, ((POINTF*)data)->y);
-        MYTRACE(L"Update Data %.02f, %.02f\n", ((POINTF*)data)->x, ((POINTF*)data)->y);
+        //MYTRACE(L"Update Data %.02f, %.02f\n", ((POINTF*)data)->x, ((POINTF*)data)->y);
 
         if (_my_own_artist) {
             draw_new_point();
@@ -146,7 +146,7 @@ GLYPH_CHANGED_TYPE CCurveGraph_summer::update(dataptr data)
     } else {
         //call virtual function, set the curve graph
         //the data pointer is DOUBLE_DATA_POINTER
-        update_data();
+        _update_data();
     }
 
     return _changed;
@@ -173,6 +173,8 @@ inline void CCurveGraph_summer::clear_bmp_target()
 {
     if(_my_artist)
     {
+        CriticalLock::Scoped scope(_my_artist->_lock_artist);
+        
         _my_artist->BeginBmpDraw(true);
         _my_artist->EndBmpDraw();
     }
@@ -221,7 +223,7 @@ inline void CCurveGraph_summer::end_set_data()
     change(GLYPH_CHANGED_GLYPH);
 }
 
-inline void CCurveGraph_summer::update_data()
+inline void CCurveGraph_summer::_update_data()
 {
     CriticalLock::Scoped scope(_lockChange);
     change(GLYPH_CHANGED_GLYPH);
@@ -256,12 +258,13 @@ HRESULT CCurveGraph_summer::_draw(bool redraw_all/* = false*/)
     if (_my_own_artist) {
         //draw bitmap
         if (_points._count > 1) {
-            if (redraw_all && _changed) {
+            if (redraw_all && (_changed || _atelier->is_changed() || _canvas->is_changed()))
+            {
                 MYTRACE(L"redraw--------------\n");
                 prepare_path();
                 hr = draw_whole_line();
             }
-            
+            CriticalLock::Scoped scope(_my_artist->_lock_artist);
             _artist->DrawBitmap(_my_artist->GetDefaultBmp(), _rect, _rect, 1.0f);
         }
     } else {
@@ -312,6 +315,28 @@ void CCurveGraph_summer::_draw_whole_line(eArtist* artist)
     artist->SetTransform(&trans);
     ////////////////////////////////////////////////////////////////
 
+
+#ifdef _DEBUG
+    /*
+    TCHAR name[MAX_PATH];
+    CChineseCodeLib::Gb2312ToUnicode(name, MAX_PATH, _name);
+    MYTRACE(L"%s rect %d %d,, %.02f %.02f == ", name, _rect.left, _rect.top, _points._points[0].x, _points._points[0].y);
+	MYTRACE(L"trans %.02f %.02f %.02f %.02f %.02f %.02f\n", 
+	    trans._11, trans._12, trans._21, trans._22, trans._31, trans._32);
+	D2D1::Matrix3x2F PPPPPP(trans._11, trans._12, trans._21, trans._22, trans._31, trans._32);
+    POINT_f P1 = D2D1::Point2F(_points._points[0].x, _points._points[0].y);
+    POINT_f P2 = D2D1::Point2F(_points._points[1].x, _points._points[1].y);
+    POINT_f p1 = PPPPPP.TransformPoint(P1);
+	POINT_f p2 = PPPPPP.TransformPoint(P2);
+    MYTRACE(L"%.02f %.02f, %.02f %.02f ==> %.02f %.02f, %.02f %.02f\n",
+		//_name,
+		P1.x, P1.y,
+		P2.x, P2.y,
+		p1.x, p1.y,
+		p2.x, p2.y);
+    */
+#endif
+
     D2D1_ANTIALIAS_MODE am = artist->GetHwndRT()->GetAntialiasMode();
 	artist->GetUsingRT()->SetAntialiasMode(D2D1_ANTIALIAS_MODE_PER_PRIMITIVE);
 	artist->SetSolidColorBrush(D2D1::ColorF(_color, _alpha));
@@ -327,6 +352,8 @@ HRESULT CCurveGraph_summer::draw_whole_line()
 
     if (_points._count > 1) {
         if (_my_own_artist) {
+            CriticalLock::Scoped scope(_my_artist->_lock_artist);
+
             _my_artist->BeginBmpDraw(true);
             _draw_whole_line(_my_artist);
             hr = _my_artist->EndBmpDraw();
@@ -351,6 +378,7 @@ HRESULT CCurveGraph_summer::move_bitmap_left()
         MATRIX_2D id = D2D1::Matrix3x2F::Identity();
         _my_artist->SetTransform(&id);
         */
+        CriticalLock::Scoped scope(_my_artist->_lock_artist);
         _my_artist->DrawBitmap(_my_artist->GetDefaultBmp(), rectDest, rectSrc);
 
         //_my_artist->SetTransform(&_backup_trans);
@@ -386,14 +414,18 @@ HRESULT CCurveGraph_summer::draw_new_point()
 
     if (_points._count > 1) {
         if (_my_own_artist) {
+            CriticalLock::Scoped scope(_my_artist->_lock_artist);
+
             _my_artist->BeginBmpDraw(true);
             ////////////////////////////////////////////////////////////////
             _my_artist->DrawRectangle(_rect);
             ////////////////////////////////////////////////////////////////
             if (_world_change & WORLD_CHANGED_TYPE_MIN_X || _world_change & WORLD_CHANGED_TYPE_MAX_X)
                 move_bitmap_left();
-            else
+            else {
+                CriticalLock::Scoped scope(_my_artist->_lock_artist);
                 _my_artist->DrawBitmap(_my_artist->GetDefaultBmp(), _rect, _rect, 1.0f);
+            }
             _draw_new_point(_my_artist);
             hr = _my_artist->EndBmpDraw();
         } else {

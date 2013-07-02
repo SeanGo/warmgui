@@ -42,7 +42,7 @@ void CSummerView::OnSize(UINT /*nType*/, int cx, int cy)
 
 void CSummerView::OnDraw()
 {
-    MYTRACE(L"OnDraw\n");
+    //MYTRACE(L"OnDraw\n");
 	if (_atelier) {
 		_atelier->Draw();
     }
@@ -109,9 +109,9 @@ int  CSummerView::OnKillfocus(WPARAM, LPARAM)
 
 int  CSummerView::OnSetfocus(HWND)
 {
-    MYTRACE(L"focus\n");
-    if (!_focus)
-        _atelier->Changed(GLYPH_CHANGED_ATELIER_RESIZE);
+    //MYTRACE(L"focus\n");
+    //if (!_focus)
+    //    _atelier->Changed(GLYPH_CHANGED_ATELIER_RESIZE);
     return (0);
 }
 

@@ -16,6 +16,15 @@ public:
 
     void            set_appbitmap(AppBitmap_summer* appbmp) { _appbmp = appbmp; }
     virtual HRESULT draw_mouse_graph() { if (_mouse_graph) return _mouse_graph->draw(); else return S_OK; }
+
+    virtual int            is_changed()
+                           {
+                               CriticalLock::Scoped scope(_lockChange);
+                               return ((_changed & GLYPH_CHANGED_CANVAS_RESIZE)
+                                   || (_changed & GLYPH_CHANGED_CANVAS_BKG)
+                                   || (_changed & GLYPH_CHANGED_CANVAS));
+                           }
+
 protected:
 	CSharedImage_summer* _imgBkg;
 	AppBitmap_summer*    _appbmp;      ///bitmap of materies and background of all

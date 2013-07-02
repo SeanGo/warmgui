@@ -105,9 +105,9 @@ inline HRESULT IAtelier_summer::Draw()
             hr = _artist->EndBmpDraw();
     }
 
-    if (SUCCEEDED(hr)) {
-        if (bkgchanged || graph_is_changed(_changed))
-        {
+    //if (SUCCEEDED(hr)) {
+    //    if (bkgchanged || graph_is_changed(_changed))
+    //    {
             _artist->BeginDraw(true);
             _artist->SetTransform(&idmatrix);
 
@@ -123,9 +123,9 @@ inline HRESULT IAtelier_summer::Draw()
 
             if (SUCCEEDED(hr))
                 hr = _artist->EndDraw();
-        } else
-            hr = draw_screen_bitmap();
-    }
+    //    } else
+    //        hr = draw_screen_bitmap();
+    //}
 
     if (SUCCEEDED(hr))
         set_change(GLYPH_CHANGED_NONE);
@@ -225,8 +225,8 @@ inline void IAtelier_summer::ToggleToolbar(const char* toolbar_name/* = "toolbar
 inline void IAtelier_summer::redraw_window(bool all_redraw/* = false*/)
 {
     //if (all_redraw)
-    change(GLYPH_CHANGED_ATELIER_RESIZE);
-    MYTRACE(L"redraw window\n");
+    //change(GLYPH_CHANGED_ATELIER_RESIZE);
+    //MYTRACE(L"redraw window\n");
     PostMessage(_hwnd, WM_WINDOWS_REDRAW, (WPARAM)&_abs_rect, all_redraw);
 }
 

@@ -54,6 +54,9 @@ private:
     FONT                      _font;
     IDWriteTextFormat* _pTextFormat;
     IDWriteTextLayout* _pTextLayout;
+
+    virtual HRESULT         _predraw() = 0;
+    virtual HRESULT         _draw(bool redraw_all = false) = 0;
 };
 
 

@@ -16,7 +16,6 @@ CTestDispatcher_summer::~CTestDispatcher_summer(void)
 
 bool CTestDispatcher_summer::init()
 {
-    /*
     pset1.init(1024);
     pset2.init(1024);
 
@@ -36,19 +35,21 @@ bool CTestDispatcher_summer::init()
     }
 
     pset1.count = pset2.count = 1024;
-    */
     return true;
 }
 
 static int xxxx = 0;
 void CTestDispatcher_summer::go()
 {
-    for (int i = 0; !_stop && i < 1024; i++)
+    Sleep(10 * (_id - 1));
+    for (int i = 0; !_stop && i < 24; i++)
     {
         DataObject* dataobj = new DataObject(sizeof(POINTF), 1);
         POINTF* point = (POINTF*)dataobj->GetData();
         point->x = (float)(xxxx++),   //pset1.x[i],
             point->y = (float)_id * 4;  //pset1.y[i];
+        //point->x = (float)pset1.x[i],
+          //  point->y = (float)pset1.y[i];
 
         DataObjectPtr dop(dataobj);
 

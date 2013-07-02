@@ -80,7 +80,7 @@ public:
     eArtist*               get_artist() { return _artist; }
     inline virtual void    inherit(IAtelier_summer* atelier, CGlyphTree_summer* tree, ICanvas_summer* canvas, GlyphTreeIter_summer& tree_iter, eArtist* artist, CWarmguiConfig* config);
     inline void            inherit_config_string();
-    int                    is_changed() { return _changed; }
+    virtual int            is_changed() { return _changed; }
 
     enum GLYPH_TYPE {
         GLYPH_TYPE_GLYPH, ///as a graph

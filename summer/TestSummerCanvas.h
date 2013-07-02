@@ -19,7 +19,8 @@ protected:
     WARMGUI::CCurveGraph_summer* _curve_4;
 
     WARMGUI::CBlind_summer*      _blind;
-
+    WARMGUI::CCoordFrame_summer* _coord_1;
+    WARMGUI::CCoordFrame_summer* _coord_2;
 private:
     void SetClass() { SetMyClass("CTestSummerCanvas"); }
 };

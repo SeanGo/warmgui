@@ -111,6 +111,8 @@ inline void CWorld::fresh_y_limit(float x, float y)
 
 inline WORLD_CHANGED_TYPE CWorld::fresh_limit(float x, float y)
 {
+    CriticalLock::Scoped scope(_lock_change);
+
     _world_changed = WORLD_CHANGED_TYPE_NONE;
     _x_left = 0.0f;
     if (y > _real_world.maxy)
@@ -126,6 +128,7 @@ inline WORLD_CHANGED_TYPE CWorld::fresh_limit(float x, float y)
                 _world_changed |= WORLD_CHANGED_TYPE_MIN_X;
 
     if (_world_changed) {
+        //MYTRACE(L"world changedddddddddd\n");
         real_world_to_screen();
         _bak_world = _real_world;
 	    SetScale();
