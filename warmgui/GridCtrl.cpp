@@ -1,5 +1,5 @@
 #include "StdAfx.h"
-#include "warmgui.h"
+#include "warmgui_summer.h"
 
 
 
@@ -1089,7 +1089,7 @@ void CGridCtrl::OnEndInPlaceEdit(NMHDR* pNMHDR, LRESULT* pResult)
 }
 
 // Handle horz scrollbar notifications
-void CGridCtrl::OnHScroll(UINT nSBCode, UINT /*nPos*/, CScrollBar* /*pScrollBar*/)
+void CGridCtrl::OnHScroll(UINT nSBCode, UINT /*nPos*/, CScrollBar_summer* /*pScrollBar*/)
 {
     EndEditing();
 
@@ -1209,7 +1209,7 @@ void CGridCtrl::OnHScroll(UINT nSBCode, UINT /*nPos*/, CScrollBar* /*pScrollBar*
 }
 
 // Handle vert scrollbar notifications
-void CGridCtrl::OnVScroll(UINT nSBCode, UINT /*nPos*/, CScrollBar* /*pScrollBar*/)
+void CGridCtrl::OnVScroll(UINT nSBCode, UINT /*nPos*/, CScrollBar_summer* /*pScrollBar*/)
 {
     EndEditing();
 

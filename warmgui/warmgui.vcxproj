@@ -89,14 +89,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Artist.h" />
-    <ClInclude Include="Atelier.h" />
-    <ClInclude Include="Calculator.h" />
     <ClInclude Include="Calculator_summer.h" />
-    <ClInclude Include="Canvas.h" />
-    <ClInclude Include="CanvasCreator.h" />
     <ClInclude Include="Canvas_summer.h" />
     <ClInclude Include="CoordFrame_summer.h" />
-    <ClInclude Include="DataLineChart.h" />
     <ClInclude Include="Atelier_summer.h" />
     <ClInclude Include="Dispatcher_summer.h" />
     <ClInclude Include="Glyph_summer.h" />
@@ -107,43 +102,24 @@
     <ClInclude Include="warmgui_summer.h" />
     <ClInclude Include="warmgui_type_summer.h" />
     <ClInclude Include="World.h" />
-    <ClInclude Include="DataDispatcher.h" />
-    <ClInclude Include="GuiFactory.h" />
     <ClInclude Include="IObject.h" />
     <ClInclude Include="pocoinc.h" />
-    <ClInclude Include="CoordFrame.h" />
-    <ClInclude Include="DataContainer.h" />
     <ClInclude Include="DxFactorys.h" />
-    <ClInclude Include="DxWinApp.h" />
-    <ClInclude Include="DxWindow.h" />
-    <ClInclude Include="Glyph.h" />
-    <ClInclude Include="GridCanvas.h" />
-    <ClInclude Include="Layout.h" />
-    <ClInclude Include="DataCanvas.h" />
-    <ClInclude Include="DataLineGraph.h" />
     <ClInclude Include="stdafx.h" />
-    <ClInclude Include="Toolbar.h" />
     <ClInclude Include="CellRange.h" />
     <ClInclude Include="GridCell.h" />
     <ClInclude Include="GridCellBase.h" />
     <ClInclude Include="GridCtrl.h" />
-    <ClInclude Include="warmgui.h" />
     <ClInclude Include="WarmguiConfig.h" />
-    <ClInclude Include="warmgui_incs.h" />
     <ClInclude Include="warmgui_type.h" />
     <ClInclude Include="ScrollBar.h" />
-    <ClInclude Include="ImageList.h" />
     <ClInclude Include="Window.h" />
     <ClInclude Include="WindowManager.h" />
     <ClInclude Include="WndApp.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Artist.cpp" />
-    <ClCompile Include="Atelier.cpp" />
-    <ClCompile Include="Canvas.cpp" />
-    <ClCompile Include="CanvasCreator.cpp" />
     <ClCompile Include="CoordFrame_summer.cpp" />
-    <ClCompile Include="DataLineChart.cpp" />
     <ClCompile Include="Atelier_summer.cpp" />
     <ClCompile Include="Dispatcher_summer.cpp" />
     <ClCompile Include="Glyph_summer.cpp" />
@@ -153,30 +129,17 @@
     <ClCompile Include="IInputResponse.cpp" />
     <ClCompile Include="Toolbar_summer.cpp" />
     <ClCompile Include="World.cpp" />
-    <ClCompile Include="DataDispatcher.cpp" />
-    <ClCompile Include="GuiFactory.cpp" />
-    <ClCompile Include="CoordFrame.cpp" />
-    <ClCompile Include="DataContainer.cpp" />
     <ClCompile Include="DxFactory.cpp" />
-    <ClCompile Include="DxWinApp.cpp" />
-    <ClCompile Include="DxWindow.cpp" />
-    <ClCompile Include="Glyph.cpp" />
-    <ClCompile Include="GridCanvas.cpp" />
-    <ClCompile Include="Layout.cpp" />
-    <ClCompile Include="DataCanvas.cpp" />
-    <ClCompile Include="DataLineGraph.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="Toolbar.cpp" />
     <ClCompile Include="GridCell.cpp" />
     <ClCompile Include="GridCellBase.cpp" />
     <ClCompile Include="GridCtrl.cpp" />
     <ClCompile Include="warmgui.cpp" />
     <ClCompile Include="WarmguiConfig.cpp" />
     <ClCompile Include="ScrollBar.cpp" />
-    <ClCompile Include="ImageList.cpp" />
     <ClCompile Include="Window.cpp" />
     <ClCompile Include="WindowManager.cpp" />
     <ClCompile Include="WndApp.cpp" />

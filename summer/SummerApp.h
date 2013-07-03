@@ -7,17 +7,14 @@ public:
     CSummerApp(void);
     ~CSummerApp(void);
 
-	virtual int InitialApp(HINSTANCE hInstance, int nCmdShow);
-	virtual void CleanupApp();
+	virtual int              InitialApp(HINSTANCE hInstance, int nCmdShow);
+	virtual void             CleanupApp();
 
-    void regester_graph(WARMGUI::IDataGraph_summer* graph);
-    void dispathcer_start();
+    WARMGUI::CDispatchers*   get_dispatchers() { return &_dispatchers; }
 
 protected:
-    CTestDispatcher_summer* dispatcher_1;
-    CTestDispatcher_summer* dispatcher_2;
-    CTestDispatcher_summer* dispatcher_3;
-    CTestDispatcher_summer* dispatcher_4;
+    CCtpmdDispatcher_summer* _ctp_disp;
+    WARMGUI::CDispatchers    _dispatchers;
 };
 
 extern CSummerApp the_app;

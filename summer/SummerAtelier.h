@@ -10,14 +10,13 @@ public:
 
     virtual HRESULT init(HWND hwnd);
     virtual void    disposal(RECT& rect);
-    void draw_time_series();
     void Changed(GLYPH_CHANGED_TYPE change_type);
 private:
     void SetClass() { SetMyClass("CSummerAtelier"); }
 
     WARMGUI::CBkgCanvas_summer* _bkg_canvas;
     WARMGUI::CToolbar_summer*   _toolbar;
-    CTestSummerCanvas*          _ts_canvas;
+    CCtpmdCanvas_summer*        _ctp_canvas;
 };
 
 #endif //__summer_atelier__

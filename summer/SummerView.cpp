@@ -1,12 +1,11 @@
 #include "StdAfx.h"
-#include "warmgui_summer.h"
-#include "TestDispatcher_summer.h"
-#include "TestSummerCanvas.h"
-#include "SummerAtelier.h"
+#include "summer.h"
 #include "SummerApp.h"
 #include "SummerView.h"
 
 #include "Resource.h"
+
+extern CSummerApp the_app;
 
 CSummerView::CSummerView(void)
     : _atelier(0)
@@ -77,7 +76,7 @@ int CSummerView::OnCommand(WORD nCmdId, WORD /*nSource*/, HWND /*hwnd*/)
 		_atelier->ToggleToolbar("canvas-toolbar");
 		break;
     case ID_TEST_DRAW_TIME_SERIES:
-        _atelier->draw_time_series();
+        
         break;
 	}
 
@@ -86,7 +85,12 @@ int CSummerView::OnCommand(WORD nCmdId, WORD /*nSource*/, HWND /*hwnd*/)
 
 void CSummerView::OnRButtonUp(UINT, int x, int y)
 {
-    the_app.dispathcer_start();
+    the_app.get_dispatchers()->start();
+}
+
+void CSummerView::OnLButtonUp(UINT, int x, int y)
+{
+    the_app.get_dispatchers()->stop();
 }
 
 

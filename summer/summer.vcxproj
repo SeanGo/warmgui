@@ -48,14 +48,14 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USE_32BIT_TIME_T;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>../warmgui; E:\projects\America\nrlib; E:\projects\America\nrlib\include; E:\projects\America\clicomm\;E:\projects\America\ctpmdif;E:\projects\America\filter;E:\projects\America\utility;;E:\projects\America\nrlib;E:\projects\America\euclid</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>../lib/debug;C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Samples\C++\DXUT11\Core\Debug;C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Samples\C++\DXUT11\Optional\Debug;E:\projects\America\Lib\Debug</AdditionalLibraryDirectories>
-      <AdditionalDependencies>nrlib.lib;euclid.lib;utility.lib;filter.lib;dxut.lib;dxutopt.lib;ctpmdif.lib;dxerr.lib;d3dcompiler.lib;d3dx11.lib;d3dx9.lib;imm32.lib;dxut.lib;dxutopt.lib;warmgui.lib;user32.lib;gdi32.lib;comdlg32.lib;ole32.lib;comctl32.lib;shell32.lib;version.lib;advapi32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>utility.lib;nrlib.lib;euclid.lib;utility.lib;filter.lib;dxut.lib;dxutopt.lib;ctpmdif.lib;dxerr.lib;d3dcompiler.lib;d3dx11.lib;d3dx9.lib;imm32.lib;dxut.lib;dxutopt.lib;warmgui.lib;user32.lib;gdi32.lib;comdlg32.lib;ole32.lib;comctl32.lib;shell32.lib;version.lib;advapi32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -86,16 +86,23 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CtpmdCanvas_summer.h" />
+    <ClInclude Include="CtpmdCurve_summer.h" />
+    <ClInclude Include="CtpmdDispatcher_summer.h" />
+    <ClInclude Include="InflexionLines.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="summer.h" />
     <ClInclude Include="SummerApp.h" />
     <ClInclude Include="SummerAtelier.h" />
     <ClInclude Include="SummerView.h" />
     <ClInclude Include="targetver.h" />
-    <ClInclude Include="TestDispatcher_summer.h" />
-    <ClInclude Include="TestSummerCanvas.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="CtpmdCanvas_summer.cpp" />
+    <ClCompile Include="CtpmdCurve_summer.cpp" />
+    <ClCompile Include="CtpmdDispatcher_summer.cpp" />
+    <ClCompile Include="InflexionLines.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
@@ -104,8 +111,6 @@
     <ClCompile Include="SummerApp.cpp" />
     <ClCompile Include="SummerAtelier.cpp" />
     <ClCompile Include="SummerView.cpp" />
-    <ClCompile Include="TestDispatcher_summer.cpp" />
-    <ClCompile Include="TestSummerCanvas.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="summer.rc" />

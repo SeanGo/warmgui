@@ -1,5 +1,5 @@
 #include "StdAfx.h"
-#include "warmgui.h"
+#include "warmgui_summer.h"
 
 namespace WARMGUI {
 
@@ -8,6 +8,7 @@ namespace WARMGUI {
 inline CWorld::CWorld()
 	: _transform(D2D1::Matrix3x2F::Identity())
     , _x_left(0)
+    , _fist_data(true)
 {
 	memset(&_rect , 0, sizeof(RECT));
     *_name = 0;
@@ -112,13 +113,20 @@ inline void CWorld::fresh_y_limit(float x, float y)
 inline WORLD_CHANGED_TYPE CWorld::fresh_limit(float x, float y)
 {
     CriticalLock::Scoped scope(_lock_change);
-
-    _world_changed = WORLD_CHANGED_TYPE_NONE;
     _x_left = 0.0f;
+
+    if (_fist_data)
+    {
+        _real_world.miny = y - _vi._min_decres_mag;
+        _real_world.maxy = y + _vi._max_incres_mag;
+        _fist_data = false;
+        _world_changed = (WORLD_CHANGED_TYPE_MAX_Y | WORLD_CHANGED_TYPE_MIN_Y);
+    }
+
     if (y > _real_world.maxy)
-        _real_world.maxpos = x, _real_world.maxy = y, _world_changed |= WORLD_CHANGED_TYPE_MAX_Y;
+        _real_world.maxpos = x, _real_world.maxy = y + _vi._max_incres_mag, _world_changed |= WORLD_CHANGED_TYPE_MAX_Y;
     if (y < _real_world.miny)
-        _real_world.minpos = x, _real_world.miny = y, _world_changed |= WORLD_CHANGED_TYPE_MIN_Y;
+        _real_world.minpos = x, _real_world.miny = y - _vi._min_decres_mag, _world_changed |= WORLD_CHANGED_TYPE_MIN_Y;
     if (!_vi._b_fix_width && _real_world.xn < x)
         _real_world.xn = x, _real_world.yn = y, _world_changed |= WORLD_CHANGED_TYPE_MAX_X;
     if (_world_changed & WORLD_CHANGED_TYPE_MAX_X)
@@ -129,7 +137,7 @@ inline WORLD_CHANGED_TYPE CWorld::fresh_limit(float x, float y)
 
     if (_world_changed) {
         //MYTRACE(L"world changedddddddddd\n");
-        real_world_to_screen();
+        //real_world_to_screen();
         _bak_world = _real_world;
 	    SetScale();
     }
@@ -254,14 +262,12 @@ void CWorld::ResetZoom()
 
 inline void CWorld::real_world_to_screen()
 {
-    /*
     if (_vi._breadth_type == DATA_BREADTH_TYPE_PERCENT)
         _real_world.miny = _real_world.miny * (1 - _vi._min_decres_mag),
         _real_world.maxy = _real_world.maxy * (1 + _vi._max_incres_mag);
     else if (_vi._breadth_type == DATA_BREADTH_TYPE_VALUE)
         _real_world.miny = _real_world.miny - _vi._min_decres_mag,
         _real_world.maxy = _real_world.maxy + _vi._max_incres_mag;
-    */
 }
 
 inline void CWorld::RenewByRealWorld()
@@ -271,20 +277,6 @@ inline void CWorld::RenewByRealWorld()
     SetScale();
 }
 
-
-inline void CWorld::reset_zeor_world(float x0, float y0)
-{
-    if (_vi._b_fix_width)
-        _real_world.x0 = _real_world.minpos = _zero_world.x0,
-            _real_world.maxpos = _real_world.xn = _zero_world.xn;
-    else
-        _real_world.x0 = _real_world.xn = _real_world.minpos = _real_world.maxpos = x0;
-
-    _real_world.y0 = _real_world.yn = _real_world.maxy = _real_world.miny = y0;
-
-    real_world_to_screen();
-    _bak_world = _real_world;
-}
 
 
 inline float CWorld::get_x_left()

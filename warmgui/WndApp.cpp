@@ -1,7 +1,7 @@
 #include "StdAfx.h"
 #include "utility.h"
 #include "ChineseCodeLib.h"
-#include "warmgui.h"
+#include "warmgui_summer.h"
 #include "WarmguiConfig.h"
 #include "WndApp.h"
 #include "Window.h"

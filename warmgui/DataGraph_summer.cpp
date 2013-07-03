@@ -88,9 +88,8 @@ inline void IDataGraph_summer::inherit(IAtelier_summer* atelier, CGlyphTree_summ
 ///////////////////////////////////////////////////////////////////////////////
 //class CCurveGraph_summer
 inline CCurveGraph_summer::CCurveGraph_summer(void)
-	: _color(0)
+	: _color_alpha(DEFAULT_COLOR_ALPHA)
 	//, _datasize(datasize)
-	, _alpha(1.0f)
 	, _pathg(0)
     , _pSink(0)
 	, _stroke_width(1.0f)
@@ -100,9 +99,8 @@ inline CCurveGraph_summer::CCurveGraph_summer(void)
 
 inline CCurveGraph_summer::CCurveGraph_summer(const char* name, bool own_world, bool own_artist, bool own_data)
     : IDataGraph_summer(name, own_world, own_artist, own_data)
-	, _color(0)
+	,  _color_alpha(DEFAULT_COLOR_ALPHA)
 	//, _datasize(datasize)
-	, _alpha(1.0f)
 	, _pathg(0)
     , _pSink(0)
 	, _stroke_width(1.0f)
@@ -117,11 +115,6 @@ inline CCurveGraph_summer::~CCurveGraph_summer(void)
 
     if (_pathg)
         SafeRelease(&_pathg);
-}
-
-GLYPH_CHANGED_TYPE CCurveGraph_summer::new_data(DataObjectPtr dop)
-{
-    return update(dop.get()->GetData());
 }
 
 GLYPH_CHANGED_TYPE CCurveGraph_summer::update(dataptr data)
@@ -140,7 +133,11 @@ GLYPH_CHANGED_TYPE CCurveGraph_summer::update(dataptr data)
         //MYTRACE(L"Update Data %.02f, %.02f\n", ((POINTF*)data)->x, ((POINTF*)data)->y);
 
         if (_my_own_artist) {
-            draw_new_point();
+            if (_world_change) {
+                prepare_path();
+                draw_whole_line();
+            } else
+                draw_new_point();
             set_change(GLYPH_CHANGED_NONE);
         }
     } else {
@@ -302,7 +299,7 @@ void CCurveGraph_summer::prepare_path()
 
 void CCurveGraph_summer::_draw_whole_line(eArtist* artist)
 {
-    artist->SetSolidColorBrush(D2D1::ColorF(_color, _alpha));
+    artist->SetSolidColorBrush(_color_alpha);
     ////////////////////////////////////////////////////////////////
     //artist->DrawRectangle(_rect);
     ////////////////////////////////////////////////////////////////
@@ -339,7 +336,7 @@ void CCurveGraph_summer::_draw_whole_line(eArtist* artist)
 
     D2D1_ANTIALIAS_MODE am = artist->GetHwndRT()->GetAntialiasMode();
 	artist->GetUsingRT()->SetAntialiasMode(D2D1_ANTIALIAS_MODE_PER_PRIMITIVE);
-	artist->SetSolidColorBrush(D2D1::ColorF(_color, _alpha));
+	artist->SetSolidColorBrush(_color_alpha);
     artist->DrawGeometry(_pathg, artist->GetSCBrush(), _stroke_width / _world->GetTransform()->_11, artist->GetStrokeStyle());
 
     artist->SetTransform(&_back_trans);
@@ -396,7 +393,7 @@ void CCurveGraph_summer::_draw_new_point(eArtist* artist)
     artist->SetTransform(&trans);
     ////////////////////////////////////////////////////////////////
 
-    artist->SetSolidColorBrush(D2D1::ColorF(_color, _alpha));
+    artist->SetSolidColorBrush(_color_alpha);
     //draw last two points
     artist->DrawLine(
         _points._points[_points._count - 2].x,
@@ -418,7 +415,7 @@ HRESULT CCurveGraph_summer::draw_new_point()
 
             _my_artist->BeginBmpDraw(true);
             ////////////////////////////////////////////////////////////////
-            _my_artist->DrawRectangle(_rect);
+            //_my_artist->DrawRectangle(_rect);
             ////////////////////////////////////////////////////////////////
             if (_world_change & WORLD_CHANGED_TYPE_MIN_X || _world_change & WORLD_CHANGED_TYPE_MAX_X)
                 move_bitmap_left();
@@ -438,11 +435,16 @@ HRESULT CCurveGraph_summer::draw_new_point()
 
 HRESULT CCurveGraph_summer::init()
 {
-
     if (_my_own_world) {
         if (!_world->setConfig(_config, _str_conf))
             return (-1);
     }
+
+    char key[MAX_PATH];
+    _snprintf_s(key, MAX_PATH, _TRUNCATE, "%s.color", _str_conf);
+    _config->getColorAlpha(_color_alpha, key);
+    _snprintf_s(key, MAX_PATH, _TRUNCATE, "%s.stroke-width", _str_conf);
+    _stroke_width = (float)_config->getDouble(key);
     return (S_OK);
 }
 

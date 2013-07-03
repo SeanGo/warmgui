@@ -1,8 +1,8 @@
 #include "StdAfx.h"
 #include "utility.h"
 #include "ChineseCodeLib.h"
-#include "warmgui.h"
-#include "warmgui_type.h"
+#include "warmgui_summer.h"
+#include "warmgui_type_summer.h"
 #include "DxFactorys.h"
 
 using namespace WARMGUI;

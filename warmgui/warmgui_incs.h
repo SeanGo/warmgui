@@ -33,10 +33,6 @@
 
 #include "ImageList.h"
 #include "ScrollBar.h"
-#include "CellRange.h"
-#include "GridCellBase.h"
-#include "GridCell.h"
-#include "GridCtrl.h"
 
 
 #include "Toolbar.h"
@@ -46,7 +42,6 @@
 #include "CoordFrame.h"
 #include "DataLineGraph.h"
 #include "DataLineChart.h"
-#include "GridCanvas.h"
 
 
 #include "DataCanvas.h"

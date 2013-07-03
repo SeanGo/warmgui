@@ -1,10 +1,11 @@
 #include "stdafx.h"
-#include "warmgui_summer.h"
-#include "TestSummerCanvas.h"
+#include "summer.h"
 #include "SummerAtelier.h"
-#include "SummerView.h"
-#include "TestDispatcher_summer.h"
 #include "SummerApp.h"
+#include "SummerView.h"
+
+//#include "TestSummerCanvas.h"
+//#include "TestDispatcher_summer.h"
 
 CSummerApp the_app;
 #include "resource.h"

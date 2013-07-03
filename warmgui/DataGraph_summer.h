@@ -10,7 +10,7 @@ class WARMGUI_API IDataGraph_summer : public IGlyph_summer
 {
 public:
     inline                     IDataGraph_summer(void);
-    inline                     IDataGraph_summer(const char* name, bool own_world, bool own_artist, bool own_data);
+    inline                     IDataGraph_summer(const char* name, bool own_world = false, bool own_artist = false, bool own_data = false);
     inline virtual            ~IDataGraph_summer(void);
 
     void                       set_world(CWorld* world)
@@ -18,7 +18,8 @@ public:
     bool                       my_own_world() { return _my_own_world; }
 
     virtual GLYPH_CHANGED_TYPE update(dataptr data) = 0;
-    virtual GLYPH_CHANGED_TYPE new_data(DataObjectPtr dop) = 0;
+    virtual GLYPH_CHANGED_TYPE update(DataObjectPtr dop) { return (0); }
+
 
     HRESULT                    predraw() {
                                     //CriticalLock iamdrawing(_my_lockArtist);
@@ -66,15 +67,14 @@ class WARMGUI_API CCurveGraph_summer : public IDataGraph_summer
 {
 public:
     inline  CCurveGraph_summer(void);
-    inline  CCurveGraph_summer(const char* name, bool own_world, bool own_artist, bool own_data);
+    inline  CCurveGraph_summer(const char* name, bool own_world = false, bool own_artist = false, bool own_data = false);
     inline ~CCurveGraph_summer(void);
 
     void                       set_size(size_t bufsize) { _points.set_size(bufsize); }
     void                       reset() { _points.reset(); }
     virtual GLYPH_CHANGED_TYPE update(dataptr data);
-    virtual GLYPH_CHANGED_TYPE new_data(DataObjectPtr dop);
 	void                       SetLineColor(COLORREF clrBGR, float alpha = 1.0f)
-		                       {_color = clrBGR, _alpha = alpha; }
+                               {_color_alpha = D2D1::ColorF(clrBGR, alpha);}
 	inline void                SetStrokeWidth(float stroke_width) {_stroke_width = stroke_width;}
 
                                //if add_to_point_set = true, reset the data-point set
@@ -93,8 +93,7 @@ public:
 protected:
     DATA_POINTS             _points;
 
-    COLORREF                _color;
-	float                   _alpha;
+    COLORALPHA              _color_alpha;
 	float                   _stroke_width;
 	ID2D1PathGeometry*      _pathg;
 	ID2D1GeometrySink*      _pSink;

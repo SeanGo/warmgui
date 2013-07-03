@@ -104,6 +104,7 @@ enum TOOLBAR_POSITION {
 	TOOLBAR_POSITION_LEFT,
 	TOOLBAR_POSITION_RIGHT,
 	TOOLBAR_POSITION_BOTTOM,
+    TOOLBAR_POSITION_MIDDLE,
 };
 
 enum DATA_BREADTH_TYPE {
@@ -265,5 +266,94 @@ typedef struct DOUBLE_DATA_POINTER {
 
 #define WM_FIRST_USER_COMMAND WM_USER + 1
 #define WM_WINDOWS_REDRAW WM_FIRST_USER_COMMAND
+
+typedef struct SIZE_u {
+	long width;
+	long height;
+
+    SIZE_u() {width = height = 0;}
+    SIZE_u(long w, long h) {width = w, height = h;}
+} SIZE_u;
+
+
+typedef struct POINT_u {
+	long x;
+	long y;
+    POINT_u() {x = y = 0;}
+    //POINT_u(POINT_u& pnt) {x = pnt.x, y = pnt.y;}
+    POINT_u(long xx, long yy) {x = xx, y = yy;}
+    POINT_u& operator-(POINT_u& pnt) {x -= pnt.x, y -= pnt.y; return *this; }
+    POINT_u& operator-(POINT_u pnt)  {x -= pnt.x, y -= pnt.y; return *this; }
+    POINT_u& operator=(POINT_u& pnt) {x  = pnt.x, y  = pnt.y; return *this; }
+    POINT_u& operator-=(POINT_u pnt) {x -= pnt.x, y -= pnt.y; return *this; }
+} POINT_u;
+
+
+extern const COLORALPHA DEFAULT_COLOR_ALPHA;
+extern bool operator== (const COLORALPHA& a, const COLORALPHA& b);
+
+EXPORT_STL_VECTOR(WARMGUI_API, int)
+typedef std::vector<int> IntArray;
+typedef IntArray::iterator IntIter;
+typedef IntArray::const_iterator IntConstIter;
+
+
+EXPORT_STL_VECTOR(WARMGUI_API, std::string)
+typedef std::vector<std::string> StringArray;
+typedef StringArray::iterator StrIter;
+typedef StringArray::const_iterator StrConstIter;
+
+EXPORT_STL_VECTOR(WARMGUI_API, std::wstring)
+typedef std::vector<std::wstring> WStringArray;
+typedef WStringArray::iterator WStrIter;
+typedef WStringArray::const_iterator WStrConstIter;
+
+EXPORT_STL_VECTOR(WARMGUI_API, HWND)
+typedef std::vector<HWND> HwndArray;
+typedef HwndArray::iterator HwndIter;
+typedef HwndArray::const_iterator HwndConstIter;
+
+class WARMGUI_API CIntArray : public IntArray
+{
+public:
+    CIntArray()  {}
+    ~CIntArray() {}
+
+    void InsertAt(int pos, int value) {
+        IntIter iter = begin();
+        iter += pos;
+        if (iter != end())
+            insert(iter, value);
+    }
+
+    void RemoveAt(int pos) {
+        IntIter iter = begin();
+        iter += pos;
+        if (iter != end())
+            erase(iter);
+    }
+};
+
+
+
+#ifndef GET_X_LPARAM
+#	define GET_X_LPARAM(lp)	((int)(short)LOWORD(lp))
+#endif //GET_X_LPARAM
+
+#ifndef GET_Y_LPARAM
+#	define GET_Y_LPARAM(lp)	((int)(short)HIWORD(lp))
+#endif //GET_Y_LPARAM
+
+
+namespace WARMGUI {
+
+extern int gettopt(int argc, TCHAR *argv[], TCHAR *opstring);
+extern TCHAR* toptarg;
+extern inline bool pt_in_rect(RECT& rect, int x, int y);
+extern inline bool pt_in_rect(RECT& rect, POINT_u pt);
+extern inline bool pt_in_rect(RECT& rect, POINT pt);
+
+
+} //namespace WARMGUI
 
 #endif //__warmgui_type_summer_h__

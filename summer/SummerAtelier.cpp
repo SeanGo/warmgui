@@ -1,15 +1,14 @@
 #include "StdAfx.h"
-#include "warmgui_summer.h"
-#include "TestDispatcher_summer.h"
+#include "summer.h"
 #include "SummerApp.h"
-#include "TestSummerCanvas.h"
-#include "SummerAtelier.h"
+
+extern CSummerApp the_app;
 
 
 CSummerAtelier::CSummerAtelier(void)
     : _bkg_canvas(0)
     , _toolbar(0)
-    , _ts_canvas(0)
+    , _ctp_canvas(0)
 {
     strcpy_s(_name, MAX_PATH, "CSummerAtelier");
 }
@@ -19,7 +18,7 @@ CSummerAtelier::CSummerAtelier(const char* name)
     : WARMGUI::IAtelier_summer(name)
     , _bkg_canvas(0)
     , _toolbar(0)
-    , _ts_canvas(0)
+    , _ctp_canvas(0)
 {
 }
 
@@ -48,9 +47,9 @@ HRESULT CSummerAtelier::init(HWND hwnd)
     append_canvas(_bkg_canvas);
     _bkg_canvas->init();
 
-    _ts_canvas = new CTestSummerCanvas("canvas-summer");
-    append_canvas(_ts_canvas);
-    _ts_canvas->init();
+    _ctp_canvas = new CCtpmdCanvas_summer("canvas-summer");
+    append_canvas(_ctp_canvas);
+    _ctp_canvas->init();
 
     _toolbar = new WARMGUI::CToolbar_summer("canvas-toolbar");
     append_canvas(_toolbar);
@@ -61,27 +60,13 @@ HRESULT CSummerAtelier::init(HWND hwnd)
 
 
 
-DWORD WINAPI draw_time_series(LPVOID param)
-{
-    if (param)
-        ((CTestSummerCanvas*)param)->draw_time_series();
-    return (0);
-}
-
-void CSummerAtelier::draw_time_series()
-{
-    DWORD id_thread;
-
-    CreateThread(0, 0, ::draw_time_series, _ts_canvas, 0, &id_thread);
-}
-
 void CSummerAtelier::disposal(RECT& rect)
 {
     if (_bkg_canvas)
         _bkg_canvas->set_rect(rect);
 
-    if (_ts_canvas)
-        _ts_canvas->set_rect(rect);
+    if (_ctp_canvas)
+        _ctp_canvas->set_rect(rect);
 
     if (_toolbar)
         _toolbar->set_rect(rect);

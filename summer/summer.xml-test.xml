@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<config>
+	<!-- for ctpmdif begin -->
+	<memfile-setting>
+		<mspath>H:\temp\snow</mspath>
+		<prefix>mdms</prefix>
+		<postfix>dat</postfix>
+		<maxdata-size>32400</maxdata-size>
+		<statfile>snowft.status</statfile>
+		<storepath>H:\temp\snow</storepath>
+	</memfile-setting>
+	<code-setting>
+		<data-path>E:\datas-old\ctpdata\trade</data-path>
+		<postfix>.dat</postfix>
+		<link-char>-</link-char>
+		<amount>2</amount>
+		<code-1>
+			<code>IF1207</code>
+			<date></date>
+		</code-1>
+		<code-2>
+			<code>IF1206</code>
+			<date></date>
+		</code-2>
+	</code-setting>
+	<!-- for ctpmdif end -->
+	
+	<atelier-summer>
+		<bitmap_materials>e:/projects/bin/qks/media/qks-pics.png</bitmap_materials>
+		<mainwindow-bkgimg-rect>0, 0, 1920, 1080</mainwindow-bkgimg-rect>
+
+		<canvas-bkg>
+			<canvas-type>background-canvas</canvas-type>
+			<canvas-name>mainwindow-bkgimg</canvas-name>
+			<blind>false</blind>
+			<rect>0, 0, 1920, 1080</rect>
+		</canvas-bkg>
+		<canvas-summer>
+			<coord-grid>
+				<name>price-coord-grid</name>
+				<!-- RULER_LEFT, RULER_RIGHT, RULER_TOP,RULER_BOTTOM -->
+				<ruler-size>50, 20, 50,  5</ruler-size>
+				<!-- B, G, R, alpah -->
+				<ruler-color-alpha>255, 0, 0, 1.0</ruler-color-alpha>
+				<font>Verdana, 10</font>
+				<color>255, 0, 0, 1.0</color>
+				<split-pieces>11</split-pieces>
+				<world>
+					<name>price</name>
+					<!-- x0,y0, xn, yn, minpos, miny, maxpos, maxy -->
+					<!-- max ctpdata is 32400, but plus 180 * 2 predict data -->
+					<world>0, 10, 10, 30, 0, 10, 10, 30</world>
+					<increase>0.0, 0.0, DATA_BREADTH_TYPE_VALUE, 10, 0, false</increase>
+				</world>
+			</coord-grid>
+			<dataline-curve1>
+				<stroke-width>0.618</stroke-width>
+				<world>
+					<name>volume</name>
+					<world>0, 10, 200, 30, 0, 10, 200, 30</world>
+					<increase>0.0, 0.0, DATA_BREADTH_TYPE_VALUE, 200, 0, true</increase>
+				</world>>
+			</dataline-curve1>
+			<dataline-curve2>
+				<stroke-width>0.618</stroke-width>
+				<world>
+					<name>volume</name>
+					<world>0, 10, 2148, 30, 0,10, 2148, 30</world>
+					<increase>0.0, 0.0, DATA_BREADTH_TYPE_VALUE, 2148, 100, true</increase>
+				</world>>
+			</dataline-curve2>
+			<dataline-curve3>
+				<stroke-width>0.618</stroke-width>
+				<world>
+					<name>volume</name>
+					<world>0, 10, 10, 30, 0, 10, 10, 30</world>
+					<increase>0.0, 0.0, DATA_BREADTH_TYPE_VALUE, 10, 0, false</increase>
+				</world>>
+			</dataline-curve3>
+			<dataline-curve4>
+				<stroke-width>0.618</stroke-width>
+				<world>
+					<name>volume</name>
+					<world>0, 10, 2148, 30, 0, 10, 2148, 30</world>
+					<increase>0.0, 0.0, DATA_BREADTH_TYPE_VALUE, 2148, 100, true</increase>
+				</world>>
+			</dataline-curve4>
+		</canvas-summer>
+		<canvas-toolbar>
+			<canvas-type>toolbar</canvas-type>
+			<canvas-name>toolbar</canvas-name>
+			<!-- top, left, right, bottom -->
+			<first-command>32772</first-command>
+			<position>middle</position>
+			<button-size>64, 64</button-size>
+			<!-- must be zero now (forever ? heihei) -->
+			<interval>0</interval>
+			<toolbar-materials-rect>0, 1080, 320, 1144</toolbar-materials-rect>
+		</canvas-toolbar>
+	</atelier-summer>
+</config>
+

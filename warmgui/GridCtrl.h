@@ -162,17 +162,17 @@ typedef struct tagGV_CACHEHINT {
 
 // For virtual mode callback
 typedef BOOL (CALLBACK* GRIDCALLBACK)(GV_DISPINFO *, LPARAM);
-class WARMGUI_API IGuiControl : public IDataGraph
+class WARMGUI_API IGuiControl : public IDataGraph_summer
 {
 public:
-                               IGuiControl(const char* name) : IDataGraph(name), _config(0) {}
+                               IGuiControl(const char* name) : IDataGraph_summer(name), _config(0) {}
     virtual                   ~IGuiControl(){}
     // Generated message map functions
     //{{AFX_MSG(CGridCtrl)
     virtual void               OnPaint() {}
-    virtual GLYPH_CHANGED_TYPE NewData(IDataContainer* data_cont, MARKET_DATA_TYPE datatype) { return GLYPH_CHANGED_TYPE_NONE; }
-    virtual void            OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar) {}
-    virtual void            OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar) {}
+    //virtual GLYPH_CHANGED_TYPE NewData(IDataContainer* data_cont, MARKET_DATA_TYPE datatype) { return GLYPH_CHANGED_TYPE_NONE; }
+    virtual void            OnHScroll(UINT nSBCode, UINT nPos, CScrollBar_summer* pScrollBar) {}
+    virtual void            OnVScroll(UINT nSBCode, UINT nPos, CScrollBar_summer* pScrollBar) {}
     virtual void            OnSize(UINT nType, int cx, int cy) {}
     virtual void            OnLButtonUp(UINT nFlags, POINT_u point) {}
     virtual void            OnLButtonDown(UINT nFlags, POINT_u point) {}
@@ -724,8 +724,8 @@ protected:
     // Generated message map functions
     //{{AFX_MSG(CGridCtrl)
     virtual void            OnPaint();
-    virtual void            OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
-    virtual void            OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
+    virtual void            OnHScroll(UINT nSBCode, UINT nPos, CScrollBar_summer* pScrollBar);
+    virtual void            OnVScroll(UINT nSBCode, UINT nPos, CScrollBar_summer* pScrollBar);
     virtual void            OnSize(UINT nType, int cx, int cy);
     virtual void            OnLButtonUp(UINT nFlags, POINT_u point);
     virtual void            OnLButtonDown(UINT nFlags, POINT_u point);

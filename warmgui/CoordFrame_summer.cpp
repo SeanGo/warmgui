@@ -66,7 +66,7 @@ inline HRESULT CCoordFrame_summer::init()
     if (b)
         return IGlyph_summer::init();
     else
-        return (-1);
+        return (0);
 }
 
 inline void CCoordFrame_summer::set_rect(RECT& rect)
@@ -108,6 +108,8 @@ HRESULT CCoordFrame_summer::draw(bool redraw_all/* = false*/)
         CriticalLock::Scoped scope(_my_artist->_lock_artist);
         _artist->DrawBitmap(_my_artist->GetDefaultBmp(), _rect, _rect, 1.0f);
     }
+
+    _world->set_world_change();
 
     return hr;
 }

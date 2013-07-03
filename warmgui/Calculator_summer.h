@@ -98,7 +98,9 @@ public:
         return true;
     }*/
 
-    virtual void new_data(DataObjectPtr dop) = 0;
+    virtual void update(DataObjectPtr dop) {}
+    virtual void update(dataptr data) = 0;
+
     //virtual void NewData(dataptr pdata, MARKET_DATA_TYPE datatype) { return GLYPH_CHANGED_TYPE_NONE;}
 
     void RegisterCalculator(ICalculator_summer* calculator)

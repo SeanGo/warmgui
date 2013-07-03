@@ -1,5 +1,5 @@
 #include "StdAfx.h"
-#include "warmgui_incs.h"
+#include "warmgui_summer.h"
 
 namespace WARMGUI {
 ///@brife retrive a integer from string splited by p and return next position of number

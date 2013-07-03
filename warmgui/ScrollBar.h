@@ -3,14 +3,14 @@
 
 
 namespace WARMGUI {
-class WARMGUI_API CScrollBar : public IGlyph
+class WARMGUI_API CScrollBar_summer : public IGlyph_summer
 {
 public:
-    CScrollBar(void);
-    virtual ~CScrollBar(void);
+    CScrollBar_summer(void);
+    virtual ~CScrollBar_summer(void);
 private:
     //set class name, by IObject
-    virtual void setClass() { SetMyClass("CScrollBar"); }
+    virtual void setClass() { SetMyClass("CScrollBar_summer"); }
 };
 
 }//namespace WARMGUI

@@ -62,7 +62,6 @@ public:
     void                RenewByRealWorld();
 
     inline void         RenewYLimit(float x, float y);
-    inline void         reset_zeor_world(float x0, float y0);
     inline void         fresh_y_limit(float x, float y);
 
     inline WORLD_CHANGED_TYPE fresh_limit(float x, float y);
@@ -86,6 +85,9 @@ public:
     ValueIncrease      _vi;
 
     CriticalLock       _lock_change;
+
+    bool               _fist_data;
+
 protected:
     CWarmguiConfig*   _config;
     char   _strconf[MAX_PATH];

@@ -29,8 +29,9 @@ public:
     //inline bool  SetDataContainer(CWarmguiConfig* config);
     //inline bool  RegisterCanvasToContainer(IDataCanvas* canvas, int container_no);
 
-    virtual void SetConfig(CWarmguiConfig* config, const char* cnf_pos)
+    virtual void set_config(CWarmguiConfig* config, const char* cnf_pos)
                  {_config = config; strcpy_s(_cnf_pos, MAX_PATH, cnf_pos);}
+
     virtual void start() {
         if (_stop)
             _thread.start(*(this));
@@ -50,6 +51,7 @@ public:
 
 
     inline void  dispatch_data(DataObjectPtr dop);
+    inline void  dispatch_data(dataptr data);
 
     AtelierArray_summer& get_atlier_array() {return _atelier_array;}
     void register_atelier(IAtelier_summer* as);
@@ -101,6 +103,28 @@ public:
         for (DispatcherConstIter iter = begin(); iter != end(); iter++)
              delete (*iter);
         clear();
+    }
+
+    void start()
+    {
+        for (DispatcherConstIter iter = begin(); iter != end(); iter++)
+             (*iter)->start();
+    }
+
+    void stop()
+    {
+        for (DispatcherConstIter iter = begin(); iter != end(); iter++)
+             (*iter)->stop();
+    }
+
+    bool reg_graph(IDataGraph_summer* graph, const char* name)
+    {
+        for (DispatcherConstIter iter = begin(); iter != end(); iter++)
+             if ((*iter)->isme(name)) {
+                 (*iter)->reg_data_graph(graph);
+                 return true;
+             }
+        return false;
     }
 };
 

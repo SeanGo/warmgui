@@ -1,5 +1,30 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <config>
+	<!-- for ctpmdif begin -->
+	<memfile-setting>
+		<mspath>H:\temp\snow</mspath>
+		<prefix>mdms</prefix>
+		<postfix>dat</postfix>
+		<maxdata-size>32400</maxdata-size>
+		<statfile>snow.status</statfile>
+		<storepath>H:\temp\snow</storepath>
+	</memfile-setting>
+	<code-setting>
+		<data-path>E:\datas-old\ctpdata\trade</data-path>
+		<postfix>.dat</postfix>
+		<link-char>-</link-char>
+		<amount>2</amount>
+		<code-1>
+			<code>IF1207</code>
+			<date></date>
+		</code-1>
+		<code-2>
+			<code>IF1206</code>
+			<date></date>
+		</code-2>
+	</code-setting>
+	<!-- for ctpmdif end -->
+	
 	<atelier-summer>
 		<bitmap_materials>e:/projects/bin/qks/media/qks-pics.png</bitmap_materials>
 		<mainwindow-bkgimg-rect>0, 0, 1920, 1080</mainwindow-bkgimg-rect>
@@ -11,7 +36,10 @@
 			<rect>0, 0, 1920, 1080</rect>
 		</canvas-bkg>
 		<canvas-summer>
-			<coord-grid>
+			<pvi-width>0.618</pvi-width>
+			<pvi-height>0.618, 0.191, 0.191</pvi-height>
+			<margin>5, 5, 5, 5</margin>
+			<coord-price>
 				<name>price-coord-grid</name>
 				<!-- RULER_LEFT, RULER_RIGHT, RULER_TOP,RULER_BOTTOM -->
 				<ruler-size>50, 20, 50,  5</ruler-size>
@@ -24,42 +52,95 @@
 					<name>price</name>
 					<!-- x0,y0, xn, yn, minpos, miny, maxpos, maxy -->
 					<!-- max ctpdata is 32400, but plus 180 * 2 predict data -->
-					<world>0, 10, 10, 30, 0, 10, 10, 30</world>
-					<increase>0.0, 0.0, DATA_BREADTH_TYPE_VALUE, 10, 0, false</increase>
+					<world>0, 3000, 32759, 3000, 0, 2985, 32759, 3015</world>
+					<increase>5, 5, DATA_BREADTH_TYPE_VALUE, 32759, 360, true</increase>
 				</world>
-			</coord-grid>
-			<dataline-curve1>
-				<stroke-width>0.618</stroke-width>
+			</coord-price>
+			<coord-volume>
+				<name>volume-coord-grid</name>
+				<!-- RULER_LEFT, RULER_RIGHT, RULER_TOP,RULER_BOTTOM -->
+				<ruler-size>50, 20, 50,  5</ruler-size>
+				<!-- B, G, R, alpah -->
+				<ruler-color-alpha>255, 0, 0, 1.0</ruler-color-alpha>
+				<font>Verdana, 10</font>
+				<color>255, 0, 0, 1.0</color>
+				<split-pieces>7</split-pieces>
 				<world>
 					<name>volume</name>
-					<world>0, 10, 200, 30, 0, 10, 200, 30</world>
-					<increase>0.0, 0.0, DATA_BREADTH_TYPE_VALUE, 200, 0, true</increase>
-				</world>>
-			</dataline-curve1>
-			<dataline-curve2>
-				<stroke-width>0.618</stroke-width>
+					<!-- x0,y0, xn, yn, minpos, miny, maxpos, maxy -->
+					<world>0, 0, 32759, 0, 0, 0,32759, 100</world>
+					<increase>0.0, 10.0, DATA_BREADTH_TYPE_VALUE, 32759, 360, true</increase>
+				</world>
+			</coord-volume>
+			<coord-interest>
+				<name>interest-coord-grid</name>
+				<!-- RULER_LEFT, RULER_RIGHT, RULER_TOP,RULER_BOTTOM -->
+				<ruler-size>50, 20, 50,  5</ruler-size>
+				<!-- B, G, R, alpah -->
+				<ruler-color-alpha>255, 0, 0, 1.0</ruler-color-alpha>
+				<font>Verdana, 10</font>
+				<color>255, 0, 0, 1.0</color>
+				<split-pieces>7</split-pieces>
 				<world>
-					<name>volume</name>
-					<world>0, 10, 2148, 30, 0,10, 2148, 30</world>
-					<increase>0.0, 0.0, DATA_BREADTH_TYPE_VALUE, 2148, 100, true</increase>
-				</world>>
-			</dataline-curve2>
-			<dataline-curve3>
+					<name>interest</name>
+					<!-- x0,y0, xn, yn, minpos, miny, maxpos, maxy -->
+					<!-- max ctpdata is 32400, but plus 180 * 2 predict data -->
+					<world>0, -50, 32759, 0, 0, -50, 32759, 50</world>
+					<increase>50.0, 50.0, DATA_BREADTH_TYPE_VALUE, 32759, 360, true</increase>
+				</world>
+			</coord-interest>
+
+			<line-price>
+				<stroke-width>0.0168</stroke-width>
+				<color>0, 0, 255, 0.8</color>
+			</line-price>
+			<line-volume>
 				<stroke-width>0.618</stroke-width>
-				<world>
-					<name>volume</name>
-					<world>0, 10, 10, 30, 0, 10, 10, 30</world>
-					<increase>0.0, 0.0, DATA_BREADTH_TYPE_VALUE, 10, 0, false</increase>
-				</world>>
-			</dataline-curve3>
-			<dataline-curve4>
+				<color>0, 0, 255, 1.0</color>
+			</line-volume>
+			<line-rel-interest>
 				<stroke-width>0.618</stroke-width>
+				<color>0, 0, 255, 1.0</color>
+			</line-rel-interest>
+			<line-dif-interest>
+				<stroke-width>0.0618</stroke-width>
+				<color>0, 255, 0, 1.0</color>
 				<world>
-					<name>volume</name>
-					<world>0, 10, 2148, 30, 0, 10, 2148, 30</world>
-					<increase>0.0, 0.0, DATA_BREADTH_TYPE_VALUE, 2148, 100, true</increase>
-				</world>>
-			</dataline-curve4>
+					<name>dif-interest</name>
+					<!-- x0,y0, xn, yn, minpos, miny, maxpos, maxy -->
+					<!-- max ctpdata is 32400, but plus 180 * 2 predict data -->
+					<world>0, -10, 32759, 10, 0, -10, 32759, 10</world>
+					<increase>10.0, 10.0, DATA_BREADTH_TYPE_VALUE, 32759, 360, true</increase>
+				</world>
+			</line-dif-interest>
+
+
+			<approx-low-price>
+				<stroke-width>0.618</stroke-width>
+				<color>255, 0, 0, 1.0</color>
+			</approx-low-price>
+			<approx-he-price>
+				<stroke-width>0.618</stroke-width>
+				<color>255, 0, 0, 1.0</color>
+			</approx-he-price>
+			<approx-volume>
+				<stroke-width>0.618</stroke-width>
+				<color>255, 0, 0, 1.0</color>
+			</approx-volume>
+			<approx-interest>
+				<stroke-width>0.618</stroke-width>
+				<color>255, 0, 0, 1.0</color>
+			</approx-interest>
+
+			<inflex-price>
+				<stroke-width>0.618</stroke-width>
+				<color>255, 0, 0, 1.0</color>
+			</inflex-price>
+			<inflex-interest>
+				<stroke-width>0.618</stroke-width>
+				<color>255, 0, 0, 1.0</color>
+			</inflex-interest>
+			
 		</canvas-summer>
 		<canvas-toolbar>
 			<canvas-type>toolbar</canvas-type>
