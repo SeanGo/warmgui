@@ -277,8 +277,8 @@ HRESULT CopyFromRenderTarget(const ID2D1HwndRenderTarget* pHwndRT, const WGBitma
 	ID2D1BitmapRenderTarget* pbmprt = 0;
 	MATRIX_2D M;
 	pHwndRT->GetTransform(&M);
-    D2D1_SIZE_F bmp_size = pbmp->GetSize();
-    D2D1_SIZE_F rt_size  = pHwndRT->GetSize();
+    //D2D1_SIZE_F bmp_size = pbmp->GetSize();
+    //D2D1_SIZE_F rt_size  = pHwndRT->GetSize();
 	((ID2D1HwndRenderTarget*)pHwndRT)->SetTransform(D2D1::Matrix3x2F::Identity());
 	HRESULT hr = ((ID2D1HwndRenderTarget*)pHwndRT)->CreateCompatibleRenderTarget(
 		pHwndRT->GetSize(),

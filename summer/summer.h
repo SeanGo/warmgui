@@ -12,13 +12,28 @@
 #include "MemShareFile.h"
 #include "CtpmdReader.h"
 
-#include "warmgui_summer.h"
+#include "TimeSeries.h"
+#include "Sampler.h"
+#include "wavelet1d.h"
+#include "DspFilter.h"
+#include "MarketDataFilter.h"
 
+#include "euclid.h"
+#include "euclid_incs.h"
+
+
+#include "warmgui_summer.h"
+#include "ExtremumPoints.h"
+
+#include "DaysCtpmmdCalculator.h"
 #include "CtpmdDispatcher_summer.h"
+#include "ZitCalculator_summer.h"
+
 #include "CtpmdCurve_summer.h"
 #include "InflexionLines.h"
-#include "CtpmdCanvas_summer.h"
+#include "DaysCtpmmdGraph.h"
 
+#include "CtpmdCanvas_summer.h"
 #include "SummerAtelier.h"
 
 #include "SummerApp.h"

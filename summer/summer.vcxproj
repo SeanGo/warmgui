@@ -65,7 +65,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USE_32BIT_TIME_T;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>../warmgui; E:\projects\America\nrlib; E:\projects\America\nrlib\include; E:\projects\America\clicomm\;E:\projects\America\ctpmdif;E:\projects\America\filter;E:\projects\America\utility;;E:\projects\America\nrlib;E:\projects\America\euclid</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
@@ -86,9 +86,12 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="CtpmdCanvas_summer.h" />
     <ClInclude Include="CtpmdCurve_summer.h" />
+    <ClInclude Include="DaysCtpmmdCalculator.h" />
+    <ClInclude Include="CtpmdCanvas_summer.h" />
     <ClInclude Include="CtpmdDispatcher_summer.h" />
+    <ClInclude Include="DaysCtpmmdGraph.h" />
+    <ClInclude Include="ExtremumPoints.h" />
     <ClInclude Include="InflexionLines.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
@@ -97,11 +100,15 @@
     <ClInclude Include="SummerAtelier.h" />
     <ClInclude Include="SummerView.h" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="ZitCalculator_summer.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="CtpmdCanvas_summer.cpp" />
     <ClCompile Include="CtpmdCurve_summer.cpp" />
+    <ClCompile Include="DaysCtpmmdCalculator.cpp" />
+    <ClCompile Include="CtpmdCanvas_summer.cpp" />
     <ClCompile Include="CtpmdDispatcher_summer.cpp" />
+    <ClCompile Include="DaysCtpmmdGraph.cpp" />
+    <ClCompile Include="ExtremumPoints.cpp" />
     <ClCompile Include="InflexionLines.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -111,6 +118,7 @@
     <ClCompile Include="SummerApp.cpp" />
     <ClCompile Include="SummerAtelier.cpp" />
     <ClCompile Include="SummerView.cpp" />
+    <ClCompile Include="ZitCalculator_summer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="summer.rc" />

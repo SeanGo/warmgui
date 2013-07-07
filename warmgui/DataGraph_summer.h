@@ -13,28 +13,34 @@ public:
     inline                     IDataGraph_summer(const char* name, bool own_world = false, bool own_artist = false, bool own_data = false);
     inline virtual            ~IDataGraph_summer(void);
 
-    void                       set_world(CWorld* world)
-                               {if (_my_own_world) SafeDelete(_world); _my_own_world = false, _world = world;}
     bool                       my_own_world() { return _my_own_world; }
 
-    virtual GLYPH_CHANGED_TYPE update(dataptr data) = 0;
+    virtual void               set_user_data(dataptr data) { _pdata = data; }
     virtual GLYPH_CHANGED_TYPE update(DataObjectPtr dop) { return (0); }
+    virtual GLYPH_CHANGED_TYPE update(dataptr data) { return (0); }
+    inline  virtual void       update_data() {}
 
-
-    HRESULT                    predraw() {
-                                    //CriticalLock iamdrawing(_my_lockArtist);
-                                    return _predraw();
-                               }
+    HRESULT                    predraw() { return (0); }
                                //reset glyph rect, and world's rect
     virtual void               set_rect(RECT& rect);
-    virtual HRESULT            draw(bool redraw_all = false)
-                               {
-                                    //CriticalLock iamdrawing(_my_lockArtist);
-                                    return _draw(redraw_all);
-                               }
 
     CWorld*                    get_world() { return _world; }
     inline virtual void        inherit(IAtelier_summer* atelier, CGlyphTree_summer* tree, ICanvas_summer* canvas, GlyphTreeIter_summer& tree_iter, eArtist* artist, CWarmguiConfig* config);
+
+    void                       set_world(CWorld* world)
+                               {
+                                   if (!_my_own_world) _world = world;
+                                   child_inherit_world();
+                               }
+
+    void child_inherit_world()
+    {
+        for (unsigned int i = 0; i < _glyph_tree->number_of_children(_tree_iter); i++) {
+            GlyphTreeIter_summer it = _glyph_tree->child(_tree_iter, i);
+            if ((*it)->isClass("IDataGraph_summer"))
+                ((IDataGraph_summer*)(*it))->set_world(_world);
+        }
+    }
 
 protected:
     CWorld*            _world;             ///the
@@ -48,11 +54,8 @@ protected:
     bool               _my_own_data;
     WORLD_CHANGED_TYPE _world_change;
 
-
-    virtual HRESULT            _predraw() = 0;
-    virtual HRESULT            _draw(bool redraw_all = false) = 0;
-    inline  virtual void       _update_data() = 0;
-
+private:
+    void SetClass() { SetMyClass("IDataGraph_summer"); }
 };
 
 
@@ -72,14 +75,20 @@ public:
 
     void                       set_size(size_t bufsize) { _points.set_size(bufsize); }
     void                       reset() { _points.reset(); }
+
     virtual GLYPH_CHANGED_TYPE update(dataptr data);
-	void                       SetLineColor(COLORREF clrBGR, float alpha = 1.0f)
+
+    void                       SetLineColor(COLORREF clrBGR, float alpha = 1.0f)
                                {_color_alpha = D2D1::ColorF(clrBGR, alpha);}
 	inline void                SetStrokeWidth(float stroke_width) {_stroke_width = stroke_width;}
 
                                //if add_to_point_set = true, reset the data-point set
     inline void                begin_set_data(float x, float y, bool add_to_point_set = true);
     inline void                add_data_to_path_geometry(float x, float y, bool add_to_point_set = true);
+    inline void                begin_set_data(double x, double y, bool add_to_point_set = true)
+                               { begin_set_data((float)x, (float)y, add_to_point_set);}
+    inline void                add_data_to_path_geometry(double x, double y, bool add_to_point_set = true)
+                               {add_data_to_path_geometry((float)x, (float)y, add_to_point_set);}
     inline void                end_set_data();
 
     virtual HRESULT            init();
@@ -88,8 +97,12 @@ public:
         UPDATE_METHOD_INCREST,
         UPDATE_METHOD_RENEW,
     };
-
     void                       set_update_method(UPDATE_METHOD update_method) { _update_method = update_method; }
+
+    inline  virtual HRESULT predraw();
+    virtual HRESULT         draw(bool redraw_all = false);
+    inline  virtual void    update_data();
+
 protected:
     DATA_POINTS             _points;
 
@@ -109,24 +122,11 @@ protected:
     inline  virtual void    prepare_path();
 
     inline  void            clear_bmp_target();
-    inline  virtual HRESULT _predraw();
-    virtual HRESULT         _draw(bool redraw_all = false);
-    inline  virtual void    _update_data();
+
+private:
+    void SetClass() { SetMyClass("CCurveGraph_summer"); }
 };
 
-
-
-
-///////////////////////////////////////////////////////////////////////////////
-//class IChat_summer
-class WARMGUI_API IChat_summer : public IGlyph_summer
-{
-public:
-    inline          IChat_summer(void);
-    inline virtual ~IChat_summer(void);
-
-
-};
 
 } //namespace WARMGUI
 #endif //__interface_chat_summer__

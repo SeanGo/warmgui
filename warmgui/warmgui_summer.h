@@ -40,6 +40,7 @@
 #include "Glyph_summer.h"
 #include "DataGraph_summer.h"
 #include "CoordFrame_summer.h"
+#include "Points_summer.h"
 
 #include "ScrollBar.h"
 #include "CellRange.h"

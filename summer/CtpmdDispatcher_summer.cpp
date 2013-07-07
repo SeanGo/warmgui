@@ -25,12 +25,12 @@ void CCtpmdDispatcher_summer::go()
     DataBufferStatus* dbs = _reader.get_status();
     MyMarketData**    mydata = _reader.get_mydata();
     _stop = 0;
-
+    const int code_num = _config->getInt("code-setting.amount");
     for (;;) {
         if (_stop || dbs->nCount < 0)
             break;
 
-        for (int i = 0; i < _config->getInt("code-setting.amount"); i++) {
+        for (int i = 0; i < code_num; i++) {
             if (_curpos[i] < dbs[i].nCount) {
                 CTPMMD mmd;
                 if (!_curpos[i]) {

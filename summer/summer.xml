@@ -15,12 +15,12 @@
 		<link-char>-</link-char>
 		<amount>2</amount>
 		<code-1>
-			<code>IF1207</code>
-			<date></date>
+			<code>IF1008</code>
+			<date>20100810</date>
 		</code-1>
 		<code-2>
 			<code>IF1206</code>
-			<date></date>
+			<date>20120601</date>
 		</code-2>
 	</code-setting>
 	<!-- for ctpmdif end -->
@@ -92,7 +92,7 @@
 
 			<line-price>
 				<stroke-width>0.0168</stroke-width>
-				<color>0, 0, 255, 0.8</color>
+				<color>0, 0, 255, 1.0</color>
 			</line-price>
 			<line-volume>
 				<stroke-width>0.618</stroke-width>
@@ -114,33 +114,39 @@
 				</world>
 			</line-dif-interest>
 
+			<days-graph>
+				<approx-low-price>
+					<stroke-width>0.0168</stroke-width>
+					<color>164, 73, 163, 0.8</color>
+				</approx-low-price>
+				<approx-he-price>
+					<stroke-width>0.0168</stroke-width>
+					<color>28, 210, 165, 0.8</color>
+				</approx-he-price>
+				<approx-volume>
+					<stroke-width>0.618</stroke-width>
+					<color>164, 73, 163, 0.8</color>
+				</approx-volume>
+				<approx-interest>
+					<stroke-width>0.618</stroke-width>
+					<color>164, 73, 163, 0.8</color>
+				</approx-interest>
 
-			<approx-low-price>
-				<stroke-width>0.618</stroke-width>
-				<color>255, 0, 0, 1.0</color>
-			</approx-low-price>
-			<approx-he-price>
-				<stroke-width>0.618</stroke-width>
-				<color>255, 0, 0, 1.0</color>
-			</approx-he-price>
-			<approx-volume>
-				<stroke-width>0.618</stroke-width>
-				<color>255, 0, 0, 1.0</color>
-			</approx-volume>
-			<approx-interest>
-				<stroke-width>0.618</stroke-width>
-				<color>255, 0, 0, 1.0</color>
-			</approx-interest>
+				<ext-price>
+					<font>Verdana, 10</font>
+					<color-1>255, 0, 0, 1.0</color-1>
+					<color-2>255, 0, 0, 1.0</color-2>
+				</ext-price>
 
-			<inflex-price>
-				<stroke-width>0.618</stroke-width>
-				<color>255, 0, 0, 1.0</color>
-			</inflex-price>
-			<inflex-interest>
-				<stroke-width>0.618</stroke-width>
-				<color>255, 0, 0, 1.0</color>
-			</inflex-interest>
-			
+				<inflex-price>
+					<stroke-width>0.618</stroke-width>
+					<color>255, 0, 0, 1.0</color>
+				</inflex-price>
+				<inflex-interest>
+					<stroke-width>0.618</stroke-width>
+					<color>255, 0, 0, 1.0</color>
+				</inflex-interest>
+			</days-graph>			
 		</canvas-summer>
 		<canvas-toolbar>
 			<canvas-type>toolbar</canvas-type>

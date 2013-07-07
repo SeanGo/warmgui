@@ -24,17 +24,17 @@ GLYPH_CHANGED_TYPE CInflexionLines::new_data(DataObjectPtr dop)
     return (0);
 }
 
-HRESULT CInflexionLines::_predraw()
+HRESULT CInflexionLines::predraw()
 {
     return (0);
 }
 
-HRESULT CInflexionLines::_draw(bool redraw_all/* = false*/)
+HRESULT CInflexionLines::draw(bool redraw_all/* = false*/)
 {
     return (0);
 }
 
-void CInflexionLines::_update_data()
+void CInflexionLines::update_data()
 {
 }
 

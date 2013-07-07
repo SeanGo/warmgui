@@ -85,11 +85,14 @@ int CSummerView::OnCommand(WORD nCmdId, WORD /*nSource*/, HWND /*hwnd*/)
 
 void CSummerView::OnRButtonUp(UINT, int x, int y)
 {
+    the_app.get_calculators()->start();
     the_app.get_dispatchers()->start();
 }
 
 void CSummerView::OnLButtonUp(UINT, int x, int y)
 {
+    the_app.get_calculators()->stop();
+    Sleep(1000);
     the_app.get_dispatchers()->stop();
 }
 

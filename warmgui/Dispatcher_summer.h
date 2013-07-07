@@ -21,7 +21,7 @@ public:
 		}
 	}
 
-    inline void  reg_data_graph(IDataGraph_summer* dg)   { register_atelier(dg->get_atelier()); _dgraph.push_back(dg); }
+    inline void  reg_data_graph(IDataGraph_summer* glyph)   { register_atelier(glyph->get_atelier()); _dgraph.push_back(glyph); }
     inline void  reg_calculator(ICalculator_summer* cal)     {_cals.push_back(cal);}
 
     //inline void  remove_dc(IDataContainer* dc);
@@ -122,6 +122,16 @@ public:
         for (DispatcherConstIter iter = begin(); iter != end(); iter++)
              if ((*iter)->isme(name)) {
                  (*iter)->reg_data_graph(graph);
+                 return true;
+             }
+        return false;
+    }
+
+    bool reg_cal(ICalculator_summer* cal, const char* name)
+    {
+        for (DispatcherConstIter iter = begin(); iter != end(); iter++)
+             if ((*iter)->isme(name)) {
+                 (*iter)->reg_calculator(cal);
                  return true;
              }
         return false;

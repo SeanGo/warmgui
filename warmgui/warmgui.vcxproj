@@ -98,6 +98,7 @@
     <ClInclude Include="DataGraph_summer.h" />
     <ClInclude Include="IDataChart_summer.h" />
     <ClInclude Include="IInputResponse.h" />
+    <ClInclude Include="Points_summer.h" />
     <ClInclude Include="Toolbar_summer.h" />
     <ClInclude Include="warmgui_summer.h" />
     <ClInclude Include="warmgui_type_summer.h" />
@@ -127,6 +128,7 @@
     <ClCompile Include="DataGraph_summer.cpp" />
     <ClCompile Include="IDataChart_summer.cpp" />
     <ClCompile Include="IInputResponse.cpp" />
+    <ClCompile Include="Points_summer.cpp" />
     <ClCompile Include="Toolbar_summer.cpp" />
     <ClCompile Include="World.cpp" />
     <ClCompile Include="DxFactory.cpp" />

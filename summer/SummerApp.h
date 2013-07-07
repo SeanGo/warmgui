@@ -11,10 +11,10 @@ public:
 	virtual void             CleanupApp();
 
     WARMGUI::CDispatchers*   get_dispatchers() { return &_dispatchers; }
-
+    WARMGUI::CCalculators*   get_calculators() { return &_calculators; }
 protected:
-    CCtpmdDispatcher_summer* _ctp_disp;
     WARMGUI::CDispatchers    _dispatchers;
+    WARMGUI::CCalculators    _calculators;
 };
 
 extern CSummerApp the_app;

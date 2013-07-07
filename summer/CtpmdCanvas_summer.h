@@ -20,15 +20,8 @@ protected:
     CCtpmdCurve_summer*          _line_rel_interest;
     CCtpmdCurve_summer*          _line_dif_interest;
 
-    WARMGUI::CCurveGraph_summer* _approx_low_price;
-    WARMGUI::CCurveGraph_summer* _approx_he_price;
-    WARMGUI::CCurveGraph_summer* _approx_volume;
-    WARMGUI::CCurveGraph_summer* _approx_interest;
 
-    CInflexionLines*             _inflex_price;
-    CInflexionLines*             _inflex_interest;
-
-
+    CDaysCtpmmdGraph*            _days_graph;
 protected:
     TripleTuple _pvi_height;
     float       _pvi_width;

@@ -14,6 +14,7 @@ inline IDataGraph_summer::IDataGraph_summer(void)
     , _world_change(WORLD_CHANGED_TYPE_NONE)
     , _my_own_artist(false)
 {
+    SetClass();
 }
 
 inline IDataGraph_summer::IDataGraph_summer(const char* name, bool own_world, bool own_artist, bool own_data)
@@ -24,6 +25,8 @@ inline IDataGraph_summer::IDataGraph_summer(const char* name, bool own_world, bo
     , _my_own_artist(own_artist)
     , _world_change(WORLD_CHANGED_TYPE_NONE)
 {
+    SetClass();
+
     if (own_artist) {
         _my_artist  = new eArtist();
     } else {
@@ -64,16 +67,12 @@ void IDataGraph_summer::set_rect(RECT& rect)
 
 inline void IDataGraph_summer::inherit(IAtelier_summer* atelier, CGlyphTree_summer* tree, ICanvas_summer* canvas, GlyphTreeIter_summer& tree_iter, eArtist* artist, CWarmguiConfig* config)
 {
-    _atelier = atelier,
-        _glyph_tree = tree,
-        _canvas = canvas,
-        _tree_iter = tree_iter,
-        _artist = artist,
-        _config = config;
-    inherit_config_string();
+    IGlyph_summer::inherit(atelier, tree, canvas, tree_iter, artist, config);
 
     if (_my_artist)
         _my_artist->SetHwndRenderTarget(_artist->GetHwndRT(), _artist->GetHwnd());
+
+    child_inherit_world();
 }
 
 
@@ -95,6 +94,7 @@ inline CCurveGraph_summer::CCurveGraph_summer(void)
 	, _stroke_width(1.0f)
     , _update_method(UPDATE_METHOD_INCREST)
 {
+    SetClass();
 }
 
 inline CCurveGraph_summer::CCurveGraph_summer(const char* name, bool own_world, bool own_artist, bool own_data)
@@ -106,6 +106,7 @@ inline CCurveGraph_summer::CCurveGraph_summer(const char* name, bool own_world, 
 	, _stroke_width(1.0f)
     , _update_method(UPDATE_METHOD_INCREST)
 {
+    SetClass();
 }
 
 inline CCurveGraph_summer::~CCurveGraph_summer(void)
@@ -143,13 +144,13 @@ GLYPH_CHANGED_TYPE CCurveGraph_summer::update(dataptr data)
     } else {
         //call virtual function, set the curve graph
         //the data pointer is DOUBLE_DATA_POINTER
-        _update_data();
+        update_data();
     }
 
     return _changed;
 }
 
-inline HRESULT CCurveGraph_summer::_predraw()
+inline HRESULT CCurveGraph_summer::predraw()
 {
     HRESULT hr = S_OK;
     if (_my_artist && _rect.right > 0 && _rect.bottom > 0) {
@@ -220,7 +221,7 @@ inline void CCurveGraph_summer::end_set_data()
     change(GLYPH_CHANGED_GLYPH);
 }
 
-inline void CCurveGraph_summer::_update_data()
+inline void CCurveGraph_summer::update_data()
 {
     CriticalLock::Scoped scope(_lockChange);
     change(GLYPH_CHANGED_GLYPH);
@@ -244,11 +245,16 @@ inline void CCurveGraph_summer::_update_data()
     }
 }
 
-HRESULT CCurveGraph_summer::_draw(bool redraw_all/* = false*/)
+HRESULT CCurveGraph_summer::draw(bool redraw_all/* = false*/)
 {
     HRESULT hr = S_OK;
     CriticalLock::Scoped scope(_lockChange);
 
+#ifdef _DEBUG
+    //TCHAR name[MAX_PATH];
+    //CChineseCodeLib::Gb2312ToUnicode(name, MAX_PATH, _name);
+    //MYTRACE(L"curve draw %s\n", name);
+#endif
     if (SUCCEEDED(hr))
         hr = push_layer();
 
@@ -322,7 +328,7 @@ void CCurveGraph_summer::_draw_whole_line(eArtist* artist)
 	    trans._11, trans._12, trans._21, trans._22, trans._31, trans._32);
 	D2D1::Matrix3x2F PPPPPP(trans._11, trans._12, trans._21, trans._22, trans._31, trans._32);
     POINT_f P1 = D2D1::Point2F(_points._points[0].x, _points._points[0].y);
-    POINT_f P2 = D2D1::Point2F(_points._points[1].x, _points._points[1].y);
+    POINT_f P2 = D2D1::Point2F(_points._points[_points._count - 1].x, _points._points[_points._count - 1].y);
     POINT_f p1 = PPPPPP.TransformPoint(P1);
 	POINT_f p2 = PPPPPP.TransformPoint(P2);
     MYTRACE(L"%.02f %.02f, %.02f %.02f ==> %.02f %.02f, %.02f %.02f\n",
@@ -330,8 +336,7 @@ void CCurveGraph_summer::_draw_whole_line(eArtist* artist)
 		P1.x, P1.y,
 		P2.x, P2.y,
 		p1.x, p1.y,
-		p2.x, p2.y);
-    */
+		p2.x, p2.y);*/
 #endif
 
     D2D1_ANTIALIAS_MODE am = artist->GetHwndRT()->GetAntialiasMode();
@@ -448,16 +453,6 @@ HRESULT CCurveGraph_summer::init()
     return (S_OK);
 }
 
-///////////////////////////////////////////////////////////////////////////////
-//class IChat_summer
-inline IChat_summer::IChat_summer(void)
-{
-}
-
-
-inline IChat_summer::~IChat_summer(void)
-{
-}
 
 
 } //namespace WARMGUI

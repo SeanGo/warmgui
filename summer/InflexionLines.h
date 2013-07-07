@@ -12,10 +12,9 @@ public:
     virtual GLYPH_CHANGED_TYPE new_data(DataObjectPtr dop);
     virtual void               set_rect(RECT& rect);
 
-private:
-    virtual HRESULT            _predraw();
-    virtual HRESULT            _draw(bool redraw_all = false);
-    virtual void               _update_data();
+    virtual HRESULT            predraw();
+    virtual HRESULT            draw(bool redraw_all = false);
+    virtual void               update_data();
 
     //WARMGUI::CCurveGraph_summer* _infl;
 };
