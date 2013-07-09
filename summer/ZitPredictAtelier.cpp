@@ -5,17 +5,17 @@
 extern CSummerApp the_app;
 
 
-CSummerAtelier::CSummerAtelier(void)
+CZitPredictAtelier::CZitPredictAtelier(void)
     : _bkg_canvas(0)
     , _toolbar(0)
     , _ctp_canvas(0)
     , _tick_canvas(0)
 {
-    strcpy_s(_name, MAX_PATH, "CSummerAtelier");
+    strcpy_s(_name, MAX_PATH, "CZitPredictAtelier");
 }
 
 
-CSummerAtelier::CSummerAtelier(const char* name)
+CZitPredictAtelier::CZitPredictAtelier(const char* name)
     : WARMGUI::IAtelier_summer(name)
     , _bkg_canvas(0)
     , _toolbar(0)
@@ -24,11 +24,11 @@ CSummerAtelier::CSummerAtelier(const char* name)
 }
 
 
-CSummerAtelier::~CSummerAtelier(void)
+CZitPredictAtelier::~CZitPredictAtelier(void)
 {
 }
 
-HRESULT CSummerAtelier::init(HWND hwnd)
+HRESULT CZitPredictAtelier::init(HWND hwnd)
 {
     HRESULT hr = S_OK;
     _config = the_app.GetConfig();
@@ -65,7 +65,7 @@ HRESULT CSummerAtelier::init(HWND hwnd)
 
 
 
-void CSummerAtelier::disposal(RECT& rect)
+void CZitPredictAtelier::disposal(RECT& rect)
 {
     if (_bkg_canvas)
         _bkg_canvas->set_rect(rect);
@@ -83,7 +83,7 @@ void CSummerAtelier::disposal(RECT& rect)
         _toolbar->set_rect(rect);
 }
 
-void CSummerAtelier::Changed(GLYPH_CHANGED_TYPE change_type)
+void CZitPredictAtelier::Changed(GLYPH_CHANGED_TYPE change_type)
 {
     _changed |= change_type;
 }

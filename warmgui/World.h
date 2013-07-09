@@ -33,7 +33,7 @@ public:
 	/// Get the world-rect
 	inline WORLD_RECT&  GetWorldRect() { return _real_world; }
 	/// Get the transform matrix
-	inline MATRIX_2D*   GetTransform() { return &_transform; }
+	inline MATRIX_2D*   GetTransformMatrix() { return &_transform; }
 	/// if the point (x, y) lies in the frame, return true
 	inline bool         Intersect(int x, int y);
 
@@ -69,12 +69,14 @@ public:
     inline void         set_world_change(WORLD_CHANGED_TYPE type = WORLD_CHANGED_TYPE_NONE) { _world_changed = type; }
 
     inline float        get_x_left();
+    D2D1::Matrix3x2F*   get_trans() { return &_trans; }
+
 protected:
 	inline virtual void SetScale();
 
 	MATRIX_2D          _transform;   ///the matrix of transform
 	RECT               _rect;   ///the rectagle on screen
-
+    D2D1::Matrix3x2F   _trans;
     inline  void        real_world_to_screen();
     WORLD_CHANGED_TYPE  _world_changed;
 public:

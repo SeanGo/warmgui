@@ -8,7 +8,7 @@ public:
                       ~CTickDataGridCtrl(void);
 
     GLYPH_CHANGED_TYPE NewData(IDataContainer* data_cont, DataObject::MARKET_DATA_TYPE datatype);
-    virtual HRESULT    Init();
+    virtual HRESULT    init();
 
 protected:
     TCHAR              head[MAX_PATH];

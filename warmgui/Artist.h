@@ -92,7 +92,7 @@ public:
 
 	inline void SetTransform(MATRIX_2D* trans);
 	inline void SetTranslationTrasform(RECT& rect);
-	inline void GetTransform(MATRIX_2D* trans);
+	inline void GetTransformMatrix(MATRIX_2D* trans);
 	inline void GetHwndRtTransform(MATRIX_2D* trans);
 
 	inline ID2D1BitmapRenderTarget* GetBmpRT(){ return _pDefaultBmpRT; }

@@ -1,11 +1,11 @@
-#ifndef __warmgui_summer_testing_view__
-#define __warmgui_summer_testing_view__
+#ifndef __zit_predict_view__
+#define __zit_predict_view__
 
-class CSummerView :  public WARMGUI::CWindow
+class CZitPredictView :  public WARMGUI::CWindow
 {
 public:
-    CSummerView(void);
-    ~CSummerView(void);
+    CZitPredictView(void);
+    ~CZitPredictView(void);
 
 	virtual BOOL PreCreateWindow(LPCREATESTRUCT cs);
 	msgfun  int  OnCreate(LPCREATESTRUCT /*cs*/);
@@ -26,10 +26,7 @@ protected:
     RECT         _rectClient;
 
     bool              _focus;
-
-    CZitPredictView* _zit_prd_view;
-    void ShowZitPredictView();
 };
 
 
-#endif //__warmgui_summer_testing_view__
+#endif //__zit_predict_view__

@@ -36,7 +36,7 @@ public:
                                return ((_changed & GLYPH_CHANGED_ATELIER_RESIZE)
                                    || (_changed & GLYPH_CHANGED_ATELIER_BKG));
                            }
-
+    virtual int            OnLButtonUp(UINT nFlags, int x, int y);
 protected:
     HWND                   _hwnd;
 	ID2D1HwndRenderTarget* _pHwndRT;    ///HwndRT of the window

@@ -2,6 +2,7 @@
 #include "summer.h"
 #include "SummerAtelier.h"
 #include "SummerApp.h"
+#include "ZitPredictView.h"
 #include "SummerView.h"
 
 //#include "TestSummerCanvas.h"

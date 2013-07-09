@@ -26,15 +26,22 @@
 #include "ExtremumPoints.h"
 
 #include "DaysCtpmmdCalculator.h"
+#include "ZitPredictCalculator.h"
+
 #include "CtpmdDispatcher_summer.h"
-#include "ZitCalculator_summer.h"
 
 #include "CtpmdCurve_summer.h"
 #include "InflexionLines.h"
 #include "DaysCtpmmdGraph.h"
+#include "TickdataGrid.h"
+#include "ZitPredictGraph.h"
 
 #include "CtpmdCanvas_summer.h"
+#include "TickdataCanvas.h"
 #include "SummerAtelier.h"
+
+#include "ZitPredictCanvas.h"
+#include "ZitPredictAtelier.h"
 
 #include "SummerApp.h"
 

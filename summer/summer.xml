@@ -91,11 +91,11 @@
 			</coord-interest>
 
 			<line-price>
-				<stroke-width>0.0168</stroke-width>
+				<stroke-width>6.618</stroke-width>
 				<color>0, 0, 255, 1.0</color>
 			</line-price>
 			<line-volume>
-				<stroke-width>0.618</stroke-width>
+				<stroke-width>1.618</stroke-width>
 				<color>0, 0, 255, 1.0</color>
 			</line-volume>
 			<line-rel-interest>
@@ -103,7 +103,7 @@
 				<color>0, 0, 255, 1.0</color>
 			</line-rel-interest>
 			<line-dif-interest>
-				<stroke-width>0.0618</stroke-width>
+				<stroke-width>0.618</stroke-width>
 				<color>0, 255, 0, 1.0</color>
 				<world>
 					<name>dif-interest</name>
@@ -116,15 +116,15 @@
 
 			<days-graph>
 				<approx-low-price>
-					<stroke-width>0.0168</stroke-width>
+					<stroke-width>1.618</stroke-width>
 					<color>164, 73, 163, 0.8</color>
 				</approx-low-price>
 				<approx-he-price>
-					<stroke-width>0.0168</stroke-width>
+					<stroke-width>1.618</stroke-width>
 					<color>28, 210, 165, 0.8</color>
 				</approx-he-price>
 				<approx-volume>
-					<stroke-width>0.618</stroke-width>
+					<stroke-width>1.618</stroke-width>
 					<color>164, 73, 163, 0.8</color>
 				</approx-volume>
 				<approx-interest>
@@ -134,8 +134,8 @@
 
 				<ext-price>
 					<font>Verdana, 10</font>
-					<color-1>255, 0, 0, 1.0</color-1>
-					<color-2>255, 0, 0, 1.0</color-2>
+					<color-1>0, 255, 0, 1.0</color-1>
+					<color-2>0, 255, 0, 1.0</color-2>
 				</ext-price>
 
 				<inflex-price>
@@ -148,6 +148,37 @@
 				</inflex-interest>
 			</days-graph>			
 		</canvas-summer>
+		<canvas-tick>
+			<tick-grid>
+				<name>tick-grid</name>
+				<row>10</row>
+				<col>10</col>
+				<margin>5, 5, 5, 5</margin>
+				<border-color-alpha>28, 0, 0, 1.0</border-color-alpha>
+				<grid-bkg-color-alpha>28, 0, 0, 1.0</grid-bkg-color-alpha>
+				<face3d-color-alpha>28, 0, 0, 1.0</face3d-color-alpha>
+				<shadow3d-color-alpha>28, 0, 0, 1.0</shadow3d-color-alpha>
+				<ttip-bak-color-alpha>28, 0, 0, 1.0</ttip-bak-color-alpha>
+				<ttip-txt-color-alpha>28, 0, 0, 1.0</ttip-txt-color-alpha>
+				<highlight-color-alpha>28, 0, 0, 1.0</highlight-color-alpha>
+				<highlight-txt-color-alpha>28, 0, 0, 1.0</highlight-txt-color-alpha>
+				<!-- text color -->
+				<txt-color-alpha>28, 0, 0, 1.0</txt-color-alpha>
+				<txtbkg-color-alpha>28, 0, 0, 1.0</txtbkg-color-alpha>
+				<fixcol-color-alpha>28, 0, 0, 1.0</fixcol-color-alpha>
+				<fixcol-bkg-color-alpha>28, 0, 0, 1.0</fixcol-bkg-color-alpha>
+				<fixrow-color-alpha>128, 128, 127, 1.0</fixrow-color-alpha>
+				<fixrow-bkg-color-alpha>0, 0, 0, 1.0</fixrow-bkg-color-alpha>
+				<fixrowcol-color-alpha>28, 0, 0, 1.0</fixrowcol-color-alpha>
+				<fixrowcol-bkg-color-alpha></fixrowcol-bkg-color-alpha>
+				<!-- text font -->
+				<txt-font>Arial, 10</txt-font>
+				<fixcol-font>Arial, 10</fixcol-font>
+				<fixrow-font>Arial, 14</fixrow-font>
+				<fixrowcol-font>Arial, 10</fixrowcol-font>
+				<head>time, price, vol, iter, open, close, ask1, avol1, bid1, bvol1</head>
+			</tick-grid>
+		</canvas-tick>
 		<canvas-toolbar>
 			<canvas-type>toolbar</canvas-type>
 			<canvas-name>toolbar</canvas-name>

@@ -108,6 +108,11 @@ public:
     IAtelier_summer*       get_atelier() { return _atelier; }
     ICanvas_summer*        get_canvas()  { return _canvas;  }
 
+
+  	virtual int            OnLButtonUp(UINT nFlags, int x, int y);
+    bool                   intesect(int x, int y) { return pt_in_rect(_abs_rect, x, y); }
+    inline                 void clear_select();
+
 protected:
 
     HRESULT                draw_graph(bool redraw_all = false, GLYPH_TYPE glyph_type =IGlyph_summer::GLYPH_TYPE_GLYPH);

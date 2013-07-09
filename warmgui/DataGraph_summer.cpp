@@ -13,6 +13,7 @@ inline IDataGraph_summer::IDataGraph_summer(void)
     , _my_own_data(false)
     , _world_change(WORLD_CHANGED_TYPE_NONE)
     , _my_own_artist(false)
+    , _selected(false)
 {
     SetClass();
 }
@@ -24,6 +25,7 @@ inline IDataGraph_summer::IDataGraph_summer(const char* name, bool own_world, bo
     , _my_own_data(own_data)
     , _my_own_artist(own_artist)
     , _world_change(WORLD_CHANGED_TYPE_NONE)
+    , _selected(false)
 {
     SetClass();
 
@@ -74,9 +76,6 @@ inline void IDataGraph_summer::inherit(IAtelier_summer* atelier, CGlyphTree_summ
 
     child_inherit_world();
 }
-
-
-
 
 
 
@@ -310,10 +309,10 @@ void CCurveGraph_summer::_draw_whole_line(eArtist* artist)
     //artist->DrawRectangle(_rect);
     ////////////////////////////////////////////////////////////////
 
-    artist->GetTransform(&_back_trans);
+    artist->GetTransformMatrix(&_back_trans);
 
     ////////////////////////////////////////////////////////////////
-    MATRIX_2D trans = *(_world->GetTransform());
+    MATRIX_2D trans = *(_world->GetTransformMatrix());
     trans._31 += _back_trans._31, trans._32 += _back_trans._32;
     artist->SetTransform(&trans);
     ////////////////////////////////////////////////////////////////
@@ -342,7 +341,7 @@ void CCurveGraph_summer::_draw_whole_line(eArtist* artist)
     D2D1_ANTIALIAS_MODE am = artist->GetHwndRT()->GetAntialiasMode();
 	artist->GetUsingRT()->SetAntialiasMode(D2D1_ANTIALIAS_MODE_PER_PRIMITIVE);
 	artist->SetSolidColorBrush(_color_alpha);
-    artist->DrawGeometry(_pathg, artist->GetSCBrush(), _stroke_width / _world->GetTransform()->_11, artist->GetStrokeStyle());
+    artist->DrawGeometry(_pathg, artist->GetSCBrush(), _stroke_width / _world->GetTransformMatrix()->_22, artist->GetStrokeStyle());
 
     artist->SetTransform(&_back_trans);
     artist->GetUsingRT()->SetAntialiasMode(am);
@@ -376,7 +375,7 @@ HRESULT CCurveGraph_summer::move_bitmap_left()
 
         /*
         MATRIX_2D _backup_trans;
-        _my_artist->GetTransform(&_backup_trans);
+        _my_artist->GetTransformMatrix(&_backup_trans);
         MATRIX_2D id = D2D1::Matrix3x2F::Identity();
         _my_artist->SetTransform(&id);
         */
@@ -390,10 +389,10 @@ HRESULT CCurveGraph_summer::move_bitmap_left()
 
 void CCurveGraph_summer::_draw_new_point(eArtist* artist)
 {
-    artist->GetTransform(&_back_trans);
+    artist->GetTransformMatrix(&_back_trans);
 
     ////////////////////////////////////////////////////////////////
-    MATRIX_2D trans = *(_world->GetTransform());
+    MATRIX_2D trans = *(_world->GetTransformMatrix());
     trans._31 += _back_trans._31, trans._32 += _back_trans._32;
     artist->SetTransform(&trans);
     ////////////////////////////////////////////////////////////////
@@ -405,7 +404,7 @@ void CCurveGraph_summer::_draw_new_point(eArtist* artist)
         _points._points[_points._count - 2].y,
         _points._points[_points._count - 1].x,
         _points._points[_points._count - 1].y,
-        _stroke_width / _world->GetTransform()->_11);
+        _stroke_width / _world->GetTransformMatrix()->_22);
 
     artist->SetTransform(&_back_trans);
 }

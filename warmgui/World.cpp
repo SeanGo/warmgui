@@ -202,6 +202,12 @@ inline void CWorld::SetScale()
 	DEBUG_TRACE(L"%.05f, %.05f\n%.05f, %.05f\n%.05f, %.05f\n", _transform._11, _transform._12, _transform._21, _transform._22, _transform._31, _transform._32);
 	DEBUG_TRACE(L"CWorld::SetScale\n\n");
 	*/
+    _trans._11 = _transform._11,
+        _trans._12 = _transform._12,
+        _trans._21 = _transform._21,
+        _trans._22 = _transform._22,
+        _trans._31 = _transform._31,
+        _trans._32 = _transform._32;
 }
 
 inline bool CWorld::Intersect(int x, int y)

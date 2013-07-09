@@ -100,7 +100,13 @@
     <ClInclude Include="SummerAtelier.h" />
     <ClInclude Include="SummerView.h" />
     <ClInclude Include="targetver.h" />
-    <ClInclude Include="ZitCalculator_summer.h" />
+    <ClInclude Include="TickdataCanvas.h" />
+    <ClInclude Include="TickdataGrid.h" />
+    <ClInclude Include="ZitPredictAtelier.h" />
+    <ClInclude Include="ZitPredictCalculator.h" />
+    <ClInclude Include="ZitPredictCanvas.h" />
+    <ClInclude Include="ZitPredictGraph.h" />
+    <ClInclude Include="ZitPredictView.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CtpmdCurve_summer.cpp" />
@@ -118,7 +124,13 @@
     <ClCompile Include="SummerApp.cpp" />
     <ClCompile Include="SummerAtelier.cpp" />
     <ClCompile Include="SummerView.cpp" />
-    <ClCompile Include="ZitCalculator_summer.cpp" />
+    <ClCompile Include="TickdataCanvas.cpp" />
+    <ClCompile Include="TickdataGrid.cpp" />
+    <ClCompile Include="ZitPredictAtelier.cpp" />
+    <ClCompile Include="ZitPredictCalculator.cpp" />
+    <ClCompile Include="ZitPredictCanvas.cpp" />
+    <ClCompile Include="ZitPredictGraph.cpp" />
+    <ClCompile Include="ZitPredictView.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="summer.rc" />

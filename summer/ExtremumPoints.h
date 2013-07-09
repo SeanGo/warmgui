@@ -9,24 +9,24 @@ public:
 
 
     inline HRESULT draw(bool redraw = false);
+    inline void    draw_point(float x, float y, char c, WARMGUI::CPoints_summer::POINT_TEXT_POSISION pos, COLORALPHA clr);
     inline HRESULT init();
 
-    virtual void   set_world(WARMGUI::CWorld* world)
-                   {
-                       if (!_my_own_world) _world = world;
-                       _points.set_world(world);
-                   }
-    void set_extremum(EXTRINFO* ext) { _ext = ext; }
+    void           set_extremum(EXTRINFO* ext) { _ext = ext; }
 
 protected:
     EXTRINFO* _ext;
 
-    WARMGUI::CPoints_summer _points;
+    //WARMGUI::CPoints_summer _points;
   	COLORALPHA               _clr_1;
     COLORALPHA               _clr_2;
     FONT                      _font;
     IDWriteTextFormat* _pTextFormat;
+
+private:
+    void SetClass() { SetMyClass("CExtremumPoints"); }
 };
+
 
 
 #endif //__extremum_points__

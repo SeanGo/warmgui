@@ -465,7 +465,7 @@ inline void eArtist::SetTransform(MATRIX_2D* trans)
 		_pPaintRT->SetTransform(trans);
 }
 
-inline void eArtist::GetTransform(MATRIX_2D* trans)
+inline void eArtist::GetTransformMatrix(MATRIX_2D* trans)
 {
 	if (_pPaintRT)
 		_pPaintRT->GetTransform(trans);

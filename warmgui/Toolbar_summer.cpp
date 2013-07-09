@@ -104,17 +104,17 @@ HRESULT CToolbar_summer::init()
 
 
 
-int CToolbar_summer::OnLButtonUp(int x, int y)
+int CToolbar_summer::OnLButtonUp(UINT flag, int x, int y)
 {
 	if (!_visible) return (0);
     
-    RECT rect = _rect;
-    rect.left += _margin, rect.top += _margin, rect.bottom -= _margin, rect.right -= _margin;
-	if (IsInRect(rect, x, y)) {
+    IGlyph_summer::OnLButtonUp(flag, x, y);
+
+	if (_selected) {
         SendMessage(
             _atelier->get_hwnd(),
             WM_COMMAND,
-            MAKEWPARAM(GetCommandID(x - rect.left), 0),
+            MAKEWPARAM(GetCommandID(x - _abs_rect.left), 0),
             (LPARAM)(_atelier->get_hwnd()));
         return (1);
 	} else {

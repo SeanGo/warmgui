@@ -47,7 +47,7 @@ int  CDaysCtpmmdCalculator::calculate(MSG msg)
     //MYTRACE(L"cal rcvd %.02f %.02f %.02f\n", mmd->fIndex, mmd->LastPrice, mmd->m_time);
     if (sampler.fill_data(mmd)) {
         int datalen = sampler.get_curpos() + 1;
-        MYTRACE(L"i will cal %d length data\n", datalen);
+        //MYTRACE(L"i will cal %d length data\n", datalen);
 
 
         ////////////////////////////////////////////////////////////////
@@ -67,11 +67,11 @@ int  CDaysCtpmmdCalculator::calculate(MSG msg)
 
         _dcr._ext_price =_ext_low_price.CalExtremum();
         if (_dcr._ext_price && _dcr._ext_price->nAllNum) {
-            MYTRACE(L"price ext -- %d : %d, %.02f %.02f\n",
-                _dcr._ext_price->nAllNum,
-                _dcr._ext_price->extremum->nIndex,
-                _dcr._ext_price->extremum->fValue,
-                _dcr._ext_price->extremum->fOrngValue);
+            //MYTRACE(L"price ext -- %d : %d, %.02f %.02f\n",
+            //    _dcr._ext_price->nAllNum,
+            //    _dcr._ext_price->extremum->nIndex,
+            //    _dcr._ext_price->extremum->fValue,
+            //    _dcr._ext_price->extremum->fOrngValue);
 
             _inf_low_price.SetData(
                 sampler.get_time_series()->_fprice,
@@ -84,8 +84,7 @@ int  CDaysCtpmmdCalculator::calculate(MSG msg)
             _dcr._infl_price = _inf_low_price.GetInflexion();
         }
 
-        if (_dcr._infl_price && _dcr._infl_price->m_igStb.nNum)
-            MYTRACE(L"price infl -- %d\n", _dcr._infl_price->m_igStb.nNum);
+        if (!_dcr._infl_price) MYTRACE(L"price infl -- error\n");
 
         //////////////////////////////////////////////////////////////////////////
         // he level for price
@@ -106,8 +105,8 @@ int  CDaysCtpmmdCalculator::calculate(MSG msg)
             sampler.get_time_series()->_findex,
             datalen);
         _dcr._ext_volume = _ext_volume.CalExtremum();
-        if (_dcr._ext_volume && _dcr._ext_volume->nAllNum)
-            MYTRACE(L"volume ext %d\n", _dcr._ext_volume->nAllNum);
+        //if (_dcr._ext_volume && _dcr._ext_volume->nAllNum)
+        //    MYTRACE(L"volume ext %d\n", _dcr._ext_volume->nAllNum);
 
 
         ////////////////////////////////////////////////////////////////////////////
@@ -123,7 +122,7 @@ int  CDaysCtpmmdCalculator::calculate(MSG msg)
             datalen);
         _dcr._ext_interest = _ext_interest.CalExtremum();
         if (_dcr._ext_interest && _dcr._ext_interest->nAllNum) {
-            MYTRACE(L"interest ext %d\n", _dcr._ext_interest->nAllNum);
+            //MYTRACE(L"interest ext %d\n", _dcr._ext_interest->nAllNum);
             _inf_interest.SetData(
                 sampler.get_time_series()->_f_rel_interest,
                 _dcr._approx_interest,
@@ -134,8 +133,8 @@ int  CDaysCtpmmdCalculator::calculate(MSG msg)
 
             //_dcr._infl_interest = _inf_interest.GetInflexion();
         }
-        if (_dcr._infl_interest && _dcr._infl_interest->m_igStb.nNum)
-            MYTRACE(L"interest infl -- %d\n", _dcr._infl_interest->m_igStb.nNum);
+        //if (_dcr._infl_interest && _dcr._infl_interest->m_igStb.nNum)
+        //    MYTRACE(L"interest infl -- %d\n", _dcr._infl_interest->m_igStb.nNum);
 
         return datalen;
     }

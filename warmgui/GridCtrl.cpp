@@ -66,7 +66,7 @@ UINT GetMouseScrollLines()
 /////////////////////////////////////////////////////////////////////////////
 // CGridCtrl
 CGridCtrl::CGridCtrl(const char* name, int nRows/* = 0*/, int nCols/* = 0*/, int nFixedRows/* = 0*/, int nFixedCols/* = 0*/)
-    : IGuiControl(name)
+    : IDataGraph_summer(name)
 {
     // Store the system colours in case they change. The gridctrl uses
     // these colours, and in OnSysColorChange we can check to see if
@@ -180,9 +180,10 @@ CGridCtrl::~CGridCtrl()
 }
 
 
-void CGridCtrl::SetRect(RECT& rect)
+void CGridCtrl::set_rect(RECT& rect)
 {
-    _rect = rect;
+    IGlyph_summer::set_rect(rect);
+    
     if (_zoom_fix == ZOOM_FIX_BOTH)
     {
         int width  = (int)((fRectWidth (_rect) - _margin.left - _margin.right) / (float)_nCols);
@@ -427,81 +428,81 @@ UINT CGridCtrl::OnGetDlgCode()
     return nCode;
 }
 
-HRESULT CGridCtrl::Init()
+HRESULT CGridCtrl::init()
 {
     try {
         char key[MAX_PATH];
-        _snprintf_s(key, MAX_PATH, "%s.row", _strconf);
+        _snprintf_s(key, MAX_PATH, "%s.row", _str_conf);
         int row = _config->getInt(key);
-        _snprintf_s(key, MAX_PATH, "%s.col", _strconf);
+        _snprintf_s(key, MAX_PATH, "%s.col", _str_conf);
         int col = _config->getInt(key);
 
-        _snprintf_s(key, MAX_PATH, "%s.margin", _strconf);
+        _snprintf_s(key, MAX_PATH, "%s.margin", _str_conf);
         _config->getRect(_margin, key);
 
-        _snprintf_s(key, MAX_PATH, "%s.grid-bkg-color-alpha", _strconf);
+        _snprintf_s(key, MAX_PATH, "%s.grid-bkg-color-alpha", _str_conf);
         _config->getColorAlpha(_uiSetting._crGridBkColour, key);
 
-        _snprintf_s(key, MAX_PATH, "%s.border-color-alpha", _strconf);
+        _snprintf_s(key, MAX_PATH, "%s.border-color-alpha", _str_conf);
         _config->getColorAlpha(_uiSetting._crGridLineColour, key);
 
-        _snprintf_s(key, MAX_PATH, "%s.face3d-color-alpha", _strconf);
+        _snprintf_s(key, MAX_PATH, "%s.face3d-color-alpha", _str_conf);
         _config->getColorAlpha(_uiSetting._cr3DFace, key);
 
-        _snprintf_s(key, MAX_PATH, "%s.shadow3d-color-alpha", _strconf);
+        _snprintf_s(key, MAX_PATH, "%s.shadow3d-color-alpha", _str_conf);
         _config->getColorAlpha(_uiSetting._crShadow, key);
 
-        _snprintf_s(key, MAX_PATH, "%s.ttip-bak-color-alpha", _strconf);
+        _snprintf_s(key, MAX_PATH, "%s.ttip-bak-color-alpha", _str_conf);
         _config->getColorAlpha(_uiSetting._crTTipBackClr, key);
 
-        _snprintf_s(key, MAX_PATH, "%s.ttip-txt-color-alpha", _strconf);
+        _snprintf_s(key, MAX_PATH, "%s.ttip-txt-color-alpha", _str_conf);
         _config->getColorAlpha(_uiSetting._crTTipTextClr, key);
 
-        _snprintf_s(key, MAX_PATH, "%s.highlight-color-alpha", _strconf);
+        _snprintf_s(key, MAX_PATH, "%s.highlight-color-alpha", _str_conf);
         _config->getColorAlpha(_uiSetting._crHighLightBkg, key);
 
-        _snprintf_s(key, MAX_PATH, "%s.highlight-txt-color-alpha", _strconf);
+        _snprintf_s(key, MAX_PATH, "%s.highlight-txt-color-alpha", _str_conf);
         _config->getColorAlpha(_uiSetting._crHighLightTxt, key);
 
 
         {///Font and Color
             //set fonts
             FONT font;
-            _snprintf_s(key, MAX_PATH, "%s.txt-font", _strconf);
+            _snprintf_s(key, MAX_PATH, "%s.txt-font", _str_conf);
             _config->getFontSetting(font, key);
             CDxFactorys::GetInstance()->CreateTextFormat(font, &_uiSetting._pDefaultFont);
 
-            _snprintf_s(key, MAX_PATH, "%s.fixcol-font", _strconf);
+            _snprintf_s(key, MAX_PATH, "%s.fixcol-font", _str_conf);
             _config->getFontSetting(font, key);
             CDxFactorys::GetInstance()->CreateTextFormat(font, &_uiSetting._pFixedColFont);
 
-            _snprintf_s(key, MAX_PATH, "%s.fixrow-font", _strconf);
+            _snprintf_s(key, MAX_PATH, "%s.fixrow-font", _str_conf);
             _config->getFontSetting(font, key);
             CDxFactorys::GetInstance()->CreateTextFormat(font, &_uiSetting._pFixedRowFont);
 
-            _snprintf_s(key, MAX_PATH, "%s.fixrowcol-font", _strconf);
+            _snprintf_s(key, MAX_PATH, "%s.fixrowcol-font", _str_conf);
             _config->getFontSetting(font, key);
             CDxFactorys::GetInstance()->CreateTextFormat(font, &_uiSetting._pFixedRowColFont);
 
             //set colors
-            _snprintf_s(key, MAX_PATH, "%s.txt-color-alpha", _strconf);
+            _snprintf_s(key, MAX_PATH, "%s.txt-color-alpha", _str_conf);
             _config->getColorAlpha(_uiSetting._crDefaultText, key);
-            _snprintf_s(key, MAX_PATH, "%s.txtbkg-color-alpha", _strconf);
+            _snprintf_s(key, MAX_PATH, "%s.txtbkg-color-alpha", _str_conf);
             _config->getColorAlpha(_uiSetting._crDefaultBkgText, key);
 
-            _snprintf_s(key, MAX_PATH, "%s.fixcol-color-alpha", _strconf);
+            _snprintf_s(key, MAX_PATH, "%s.fixcol-color-alpha", _str_conf);
             _config->getColorAlpha(_uiSetting._crFixColText, key);
-            _snprintf_s(key, MAX_PATH, "%s.fixcol-bkg-color-alpha", _strconf);
+            _snprintf_s(key, MAX_PATH, "%s.fixcol-bkg-color-alpha", _str_conf);
             _config->getColorAlpha(_uiSetting._crFixColBkgText, key);
 
-            _snprintf_s(key, MAX_PATH, "%s.fixrow-color-alpha", _strconf);
+            _snprintf_s(key, MAX_PATH, "%s.fixrow-color-alpha", _str_conf);
             _config->getColorAlpha(_uiSetting._crFixRowText, key);
-            _snprintf_s(key, MAX_PATH, "%s.fixrow-bkg-color-alpha", _strconf);
+            _snprintf_s(key, MAX_PATH, "%s.fixrow-bkg-color-alpha", _str_conf);
             _config->getColorAlpha(_uiSetting._crFixRowBkgText, key);
 
-            _snprintf_s(key, MAX_PATH, "%s.fixrowcol-color-alpha", _strconf);
+            _snprintf_s(key, MAX_PATH, "%s.fixrowcol-color-alpha", _str_conf);
             _config->getColorAlpha(_uiSetting._crFixRowColText, key);
-            _snprintf_s(key, MAX_PATH, "%s.fixrowcol-bkg-color-alpha", _strconf);
+            _snprintf_s(key, MAX_PATH, "%s.fixrowcol-bkg-color-alpha", _str_conf);
             _config->getColorAlpha(_uiSetting._crFixRowColBkgText, key);
 
             //set cell's font and color
@@ -1330,7 +1331,7 @@ void CGridCtrl::OnVScroll(UINT nSBCode, UINT /*nPos*/, CScrollBar_summer* /*pScr
 /////////////////////////////////////////////////////////////////////////////
 // CGridCtrl implementation functions
 
-HRESULT CGridCtrl::DrawGraph(bool redraw/* = false*/)
+HRESULT CGridCtrl::draw(bool redraw/* = false*/)
 {
     if (!_bAllowDraw)
         return S_OK;

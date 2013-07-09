@@ -26,6 +26,7 @@ void CCtpmdDispatcher_summer::go()
     MyMarketData**    mydata = _reader.get_mydata();
     _stop = 0;
     const int code_num = _config->getInt("code-setting.amount");
+
     for (;;) {
         if (_stop || dbs->nCount < 0)
             break;
@@ -128,8 +129,9 @@ bool CCtpmdDispatcher_summer::init()
 
     clear();
 
-    if (_reader.init((Poco::Util::LayeredConfiguration*)_config) < 0)
+    if (_reader.init((Poco::Util::LayeredConfiguration*)_config) < 0) {
         return false;
+    }
 
     _curpos = new int[_config->getInt("code-setting.amount")];
     memset(_curpos, 0, sizeof(int) * _config->getInt("code-setting.amount"));

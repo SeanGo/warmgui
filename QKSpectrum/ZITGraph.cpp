@@ -24,7 +24,7 @@ HRESULT CZITGraph::DrawGraph(bool /*redraw*/)
     TCHAR name[MAX_PATH];
     CChineseCodeLib::Gb2312ToUnicode(name, MAX_PATH, _name);
     MATRIX_2D backtrans;
-    _artist->GetTransform(&backtrans);
+    _artist->GetTransformMatrix(&backtrans);
 
     //MYTRACE(L"zit graph backup trans %s\n", name);
 	//MYTRACE(L"backup %.02f %.02f %.02f %.02f %.02f %.02f\n", 
@@ -49,7 +49,7 @@ HRESULT CZITGraph::DrawGraph(bool /*redraw*/)
         //    Time2Index(g_ctpsec, _zit_data->extCentral.extremum[_zit_data->extCentral.nAllNum - 1].ftime),
         //    _zit_data->extCentral.extremum[_zit_data->extCentral.nAllNum - 1].fValue,
         //    _zit_data->extCentral.extremum[_zit_data->extCentral.nAllNum - 1].ftime);
-        //MATRIX_2D* m = _referframe->GetTransform();
+        //MATRIX_2D* m = _referframe->GetTransformMatrix();
 	    //MYTRACE(L"ReferFrame %s %.02f %.02f %.02f %.02f %.02f %.02f - ", 
 		//    _name,
 		//    m->_11, m->_12, m->_21, m->_22, m->_31, m->_32);
@@ -76,7 +76,7 @@ HRESULT CZITGraph::DrawGraph(bool /*redraw*/)
 
     DrawArea();
 
-    MATRIX_2D newtrans = *(_referframe->GetTransform());
+    MATRIX_2D newtrans = *(_referframe->GetTransformMatrix());
     newtrans._31 += static_cast<float>(_rect.left),
     newtrans._32 += static_cast<float>(_rect.top);
     _artist->SetTransform(&newtrans);
@@ -154,7 +154,7 @@ HRESULT CZITGraph::DrawPoint(double x, float y, int type)
     float xx = Time2Index(g_ctpsec, x);
 	
     MATRIX_2D m;
-	_artist->GetTransform(&m);
+	_artist->GetTransformMatrix(&m);
 	//MYTRACE(L"ReferFrame %.02f %.02f %.02f %.02f %.02f %.02f =>", 
 	//	m._11, m._12, m._21, m._22, m._31, m._32);
 

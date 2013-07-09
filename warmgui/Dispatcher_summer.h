@@ -32,17 +32,8 @@ public:
     virtual void set_config(CWarmguiConfig* config, const char* cnf_pos)
                  {_config = config; strcpy_s(_cnf_pos, MAX_PATH, cnf_pos);}
 
-    virtual void start() {
-        if (_stop)
-            _thread.start(*(this));
-    }
-
-    virtual void run() {
-        if (!init()) return;
-      	_tid = Poco::Thread::currentTid();
-        _stop = 0;
-        go();
-    }
+    inline virtual void start();
+    inline virtual void run();
     virtual void go()   = 0;
     virtual void stop() = 0;
     virtual bool init() {return true;}

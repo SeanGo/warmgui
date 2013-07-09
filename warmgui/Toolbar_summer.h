@@ -11,7 +11,7 @@ public:
 	~CToolbar_summer(void);
 
 	virtual HRESULT init();
-    virtual int     OnLButtonUp(int x, int y);
+    virtual int     OnLButtonUp(UINT flag, int x, int y);
     RECT&           get_toolbar_rect() {return _toolbar_rect;}
     virtual void    set_rect(RECT& rect);
 

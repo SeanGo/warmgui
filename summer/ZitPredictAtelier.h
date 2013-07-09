@@ -1,18 +1,18 @@
-#ifndef __summer_atelier__
-#define __summer_atelier__
+#ifndef __zit_predict_atelier__
+#define __zit_predict_atelier__
 
-class CSummerAtelier : public WARMGUI::IAtelier_summer
+class CZitPredictAtelier : public WARMGUI::IAtelier_summer
 {
 public:
-    CSummerAtelier(void);
-    CSummerAtelier(const char* name);
-    ~CSummerAtelier(void);
+    CZitPredictAtelier(void);
+    CZitPredictAtelier(const char* name);
+    ~CZitPredictAtelier(void);
 
     virtual HRESULT init(HWND hwnd);
     virtual void    disposal(RECT& rect);
     void Changed(GLYPH_CHANGED_TYPE change_type);
 private:
-    void SetClass() { SetMyClass("CSummerAtelier"); }
+    void SetClass() { SetMyClass("CZitPredictAtelier"); }
 
     WARMGUI::CBkgCanvas_summer* _bkg_canvas;
     WARMGUI::CToolbar_summer*   _toolbar;
@@ -20,4 +20,4 @@ private:
     CTickdataCanvas*            _tick_canvas;
 };
 
-#endif //__summer_atelier__
+#endif //__zit_predict_atelier__

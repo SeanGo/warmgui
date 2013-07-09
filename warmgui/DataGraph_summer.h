@@ -41,7 +41,6 @@ public:
                 ((IDataGraph_summer*)(*it))->set_world(_world);
         }
     }
-
 protected:
     CWorld*            _world;             ///the
     bool               _my_own_world;
@@ -54,6 +53,7 @@ protected:
     bool               _my_own_data;
     WORLD_CHANGED_TYPE _world_change;
 
+    bool               _selected;
 private:
     void SetClass() { SetMyClass("IDataGraph_summer"); }
 };

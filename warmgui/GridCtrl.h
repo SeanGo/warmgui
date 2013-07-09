@@ -162,10 +162,11 @@ typedef struct tagGV_CACHEHINT {
 
 // For virtual mode callback
 typedef BOOL (CALLBACK* GRIDCALLBACK)(GV_DISPINFO *, LPARAM);
+/*
 class WARMGUI_API IGuiControl : public IDataGraph_summer
 {
 public:
-                               IGuiControl(const char* name) : IDataGraph_summer(name), _config(0) {}
+                               IGuiControl(const char* name) : IDataGraph_summer(name) {}
     virtual                   ~IGuiControl(){}
     // Generated message map functions
     //{{AFX_MSG(CGridCtrl)
@@ -222,24 +223,26 @@ public:
                                 ZOOM_FIX_HEIDHT = 2,
                                 ZOOM_FIX_BOTH   = ZOOM_FIX_WIDTH | ZOOM_FIX_HEIDHT,
                             };
-    inline void             SetConfig(CWarmguiConfig* config) {_config = config;}
-    inline void             SetConfigStr(const char* canvas_config) {strcpy_s(_strconf, MAX_PATH, canvas_config);}
-
-protected:
-    char                    _strconf[MAX_PATH];
-    CWarmguiConfig*         _config;
 };
+*/
 
-class WARMGUI_API CGridCtrl : public IGuiControl
+enum                    ZOOM_FIX_TYPE {
+                            ZOOM_FIX_NONE   = 0,
+                            ZOOM_FIX_WIDTH  = 1,
+                            ZOOM_FIX_HEIDHT = 2,
+                            ZOOM_FIX_BOTH   = ZOOM_FIX_WIDTH | ZOOM_FIX_HEIDHT,
+                        };
+
+class WARMGUI_API CGridCtrl : public IDataGraph_summer
 {
 public:
                             //CGridCtrl();
                             CGridCtrl(const char* name, int nRows = 0, int nCols = 0, int nFixedRows = 0, int nFixedCols = 0);
     virtual                 ~CGridCtrl(void);
 
-    virtual HRESULT         Init();
-    virtual HRESULT         DrawGraph(bool redraw = false);
-    virtual void            SetRect(RECT& rect);
+    virtual HRESULT         init();
+    virtual HRESULT         draw(bool redraw = false);
+    virtual void            set_rect(RECT& rect);
 
     friend class            CGridCell;
     friend class            CGridCellBase;

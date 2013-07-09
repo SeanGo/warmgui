@@ -73,7 +73,7 @@ inline HRESULT IGlyph_summer::push_layer()
     //MYTRACE(L"Graph::PUSH layer %s %d, %d, %d, %d\n", name, _abs_rect.left, _abs_rect.top, _abs_rect.right, _abs_rect.bottom);
 #endif //_DEBUG
     MATRIX_2D back_trans;
-    _artist->GetTransform(&back_trans);
+    _artist->GetTransformMatrix(&back_trans);
     MATRIX_2D I = D2D1::IdentityMatrix();
     I._31 = (float)_abs_rect.left, I._32 = (float)_abs_rect.top;
     _artist->SetTransform(&I);
@@ -90,7 +90,7 @@ inline HRESULT IGlyph_summer::pop_layer()
     //MYTRACE(L"Graph::POP layer %s\n", name);
 #endif //_DEBUG
     MATRIX_2D back_trans;
-    _artist->GetTransform(&back_trans);
+    _artist->GetTransformMatrix(&back_trans);
     MATRIX_2D I = D2D1::IdentityMatrix();
     I._31 = (float)_abs_rect.left, I._32 = (float)_abs_rect.top;
     _artist->SetTransform(&I);
@@ -134,7 +134,7 @@ HRESULT IGlyph_summer::draw_graph(bool redraw_all/* = false*/, GLYPH_TYPE glyph_
         } else {
             //set transform
             if (_mytype == glyph_type) {
-                _artist->GetTransform(&_back_trans);
+                _artist->GetTransformMatrix(&_back_trans);
                 MATRIX_2D I = D2D1::IdentityMatrix();
                 I._31 = (float)_abs_rect.left, I._32 = (float)_abs_rect.top;
                 _artist->SetTransform(&I);
@@ -209,6 +209,31 @@ inline void IGlyph_summer::inherit_config_string()
     else
         strcpy_s(_str_conf, MAX_PATH, _name);
 }
+
+
+inline int IGlyph_summer::OnLButtonUp(UINT flag, int x, int y)
+{
+    _selected = intesect(x, y);
+    if (_selected) {
+        for (int i = 0; i < _glyph_tree->number_of_children(_tree_iter); i++) {
+            //draw all 
+            GlyphTreeIter_summer it = _glyph_tree->child(_tree_iter, (unsigned int)i);
+            (*it)->OnLButtonUp(flag, x, y);
+        }
+    }
+    return (_selected);
+}
+
+inline void IGlyph_summer::clear_select()
+{
+    for (int i = 0; i < _glyph_tree->number_of_children(_tree_iter); i++) {
+        //draw all 
+        GlyphTreeIter_summer it = _glyph_tree->child(_tree_iter, (unsigned int)i);
+        (*it)->clear_select();
+    }
+    _selected = false;
+}
+
 
 
 

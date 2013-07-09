@@ -230,4 +230,18 @@ inline void IAtelier_summer::redraw_window(bool all_redraw/* = false*/)
     PostMessage(_hwnd, WM_WINDOWS_REDRAW, (WPARAM)&_abs_rect, all_redraw);
 }
 
+inline int IAtelier_summer::OnLButtonUp(UINT flag, int x, int y)
+{
+    clear_select();
+    
+    for (int i = _glyph_tree->number_of_children(_tree_iter) - 1; i >= 0; i--) {
+        //draw all 
+        GlyphTreeIter_summer it = _glyph_tree->child(_tree_iter, (unsigned int)i);
+        if ((*it)->OnLButtonUp(flag, x, y))
+            break;
+    }
+    return (0);
+}
+
+
 } //namespace WARMGUI

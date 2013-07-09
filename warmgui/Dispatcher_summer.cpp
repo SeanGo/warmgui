@@ -5,6 +5,10 @@
 namespace WARMGUI {
 
 IDispatcher_summer::IDispatcher_summer(const char* name)
+    : _stop(1)
+    , _config(0)
+    , _tid(0)
+
 {
     strcpy_s(_name, MAX_PATH, name);
 }
@@ -55,6 +59,22 @@ inline void IDispatcher_summer::register_atelier(IAtelier_summer* as)
     }
     if (!found)
         _atelier_array.push_back(as);
+}
+
+
+inline void IDispatcher_summer::start()
+{
+    if (_stop) {
+        _thread.start(*(this));
+    }
+}
+
+inline void IDispatcher_summer::run()
+{
+    if (!init()) return;
+    _tid = Poco::Thread::currentTid();
+    _stop = 0;
+    go();
 }
 
 } //namespace WARMGUI {

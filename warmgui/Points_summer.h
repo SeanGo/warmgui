@@ -26,11 +26,16 @@ public:
                         _abs_rect = rect;
                         _rect.left = _rect.top = 0, _rect.right = RectWidth(rect), _rect.bottom = RectHeight(rect);
                     }
+    void            set_artist(eArtist* artist) { _artist = artist; }
 private:
     char _c;
     POINT_TEXT_POSISION _pos;
     COLORALPHA                 _clr;
     IDWriteTextFormat* _pTextFormat;
+    //D2D1_POINT_2F pnt;
+
+private:
+    void SetClass() { SetMyClass("CPoints_summer"); }
 };
 
 

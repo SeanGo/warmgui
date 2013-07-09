@@ -1,6 +1,7 @@
 #include "StdAfx.h"
 #include "summer.h"
 #include "SummerApp.h"
+#include "ZitPredictView.h"
 #include "SummerView.h"
 
 #include "Resource.h"
@@ -10,6 +11,7 @@ extern CSummerApp the_app;
 CSummerView::CSummerView(void)
     : _atelier(0)
     , _focus(false)
+    , _zit_prd_view(0)
 {
     _rectClient.left = _rectClient.top = _rectClient.bottom = _rectClient.right = 0;
 }
@@ -18,6 +20,7 @@ CSummerView::CSummerView(void)
 CSummerView::~CSummerView(void)
 {
     SafeDelete(_atelier);
+    SafeDelete(_zit_prd_view);
 }
 
 
@@ -75,8 +78,16 @@ int CSummerView::OnCommand(WORD nCmdId, WORD /*nSource*/, HWND /*hwnd*/)
 	case ID_VIEW_TOOLBAR:
 		_atelier->ToggleToolbar("canvas-toolbar");
 		break;
-    case ID_TEST_DRAW_TIME_SERIES:
-        
+    case ID_NETWORK_LOGIN:
+        break;
+    case ID_NETWORK_LOGOFF:
+        break;
+    case ID_CTPMMD_RECEIVER:
+        break;
+    case ID_SHOW_ZIT_PREDICT_VIEW:
+        ShowZitPredictView();
+        break;
+    case ID_SHOW_ANALYST_VIEW:
         break;
 	}
 
@@ -91,9 +102,7 @@ void CSummerView::OnRButtonUp(UINT, int x, int y)
 
 void CSummerView::OnLButtonUp(UINT, int x, int y)
 {
-    the_app.get_calculators()->stop();
-    Sleep(1000);
-    the_app.get_dispatchers()->stop();
+    _atelier->OnLButtonUp(0, x, y);
 }
 
 
@@ -122,4 +131,31 @@ int  CSummerView::OnSetfocus(HWND)
     return (0);
 }
 
+void CSummerView::ShowZitPredictView()
+{
+    if (_zit_prd_view) {
+        if (::IsWindow(_zit_prd_view->GetSafeHwnd()))
+            ShowWindow(_zit_prd_view->GetSafeHwnd(), SW_SHOW);
+        else {
+            delete _zit_prd_view;
+            _zit_prd_view = 0;
+            goto show_window;
+        }
+    } else {
+show_window:
+        _zit_prd_view = new CZitPredictView();
+        if (!_zit_prd_view->GetSafeHwnd()) {
+            RECT rect;
+            rect.left = rect.top = 200, rect.right = rect.bottom = 600;
+
+            _zit_prd_view->LoadAccelerators(IDC_SUMMER);
+            _zit_prd_view->Create(
+                L"WARMGUIWNDCLASS",
+                L"Zit Predict Window",
+                WS_VISIBLE | WS_CLIPCHILDREN,
+                rect,
+                this);
+        }
+    }
+}
 
