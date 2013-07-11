@@ -86,6 +86,10 @@ inline void CCoordFrame_summer::set_rect(RECT& rect)
 
 HRESULT CCoordFrame_summer::draw(bool redraw_all/* = false*/)
 {
+//    TCHAR name[MAX_PATH];
+//    CChineseCodeLib::Gb2312ToUnicode(name, MAX_PATH, _name);
+//    MYTRACE(L"CCoordFrame_summer draw %s\n", name);
+
     HRESULT hr = S_OK;
     if (redraw_all || _world->get_world_change()) {
         if (_my_own_artist) {
@@ -126,15 +130,15 @@ HRESULT CCoordFrame_summer::_draw_coord(eArtist* artist)
 		10.0f,
 		D2D1_DASH_STYLE_SOLID);
 
-	D2D1_ANTIALIAS_MODE am = artist->GetHwndRT()->GetAntialiasMode();
-	artist->GetUsingRT()->SetAntialiasMode(D2D1_ANTIALIAS_MODE_ALIASED);
+	//D2D1_ANTIALIAS_MODE am = artist->GetHwndRT()->GetAntialiasMode();
+	//artist->GetUsingRT()->SetAntialiasMode(D2D1_ANTIALIAS_MODE_ALIASED);
     artist->SetTextFormat(_pTextFormat);
         
 	DrawSideBar(artist);
 	DrawGrid(artist);
 	DrawRuler(artist);
 
-	artist->GetUsingRT()->SetAntialiasMode(am);
+	//artist->GetUsingRT()->SetAntialiasMode(am);
 
 	artist->SetStrokeStyle(D2D1_CAP_STYLE_ROUND,
 		D2D1_CAP_STYLE_ROUND,
@@ -172,6 +176,8 @@ void CCoordFrame_summer::DrawSideBar(eArtist* artist)
 
 void CCoordFrame_summer::DrawGrid(eArtist* artist)
 {
+    if (_world->_real_world.maxy == _world->_real_world.miny) return;
+
 	float fRectInterval = ((float)_rect_calc.bottom - RULER_TOP - RULER_BOTTOM) / _split_pieces;
 	float scale = ((float)_rect_calc.bottom - RULER_TOP - RULER_BOTTOM) / (_world->_real_world.maxy - _world->_real_world.miny);
 	float y0 = (_world->_real_world.maxy - _world->_real_world.y0) * scale + RULER_TOP;
@@ -192,7 +198,6 @@ void CCoordFrame_summer::DrawGrid(eArtist* artist)
 		D2D1_LINE_JOIN_ROUND,
 		10.0f,
 		D2D1_DASH_STYLE_DASH_DOT_DOT);
-
 
 	//Draw horizon line that large than Y0
 	float y = y0;

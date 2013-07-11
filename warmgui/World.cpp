@@ -59,7 +59,7 @@ inline void CWorld::SetRectSize(RECT& rect)
 /// if the scale was changed return 1, else return 0
 inline void CWorld::SetWorldRect(WORLD_RECT& world)
 {
-    _bak_world = _real_world, _real_world = world;
+    _bak_world = _real_world, _real_world = world, _fist_data = true;
     real_world_to_screen();
     SetScale();
 }
@@ -123,12 +123,18 @@ inline WORLD_CHANGED_TYPE CWorld::fresh_limit(float x, float y)
         _world_changed = (WORLD_CHANGED_TYPE_MAX_Y | WORLD_CHANGED_TYPE_MIN_Y);
     }
 
+    //change min max of Y
     if (y > _real_world.maxy)
         _real_world.maxpos = x, _real_world.maxy = y + _vi._max_incres_mag, _world_changed |= WORLD_CHANGED_TYPE_MAX_Y;
     if (y < _real_world.miny)
         _real_world.minpos = x, _real_world.miny = y - _vi._min_decres_mag, _world_changed |= WORLD_CHANGED_TYPE_MIN_Y;
-    if (!_vi._b_fix_width && _real_world.xn < x)
-        _real_world.xn = x, _real_world.yn = y, _world_changed |= WORLD_CHANGED_TYPE_MAX_X;
+
+    //change x0 and xn
+    if (!_vi._b_fix_width && _real_world.xn - _vi._hold_right_space < x) {
+        _real_world.xn = x + _vi._hold_right_space,
+            _real_world.yn = y,
+            _world_changed |= WORLD_CHANGED_TYPE_MAX_X;
+    }
     if (_world_changed & WORLD_CHANGED_TYPE_MAX_X)
         if (!_vi._b_fix_width)
             _x_left = _real_world.xn - _vi._init_width - _real_world.x0,

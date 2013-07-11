@@ -7,8 +7,6 @@ CZitPredictCalculator::CZitPredictCalculator(const char * name)
     : ICalculator_summer(name)
     , _ext_zit(1)
 {
-    _zpr._ts = (CTPMMD_TIME_SERIES*)sampler.get_time_series();
-    _zpr._sampler = &sampler;
     _result_data = &_zpr;
 }
 
@@ -38,6 +36,7 @@ int  CZitPredictCalculator::calculate(MSG msg)
 {
     CTPMMD* mmd = (CTPMMD*)msg.wParam;
     _zpr.zero();
+    _zpr._sampler = &sampler;
 
     //MYTRACE(L"cal rcvd %.02f %.02f %.02f\n", mmd->fIndex, mmd->LastPrice, mmd->m_time);
     if (sampler.fill_data(mmd)) {
@@ -48,6 +47,7 @@ int  CZitPredictCalculator::calculate(MSG msg)
             return (0);
         }
 
+        _zpr._ts = (CTPMMD_TIME_SERIES*)sampler.get_time_series();
 
         ////////////////////////////////////////////////////////////////
         // for price, low level 

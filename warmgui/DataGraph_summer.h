@@ -83,12 +83,12 @@ public:
 	inline void                SetStrokeWidth(float stroke_width) {_stroke_width = stroke_width;}
 
                                //if add_to_point_set = true, reset the data-point set
-    inline void                begin_set_data(float x, float y, bool add_to_point_set = true);
-    inline void                add_data_to_path_geometry(float x, float y, bool add_to_point_set = true);
-    inline void                begin_set_data(double x, double y, bool add_to_point_set = true)
-                               { begin_set_data((float)x, (float)y, add_to_point_set);}
-    inline void                add_data_to_path_geometry(double x, double y, bool add_to_point_set = true)
-                               {add_data_to_path_geometry((float)x, (float)y, add_to_point_set);}
+    inline void                begin_set_data(float x, float y, bool add_to_point_set = true, bool fresh_world = true);
+    inline void                add_data_to_path_geometry(float x, float y, bool add_to_point_set = true, bool fresh_world = true);
+    inline void                begin_set_data(double x, double y, bool add_to_point_set = true, bool fresh_world = true)
+                               { begin_set_data((float)x, (float)y, add_to_point_set, fresh_world);}
+    inline void                add_data_to_path_geometry(double x, double y, bool add_to_point_set = true, bool fresh_world = true)
+                               {add_data_to_path_geometry((float)x, (float)y, add_to_point_set, fresh_world);}
     inline void                end_set_data();
 
     virtual HRESULT            init();

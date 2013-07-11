@@ -274,6 +274,7 @@ bool CWarmguiConfig::getColorAlpha(COLORALPHA   &color, const char* config_str)
         MYTRACE(L"CWarmguiConfig::getColorAlpha\n");
 		return r;
 	}
+    color.b /= 255, color.g /= 255, color.r /= 255;
 	return r;
 }
 

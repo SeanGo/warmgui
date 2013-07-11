@@ -16,6 +16,7 @@ IGlyph_summer::IGlyph_summer(void)
     , _visible(true)
     , _selected_child_graph(0)
     , _selected(false)
+//    , _drawing(false)
 {
     memset(&_rect, 0 , sizeof(RECT));
     _abs_rect = _rect;
@@ -35,6 +36,7 @@ IGlyph_summer::IGlyph_summer(const char* name)
     , _visible(true)
     , _selected_child_graph(0)
     , _selected(false)
+//    , _drawing(false)
 {
     memset(&_rect, 0 , sizeof(RECT));
     _abs_rect = _rect;
@@ -102,6 +104,12 @@ inline HRESULT IGlyph_summer::pop_layer()
 
 HRESULT IGlyph_summer::draw_graph(bool redraw_all/* = false*/, GLYPH_TYPE glyph_type /*=IGlyph_summer::GLYPH_TYPE_GLYPH*/)
 {
+#ifdef _DEBUG
+    //TCHAR name[MAX_PATH];
+    //CChineseCodeLib::Gb2312ToUnicode(name, MAX_PATH, _name);
+    //MYTRACE(L"draw_graph %s\n", name);
+#endif //_DEBUG
+
     HRESULT hr = S_OK;
 
     if (_artist && _glyph_tree && (*_tree_iter)) {
@@ -117,7 +125,7 @@ HRESULT IGlyph_summer::draw_graph(bool redraw_all/* = false*/, GLYPH_TYPE glyph_
                 for (int i = 0; i < num_of_children; i++) {
                     //draw all 
                     GlyphTreeIter_summer it = _glyph_tree->child(_tree_iter, (unsigned int)i);
-                    if ((*it)->get_glyph_type() == glyph_type)
+                    //if ((*it)->get_glyph_type() == glyph_type)
                         hr = (*it)->draw_graph(redraw_all, glyph_type);
                     if (FAILED(hr))
                         break;
@@ -486,7 +494,7 @@ inline HRESULT CSharedImage_summer::draw(bool /*redraw_all = false*/)
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 // class CBlind
-HRESULT CBlind_summer::draw(bool /*redraw_all = false*/)
+inline HRESULT CBlind_summer::draw(bool /*redraw_all = false*/)
 {
     _artist->SetSolidColorBrush(D2D1::ColorF(_bkgclr, _alpha));
     _artist->FillRectangle(_rect);

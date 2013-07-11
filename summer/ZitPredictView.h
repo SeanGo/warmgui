@@ -22,10 +22,10 @@ public:
     msgfun  void OnLButtonUp(UINT, int , int);
 
 protected:
-    CSummerAtelier* _atelier;
-    RECT         _rectClient;
+    CZitPredictAtelier* _atelier;
+    RECT             _rectClient;
 
-    bool              _focus;
+    bool                  _focus;
 };
 
 

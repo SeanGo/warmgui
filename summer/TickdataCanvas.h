@@ -12,6 +12,7 @@ public:
 
 protected:
     WARMGUI::CGridCtrl* _data_grid;
+    WARMGUI::CBlind_summer* _blind;
 };
 
 #endif //__tickdata_grid_canvas__

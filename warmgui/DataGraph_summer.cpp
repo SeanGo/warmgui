@@ -162,6 +162,7 @@ inline HRESULT CCurveGraph_summer::predraw()
             if (_pathg) draw_whole_line();
         }
     }
+
     return hr;
 }
 
@@ -179,7 +180,7 @@ inline void CCurveGraph_summer::clear_bmp_target()
 
 //reset path gemoetry, if add_to_point_set is true, reset the data-point-set
 //must  lock _lockChange before call this
-inline void CCurveGraph_summer::begin_set_data(float x, float y, bool add_to_point_set/* = true*/)
+inline void CCurveGraph_summer::begin_set_data(float x, float y, bool add_to_point_set/* = true*/, bool fresh_world/* = true*/)
 {
 	HRESULT hr = S_OK;
 	SafeRelease(&_pathg);
@@ -192,20 +193,27 @@ inline void CCurveGraph_summer::begin_set_data(float x, float y, bool add_to_poi
 	if (SUCCEEDED(hr)) {
 		_pSink->SetFillMode(D2D1_FILL_MODE_ALTERNATE);
         _pSink->BeginFigure(D2D1::Point2F(x, y),D2D1_FIGURE_BEGIN_HOLLOW);
-
+        if (fresh_world)
+            _world_change = WORLD_CHANGED_TYPE_NONE;
         if (add_to_point_set) {
             _points.reset();
             _points.add_data(x, y);
+            if (fresh_world)
+                _world_change = _world->fresh_limit(x, y);
         }
     }
 }
 
 //add data to path geometry, if add_to_point_set is true, reset the data-point-set
 //must call begin_set_data before
-inline void CCurveGraph_summer::add_data_to_path_geometry(float x, float y, bool add_to_point_set/* = true*/)
+inline void CCurveGraph_summer::add_data_to_path_geometry(float x, float y, bool add_to_point_set/* = true*/, bool fresh_world/* = true */)
 {
     _pSink->AddLine(D2D1::Point2F(x, y));
-    if (add_to_point_set) _points.add_data(x, y);
+    if (add_to_point_set) {
+        _points.add_data(x, y);
+        if (fresh_world)
+            _world_change |= _world->fresh_limit(x, y);
+    }
 }
 
 //finish path geometry
@@ -246,8 +254,8 @@ inline void CCurveGraph_summer::update_data()
 
 HRESULT CCurveGraph_summer::draw(bool redraw_all/* = false*/)
 {
-    HRESULT hr = S_OK;
     CriticalLock::Scoped scope(_lockChange);
+    HRESULT hr = S_OK;
 
 #ifdef _DEBUG
     //TCHAR name[MAX_PATH];
@@ -262,7 +270,7 @@ HRESULT CCurveGraph_summer::draw(bool redraw_all/* = false*/)
         if (_points._count > 1) {
             if (redraw_all && (_changed || _atelier->is_changed() || _canvas->is_changed()))
             {
-                MYTRACE(L"redraw--------------\n");
+                //MYTRACE(L"redraw--------------\n");
                 prepare_path();
                 hr = draw_whole_line();
             }
@@ -283,6 +291,10 @@ HRESULT CCurveGraph_summer::draw(bool redraw_all/* = false*/)
         hr = pop_layer();
 
     set_change(GLYPH_CHANGED_NONE);
+#ifdef _DEBUG
+    //CChineseCodeLib::Gb2312ToUnicode(name, MAX_PATH, _name);
+    //MYTRACE(L"curve draw over %s\n", name);
+#endif
     return hr;
 }
 
@@ -304,11 +316,6 @@ void CCurveGraph_summer::prepare_path()
 
 void CCurveGraph_summer::_draw_whole_line(eArtist* artist)
 {
-    artist->SetSolidColorBrush(_color_alpha);
-    ////////////////////////////////////////////////////////////////
-    //artist->DrawRectangle(_rect);
-    ////////////////////////////////////////////////////////////////
-
     artist->GetTransformMatrix(&_back_trans);
 
     ////////////////////////////////////////////////////////////////

@@ -30,6 +30,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
 	TCHAR szClassName[MAX_LOADSTRING] = L"WARMGUIWNDCLASS";
 
 	CSummerView mainwnd;
+    //CZitPredictView mainwnd;
 
 	BOOL r = mainwnd.InitInstance(hInstance, hPrevInstance, lpCmdLine, nCmdShow, szClassName, szTitle);
 	if (r) {

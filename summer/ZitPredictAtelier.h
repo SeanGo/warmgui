@@ -15,9 +15,8 @@ private:
     void SetClass() { SetMyClass("CZitPredictAtelier"); }
 
     WARMGUI::CBkgCanvas_summer* _bkg_canvas;
-    WARMGUI::CToolbar_summer*   _toolbar;
-    CCtpmdCanvas_summer*        _ctp_canvas;
-    CTickdataCanvas*            _tick_canvas;
+    WARMGUI::CToolbar_summer*      _toolbar;
+    CZitPredictCanvas *         _canvas_zp1;
 };
 
 #endif //__zit_predict_atelier__

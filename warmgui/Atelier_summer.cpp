@@ -87,14 +87,13 @@ inline HRESULT IAtelier_summer::Draw()
 {
     HRESULT hr = S_OK;
     CriticalLock::Scoped scope(_lockChange);
-
     bool bkgchanged = bkg_is_changed(_changed);
     //redraw all back-ground bitmap
     if (bkgchanged)
     {
         //draw backup graph using default bitmap render target
 #ifdef  _DEBUG
-        MYTRACE(L"draw backup graph\n");
+        //MYTRACE(L"draw backup graph\n");
 #endif  //_DEBUG
         _artist->BeginBmpDraw(true);
         _artist->SetTransform(&idmatrix);
@@ -116,7 +115,6 @@ inline HRESULT IAtelier_summer::Draw()
 
             //draw all graph
             hr = draw_graph(bkgchanged);
-
             //copy to screen-bitmap
             if (SUCCEEDED(hr))
                 hr = CopyFromRenderTarget(_pHwndRT, _appbmp._screen, pntZero, _rect);

@@ -208,7 +208,6 @@ const int GLYPH_CHANGED_GLYPH_BKG      = 0x010;  ///the background of glyph   wa
 const int GLYPH_CHANGED_GLYPH          = 0x020;  ///the glyph was changed, N/A for atelier and canvas
 const int GLYPH_CHANGED_CANVAS         = 0x040;
 
-
 #define BGR(b,g,r) ((COLORREF)(((BYTE)(b)|((WORD)((BYTE)(g))<<8))|(((DWORD)(BYTE)(r))<<16)))
 
 const RECT zero_rect = {0, 0, 0, 0};

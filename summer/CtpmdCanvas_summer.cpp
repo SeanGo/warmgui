@@ -14,6 +14,7 @@ CCtpmdCanvas_summer::CCtpmdCanvas_summer(const char* name)
     , _line_dif_interest(0)
     , _pvi_width(0)
     , _days_graph(0)
+    , _blind(0)
 {
 }
 
@@ -25,6 +26,9 @@ CCtpmdCanvas_summer::~CCtpmdCanvas_summer(void)
 
 HRESULT CCtpmdCanvas_summer::init()
 {
+    _blind = new WARMGUI::CBlind_summer("ctpmd-canvas", BGR(0, 0, 0), 0.5f);
+    append_glyph(_blind);
+
     _coord_price       = new WARMGUI::CCoordFrame_summer("coord-price"   );   append_glyph(_coord_price      ); _coord_price      ->init();
     _coord_volume      = new WARMGUI::CCoordFrame_summer("coord-volume"  );   append_glyph(_coord_volume     ); _coord_volume     ->init();
     _coord_interest    = new WARMGUI::CCoordFrame_summer("coord-interest");   append_glyph(_coord_interest   ); _coord_interest   ->init();
@@ -80,6 +84,8 @@ void CCtpmdCanvas_summer::set_rect(RECT& rect)
     crect.left += _margin.left, crect.top += _margin.top, crect.right -= _margin.right, crect.bottom -= _margin.bottom;
     _abs_rect = crect;
     _rect.left = _rect.top = 0, _rect.right = RectWidth(_abs_rect), _rect.bottom = RectHeight(_abs_rect);
+
+    _blind->set_rect(rect);
 
     //_coord_price
     crect.bottom = crect.top + (int)(_rect.bottom * _pvi_height.f1);

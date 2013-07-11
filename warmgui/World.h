@@ -70,6 +70,7 @@ public:
 
     inline float        get_x_left();
     D2D1::Matrix3x2F*   get_trans() { return &_trans; }
+    inline void         zero_world() {SetWorldRect(_zero_world);}
 
 protected:
 	inline virtual void SetScale();

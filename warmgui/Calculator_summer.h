@@ -125,6 +125,7 @@ public:
     void reg_data_graph(IDataGraph_summer* graph)
     {
         _glyphs.push_back(graph);
+        register_atelier(graph->get_atelier());
         graph->set_user_data(_result_data);
     }
 
@@ -132,7 +133,21 @@ public:
     const char* getName() {return _name;}
 
     AtelierArray_summer& get_atlier_array() {return _atelier_array;}
-    void register_atelier(IAtelier_summer* as) { _atelier_array.push_back(as); }
+
+    void register_atelier(IAtelier_summer* as)
+    {
+        bool found = false;
+        for (int i = 0; i < _atelier_array.size(); i++) {
+            if (as == _atelier_array[i]) {
+                found = true;
+                break;
+            }
+        }
+        if (!found)
+            _atelier_array.push_back(as);
+    }
+
+
     void remove_hwnd(IAtelier_summer* as) { 
         for (AtelierConstIter_summer iter = _atelier_array.begin(); iter != _atelier_array.end(); iter++) {
             if ((*iter) == as) {

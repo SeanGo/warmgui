@@ -22,6 +22,8 @@ protected:
 
 
     CDaysCtpmmdGraph*            _days_graph;
+
+    WARMGUI::CBlind_summer*      _blind;
 protected:
     TripleTuple _pvi_height;
     float       _pvi_width;

@@ -32,7 +32,7 @@ BOOL CZitPredictView::PreCreateWindow(LPCREATESTRUCT cs)
 
 void CZitPredictView::OnSize(UINT /*nType*/, int cx, int cy)
 {
-    //MYTRACE(L"OnSize\n");
+//    MYTRACE(L"CZitPredictView OnSize\n");
 	if (_atelier && cx > 0 && cy > 0) {
 		::GetClientRect(_hwnd, &_rectClient);
 		_atelier->set_rect(_rectClient);
@@ -41,7 +41,7 @@ void CZitPredictView::OnSize(UINT /*nType*/, int cx, int cy)
 
 void CZitPredictView::OnDraw()
 {
-    //MYTRACE(L"OnDraw\n");
+//    MYTRACE(L"CZitPredictView OnDraw\n");
 	if (_atelier) {
 		_atelier->Draw();
     }
@@ -49,11 +49,12 @@ void CZitPredictView::OnDraw()
 
 void CZitPredictView::OnDestroy()
 {
+    ::PostQuitMessage(0);
 }
 
 int CZitPredictView::OnCreate(LPCREATESTRUCT /*cs*/)
 {
-    _atelier = new CSummerAtelier("summer");
+    _atelier = new CZitPredictAtelier("zit-predict");
     _atelier->init(_hwnd);
 
 	SetWindowLong(_hwnd, GWL_STYLE, WS_VISIBLE | WS_CLIPCHILDREN | WS_OVERLAPPEDWINDOW);
@@ -86,9 +87,9 @@ void CZitPredictView::OnRButtonUp(UINT, int x, int y)
 
 void CZitPredictView::OnLButtonUp(UINT, int x, int y)
 {
-    the_app.get_calculators()->stop();
-    Sleep(1000);
-    the_app.get_dispatchers()->stop();
+    //the_app.get_calculators()->stop();
+    //Sleep(1000);
+    //the_app.get_dispatchers()->stop();
 }
 
 

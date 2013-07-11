@@ -84,7 +84,7 @@ int  CDaysCtpmmdCalculator::calculate(MSG msg)
             _dcr._infl_price = _inf_low_price.GetInflexion();
         }
 
-        if (!_dcr._infl_price) MYTRACE(L"price infl -- error\n");
+        //// SEAN SEAN SEAN if (!_dcr._infl_price) MYTRACE(L"price infl -- error\n");
 
         //////////////////////////////////////////////////////////////////////////
         // he level for price

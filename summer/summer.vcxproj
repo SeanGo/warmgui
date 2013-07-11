@@ -81,9 +81,7 @@
     <None Include="ReadMe.txt" />
     <None Include="small.ico" />
     <None Include="summer.ico" />
-    <None Include="summer.xml">
-      <SubType>Designer</SubType>
-    </None>
+    <None Include="summer.xml" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CtpmdCurve_summer.h" />

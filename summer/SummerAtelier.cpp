@@ -75,7 +75,7 @@ void CSummerAtelier::disposal(RECT& rect)
     if (_ctp_canvas)
         _ctp_canvas->set_rect(crect);
 
-    crect.left = crect.right + 4, crect.right = rect.right;
+    crect.top += 5, crect.left = crect.right + 4, crect.right = rect.right;
     if (_tick_canvas)
         _tick_canvas->set_rect(crect);
 

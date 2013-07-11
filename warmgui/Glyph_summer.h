@@ -144,6 +144,7 @@ protected:
 
     GLYPH_TYPE                _mytype;
     bool                     _visible;
+    //bool                     _drawing;
 
 
     IGlyph_summer*     _selected_child_graph;
@@ -244,7 +245,7 @@ public:
         setClass();
     }
 
-    virtual HRESULT draw(bool redraw_all = false);
+    inline virtual HRESULT draw(bool redraw_all = false);
     void            set_brush_color(COLORREF bkgclr, float alpha = 0.5f) {_bkgclr = bkgclr, _alpha = alpha;}
     virtual int     is_selected(int x, int y) { return (0); }
 

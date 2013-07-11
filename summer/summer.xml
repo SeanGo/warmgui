@@ -53,7 +53,7 @@
 					<!-- x0,y0, xn, yn, minpos, miny, maxpos, maxy -->
 					<!-- max ctpdata is 32400, but plus 180 * 2 predict data -->
 					<world>0, 3000, 32759, 3000, 0, 2985, 32759, 3015</world>
-					<increase>5, 5, DATA_BREADTH_TYPE_VALUE, 32759, 360, true</increase>
+					<increase>2, 2, DATA_BREADTH_TYPE_VALUE, 32759, 360, true</increase>
 				</world>
 			</coord-price>
 			<coord-volume>
@@ -69,7 +69,7 @@
 					<name>volume</name>
 					<!-- x0,y0, xn, yn, minpos, miny, maxpos, maxy -->
 					<world>0, 0, 32759, 0, 0, 0,32759, 100</world>
-					<increase>0.0, 10.0, DATA_BREADTH_TYPE_VALUE, 32759, 360, true</increase>
+					<increase>0.1, 10.0, DATA_BREADTH_TYPE_VALUE, 32759, 360, true</increase>
 				</world>
 			</coord-volume>
 			<coord-interest>
@@ -117,25 +117,25 @@
 			<days-graph>
 				<approx-low-price>
 					<stroke-width>1.618</stroke-width>
-					<color>164, 73, 163, 0.8</color>
+					<color>218, 218, 28, 1.0</color>
 				</approx-low-price>
 				<approx-he-price>
 					<stroke-width>1.618</stroke-width>
-					<color>28, 210, 165, 0.8</color>
+					<color>28, 218, 218, 1.0</color>
 				</approx-he-price>
 				<approx-volume>
 					<stroke-width>1.618</stroke-width>
-					<color>164, 73, 163, 0.8</color>
+					<color>200, 200, 200, 1.0</color>
 				</approx-volume>
 				<approx-interest>
 					<stroke-width>0.618</stroke-width>
-					<color>164, 73, 163, 0.8</color>
+					<color>200, 200, 200, 1.0</color>
 				</approx-interest>
 
 				<ext-price>
 					<font>Verdana, 10</font>
-					<color-1>0, 255, 0, 1.0</color-1>
-					<color-2>0, 255, 0, 1.0</color-2>
+					<color-1>128, 0, 255, 0.85</color-1>
+					<color-2>0, 255, 0, 0.85</color-2>
 				</ext-price>
 
 				<inflex-price>
@@ -154,7 +154,7 @@
 				<row>10</row>
 				<col>10</col>
 				<margin>5, 5, 5, 5</margin>
-				<border-color-alpha>28, 0, 0, 1.0</border-color-alpha>
+				<border-color-alpha>255, 0, 0, 1.0</border-color-alpha>
 				<grid-bkg-color-alpha>28, 0, 0, 1.0</grid-bkg-color-alpha>
 				<face3d-color-alpha>28, 0, 0, 1.0</face3d-color-alpha>
 				<shadow3d-color-alpha>28, 0, 0, 1.0</shadow3d-color-alpha>
@@ -163,7 +163,7 @@
 				<highlight-color-alpha>28, 0, 0, 1.0</highlight-color-alpha>
 				<highlight-txt-color-alpha>28, 0, 0, 1.0</highlight-txt-color-alpha>
 				<!-- text color -->
-				<txt-color-alpha>28, 0, 0, 1.0</txt-color-alpha>
+				<txt-color-alpha>128, 128, 128, 1.0</txt-color-alpha>
 				<txtbkg-color-alpha>28, 0, 0, 1.0</txtbkg-color-alpha>
 				<fixcol-color-alpha>28, 0, 0, 1.0</fixcol-color-alpha>
 				<fixcol-bkg-color-alpha>28, 0, 0, 1.0</fixcol-bkg-color-alpha>
@@ -191,5 +191,137 @@
 			<toolbar-materials-rect>0, 1080, 320, 1144</toolbar-materials-rect>
 		</canvas-toolbar>
 	</atelier-summer>
+
+	<atelier-zit-predict>
+		<bitmap_materials>e:/projects/bin/qks/media/qks-euclid.png</bitmap_materials>
+		<mainwindow-bkgimg-rect>0, 0, 1920, 1080</mainwindow-bkgimg-rect>
+
+		<canvas-bkg>
+			<canvas-type>background-canvas</canvas-type>
+			<canvas-name>mainwindow-bkgimg</canvas-name>
+			<blind>false</blind>
+			<rect>0, 0, 1920, 1080</rect>
+		</canvas-bkg>
+		<canvas-zit-predict-1>
+			<margin>5, 5, 5, 5</margin>
+			<zit-predict>
+				<pvi-width>0.618</pvi-width>
+				<pvi-height>0.618, 0.191, 0.191</pvi-height>
+				<coord-price>
+					<name>price-coord-grid</name>
+					<!-- RULER_LEFT, RULER_RIGHT, RULER_TOP,RULER_BOTTOM -->
+					<ruler-size>50, 20, 50,  5</ruler-size>
+					<!-- B, G, R, alpah -->
+					<ruler-color-alpha>255, 0, 0, 1.0</ruler-color-alpha>
+					<font>Verdana, 10</font>
+					<color>255, 0, 0, 1.0</color>
+					<split-pieces>11</split-pieces>
+					<world>
+						<name>price</name>
+						<!-- x0,y0, xn, yn, minpos, miny, maxpos, maxy -->
+						<world>0, 3000, 1204, 3000, 0, 2985, 1204, 3015</world>
+						<increase>0.1, 0.1, DATA_BREADTH_TYPE_VALUE, 1204, 180, false</increase>
+					</world>
+				</coord-price>
+				<coord-volume>
+					<name>volume-coord-grid</name>
+					<!-- RULER_LEFT, RULER_RIGHT, RULER_TOP,RULER_BOTTOM -->
+					<ruler-size>50, 20, 50,  5</ruler-size>
+					<!-- B, G, R, alpah -->
+					<ruler-color-alpha>255, 0, 0, 1.0</ruler-color-alpha>
+					<font>Verdana, 10</font>
+					<color>255, 0, 0, 1.0</color>
+					<split-pieces>7</split-pieces>
+					<world>
+						<name>volume</name>
+						<!-- x0,y0, xn, yn, minpos, miny, maxpos, maxy -->
+						<world>0, 0, 1204, 0, 0, 0, 1204, 100</world>
+						<increase>0.1, 10.0, DATA_BREADTH_TYPE_VALUE, 1204, 180, false</increase>
+					</world>
+				</coord-volume>
+				<coord-interest>
+					<name>interest-coord-grid</name>
+					<!-- RULER_LEFT, RULER_RIGHT, RULER_TOP,RULER_BOTTOM -->
+					<ruler-size>50, 20, 50,  5</ruler-size>
+					<!-- B, G, R, alpah -->
+					<ruler-color-alpha>255, 0, 0, 1.0</ruler-color-alpha>
+					<font>Verdana, 10</font>
+					<color>255, 0, 0, 1.0</color>
+					<split-pieces>7</split-pieces>
+					<world>
+						<name>interest</name>
+						<!-- x0,y0, xn, yn, minpos, miny, maxpos, maxy -->
+						<!-- max ctpdata is 32400, but plus 180 * 2 predict data -->
+						<world>0, -50, 1204, 0, 0, -50, 1204, 50</world>
+						<increase>50.0, 50.0, DATA_BREADTH_TYPE_VALUE, 1204, 180, false</increase>
+					</world>
+				</coord-interest>
+
+				<line-price>
+					<stroke-width>6.618</stroke-width>
+					<color>0, 0, 255, 1.0</color>
+				</line-price>
+				<line-volume>
+					<stroke-width>1.618</stroke-width>
+					<color>0, 0, 255, 1.0</color>
+				</line-volume>
+				<line-rel-interest>
+					<stroke-width>0.618</stroke-width>
+					<color>0, 0, 255, 1.0</color>
+				</line-rel-interest>
+				<line-dif-interest>
+					<stroke-width>0.618</stroke-width>
+					<color>0, 255, 0, 1.0</color>
+					<world>
+						<name>dif-interest</name>
+						<!-- x0,y0, xn, yn, minpos, miny, maxpos, maxy -->
+						<world>0, -10, 1204, 10, 0, -10, 1204, 10</world>
+						<increase>10.0, 10.0, DATA_BREADTH_TYPE_VALUE, 1204, 180, false</increase>
+					</world>
+				</line-dif-interest>
+
+				<approx-low-price>
+					<stroke-width>1.618</stroke-width>
+					<color>218, 218, 28, 0.8</color>
+				</approx-low-price>
+				<approx-he-price>
+					<stroke-width>1.618</stroke-width>
+					<color>28, 218, 218, 0.8</color>
+				</approx-he-price>
+
+				<low-predict>
+					<stroke-width>1.618</stroke-width>
+					<color>218, 218, 28, 0.8</color>
+				</low-predict>
+				<he-predict>
+					<stroke-width>1.618</stroke-width>
+					<color>28, 218, 218, 0.8</color>
+				</he-predict>
+
+				<zit-ext>
+					<font>Verdana, 10</font>
+					<color-1>128, 0, 255, 0.85</color-1>
+					<color-2>0, 255, 0, 0.85</color-2>
+				</zit-ext>
+
+				<zit-inflex>
+					<stroke-width>0.618</stroke-width>
+					<color>255, 0, 0, 1.0</color>
+				</zit-inflex>
+			</zit-predict>
+		</canvas-zit-predict-1>
+		<canvas-toolbar>
+			<canvas-type>toolbar</canvas-type>
+			<canvas-name>toolbar</canvas-name>
+			<!-- top, left, right, bottom -->
+			<first-command>32772</first-command>
+			<position>middle</position>
+			<button-size>64, 64</button-size>
+			<!-- must be zero now (forever ? heihei) -->
+			<interval>0</interval>
+			<toolbar-materials-rect>0, 1080, 320, 1144</toolbar-materials-rect>
+		</canvas-toolbar>
+	</atelier-zit-predict>
+
 </config>
 

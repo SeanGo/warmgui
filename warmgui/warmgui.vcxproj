@@ -84,6 +84,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <None Include="..\summer\summer.xml" />
     <None Include="ReadMe.txt" />
     <None Include="tree.hpp" />
   </ItemGroup>
